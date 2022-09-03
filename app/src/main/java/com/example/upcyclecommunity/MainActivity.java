@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.upcyclecommunity.BrandList.FragmentBrand;
+import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
-                //fragmentTransaction.replace(R.id.main_frame,Fragment4).commit();
+                fragmentTransaction.replace(R.id.main_frame, new MyPageFragment()).commit();
                 Toast.makeText(this, "마이페이지", Toast.LENGTH_SHORT).show();
                 break;
         }

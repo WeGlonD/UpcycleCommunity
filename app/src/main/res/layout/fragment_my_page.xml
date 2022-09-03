@@ -3,12 +3,141 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mypage.MyPageFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".mypage.MyPageFragment"
+    android:id="@+id/my_page_frameLayout">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/my_page_parentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/my_page_topLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/my_page_topLayout_padding"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/my_page_bottomLayout">
+
+            <ImageView
+                android:id="@+id/my_page_profile_imageView"
+                android:layout_width="@dimen/my_page_profile_image_size"
+                android:layout_height="@dimen/my_page_profile_image_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/my_page_profileLayout"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <LinearLayout
+                android:id="@+id/my_page_profileLayout"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/my_page_profile_image_size"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/my_page_profile_imageView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/my_page_user_name_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/my_page_user_name_textSize"
+                    android:text="@string/my_page_user_name_initialValue"
+                    android:layout_margin="@dimen/my_page_profileLayout_margin"/>
+                <LinearLayout
+                    android:id="@+id/my_page_user_dataLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="@dimen/my_page_profileLayout_margin">
+
+                    <LinearLayout
+                        android:id="@+id/my_page_user_data1Layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/my_page_user_dataLayout_leftMargin">
+
+                        <ImageView
+                            android:id="@+id/my_page_data1_imageView"
+                            android:layout_width="@dimen/my_page_user_data_imageSize"
+                            android:layout_height="@dimen/my_page_user_data_imageSize"/>
+                        <TextView
+                            android:id="@+id/my_page_data1_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/my_page_user_data_textSize"
+                            android:textSize="@dimen/my_page_user_data_textSize"
+                            android:text="@string/my_page_user_data_initialValue"
+                            android:gravity="center_horizontal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/my_page_user_data2Layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/my_page_user_dataLayout_leftMargin">
+
+                        <ImageView
+                            android:id="@+id/my_page_data2_imageView"
+                            android:layout_width="@dimen/my_page_user_data_imageSize"
+                            android:layout_height="@dimen/my_page_user_data_imageSize"/>
+                        <TextView
+                            android:id="@+id/my_page_data2_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/my_page_user_data_textSize"
+                            android:textSize="@dimen/my_page_user_data_textSize"
+                            android:text="@string/my_page_user_data_initialValue"
+                            android:gravity="center_horizontal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/my_page_user_data3Layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/my_page_user_dataLayout_leftMargin">
+
+                        <ImageView
+                            android:id="@+id/my_page_data3_imageView"
+                            android:layout_width="@dimen/my_page_user_data_imageSize"
+                            android:layout_height="@dimen/my_page_user_data_imageSize"/>
+                        <TextView
+                            android:id="@+id/my_page_data3_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/my_page_user_data_textSize"
+                            android:textSize="@dimen/my_page_user_data_textSize"
+                            android:text="@string/my_page_user_data_initialValue"
+                            android:gravity="center_horizontal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/my_page_bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/my_page_topLayout"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/my_page_tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/my_page_viewPager">
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/my_page_viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@id/my_page_tabLayout"
+                app:layout_constraintBottom_toBottomOf="parent">
+            </androidx.viewpager.widget.ViewPager>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

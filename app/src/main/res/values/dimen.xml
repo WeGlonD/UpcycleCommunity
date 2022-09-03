@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="my_page_profile_image_size">100dp</dimen>
+    <dimen name="my_page_topLayout_padding">7dp</dimen>
+    <dimen name="my_page_user_name_textSize">35sp</dimen>
+    <dimen name="my_page_user_data_imageSize">30sp</dimen>
+    <dimen name="my_page_user_data_textSize">30sp</dimen>
+    <dimen name="my_page_profileLayout_margin">5dp</dimen>
+    <dimen name="my_page_user_dataLayout_leftMargin">5dp</dimen>
+    <dimen name="my_page_viewPager_height">300dp</dimen>
+
+</resources>

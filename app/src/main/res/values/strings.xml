@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">UpcycleCommunity</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="my_page_user_name_initialValue">Unknown</string>
+    <string name="my_page_user_data_initialValue">000</string>
+    <string name="my_page_post1_tab_name">post1</string>
+    <string name="my_page_post2_tab_name">post2</string>
+
+    <string name="activity_login_email_textView_hint">email</string>
+    <string name="activity_login_password_textView_hint">password</string>
+    <string name="activity_login_signUp_button_text">signUp</string>
+    <string name="activity_login_signIn_button_text">signIn</string>
+    <string name="activity_login_help_password_text">Forgot password?</string>
 </resources>

@@ -2,13 +2,23 @@ package com.example.upcyclecommunity.mypage;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.mypage.adapter.PostPageAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +35,18 @@ public class MyPageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ImageView profile_iv;
+    private TextView userName_tv;
+    private TextView userData1_tv;
+    private TextView userData2_tv;
+    private TextView userData3_tv;
+
+    private TabLayout tabLayout;
+    private int currentTabIndex = 0;
+
+    private ViewPager viewPager;
+    private PostPageAdapter postPageAdapter;
 
     public MyPageFragment() {
         // Required empty public constructor
@@ -61,6 +83,47 @@ public class MyPageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_page, container, false);
+
+//        if(userIsNotLogin){
+//            moveToLoginPage();
+//        }
+
+        profile_iv = view.findViewById(R.id.my_page_profile_imageView);
+        userName_tv = view.findViewById(R.id.my_page_user_name_textView);
+        userData1_tv = view.findViewById(R.id.my_page_data1_textView);
+        userData2_tv = view.findViewById(R.id.my_page_data2_textView);
+        userData3_tv = view.findViewById(R.id.my_page_data3_textView);
+
+        tabLayout = view.findViewById(R.id.my_page_tabLayout);
+        viewPager = view.findViewById(R.id.my_page_viewPager);
+
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post1_tab_name));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post2_tab_name));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                currentTabIndex = tab.getPosition();
+                viewPager.setCurrentItem(currentTabIndex);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        postPageAdapter = new PostPageAdapter(getChildFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(postPageAdapter);
+        viewPager.setCurrentItem(currentTabIndex);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        return view;
     }
 }
+
