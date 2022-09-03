@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.upcyclecommunity.BrandList.FragmentBrand;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_brandlist:
-                //fragmentTransaction.replace(R.id.main_frame,Fragment3).commit();
+                FragmentBrand BrandListTab = new FragmentBrand();
+                fragmentTransaction.replace(R.id.main_frame,BrandListTab).commit();
                 Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
