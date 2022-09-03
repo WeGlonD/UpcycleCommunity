@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "590459379270",
+    "project_id": "upcyclecommunity-bd8d4",
+    "storage_bucket": "upcyclecommunity-bd8d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590459379270:android:c5d6efd89ba500f4d33447",
+        "android_client_info": {
+          "package_name": "com.example.upcyclecommunity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "590459379270-0l0iorvih2jbsd2tiq02if0ec3g38gho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7fmUsdBpCvArprfBj0dvcy6uTCO3aG5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "590459379270-0l0iorvih2jbsd2tiq02if0ec3g38gho.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
