@@ -1,0 +1,28 @@
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--    하단바에 들어갈 문자들 설정 -->
+    <item
+        android:id="@+id/bottom_community1"
+        android:enabled="true"
+        android:title="커뮤1" />
+
+    <item
+        android:id="@+id/bottom_community2"
+        android:enabled="true"
+        android:title="커뮤2"
+        />
+    <item
+        android:id="@+id/bottom_brandlist"
+        android:enabled="true"
+        android:title="리스트"
+        />
+    <item
+        android:id="@+id/bottom_mypage"
+        android:enabled="true"
+        android:title="마이페이지"
+        />
+
+
+</menu>
+    <!--[출처] 안드로이드 스튜디오 :: 하단바(BottomNavigation) 만들기|작성자 재콩-->
