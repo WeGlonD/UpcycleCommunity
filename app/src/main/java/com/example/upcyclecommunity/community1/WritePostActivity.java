@@ -85,19 +85,21 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         // 앨범 호출
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-        //!!!!!startActivityForResult(intent, PICK_FROM_ALBUM);
+        startActivityForResult(intent, PICK_FROM_ALBUM);
         //
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
-        switch (requestCode){
-            case 0:
-                if(resultCode == Activity.RESULT_OK){
+        if(resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case PICK_FROM_ALBUM:
+                    mImageCaptureUri = data.getData();
+
+                case PICK_FROM_CAMERA:
                     Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
                     //String profilePath = data.getStringExtra("profilePath");
-
                     LinearLayout parent = findViewById(R.id.contentsLayout);
 
                     ViewGroup.LayoutParams layparms = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -114,20 +116,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     et.setLayoutParams(layparms);
                     et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
                     parent.addView(et);
-                }
-        }
-        switch (requestCode) {
-            case PICK_FROM_ALBUM: {
-                // 이후의 처리가 카메라와 같으므로 일단  break없이 진행합니다.
-                // 실제 코드에서는 좀더 합리적인 방법을 선택하시기 바랍니다.
-                mImageCaptureUri = data.getData();
-                Log.d("SmartWheel", mImageCaptureUri.getPath().toString());
-                //Toast.makeText(this,"wqewqeqe",Toast.LENGTH_LONG).show();
-            }
-            case PICK_FROM_CAMERA: {
-                //iv_Post.setImageURI(mImageCaptureUri);
-                //iv.setImageURI(mImageCaptureUri);
-                break;
+                    break;
             }
         }
     }
