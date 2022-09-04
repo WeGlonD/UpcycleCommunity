@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Database;
+import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,8 +49,11 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private static final String TAG = "WritePostActivity";
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;
+    private static final int CHANGE_ALBUM = 2;
     private Uri mImageCaptureUri;
     private RelativeLayout relative;
+    private ImageView selectediv;
+    private LinearLayout parent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +63,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         relative = findViewById(R.id.relative);
         relative.setOnClickListener(this);
 
+        findViewById(R.id.changeimage).setOnClickListener(this);
+        findViewById(R.id.deleteimage).setOnClickListener(this);
         findViewById(R.id.btn_check).setOnClickListener(this);
         findViewById(R.id.btn_image).setOnClickListener(this);
         findViewById(R.id.btn_video).setOnClickListener(this);
@@ -91,12 +97,18 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     /**
      * 앨범에서 이미지 가져오기
      */
-    public void doTakeAlbumAction() // 앨범에서 이미지 가져오기
+    public void doTakeAlbumAction(int mode) // 앨범에서 이미지 가져오기
     {
         // 앨범 호출
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-        startActivityForResult(intent, PICK_FROM_ALBUM);
+        if(mode == 0){
+            startActivityForResult(intent, PICK_FROM_ALBUM);
+        }
+        else if(mode == 1){
+            startActivityForResult(intent, CHANGE_ALBUM);
+        }
+
         //
     }
 
@@ -112,15 +124,22 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 case PICK_FROM_CAMERA:
                     Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
                     //String profilePath = data.getStringExtra("profilePath");
-                    LinearLayout parent = findViewById(R.id.contentsLayout);
+                    parent = findViewById(R.id.contentsLayout);
 
                     ViewGroup.LayoutParams layparms = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                    LinearLayout linear = new LinearLayout(WritePostActivity.this);
+                    linear.setLayoutParams(layparms);
+                    linear.setOrientation(LinearLayout.VERTICAL);
+                    parent.addView(linear);
+
                     ImageView iv = new ImageView(WritePostActivity.this);
                     iv.setLayoutParams(layparms);
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             relative.setVisibility(View.VISIBLE);
+                            selectediv = (ImageView)view;
                         }
                     });
 
@@ -130,12 +149,16 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     into() : 이미지를 보여줄 View를 지정한다.*/
 
                     Glide.with(this).load(mImageCaptureUri).centerCrop().override(1000).into(iv);
-                    parent.addView(iv);
+                    linear.addView(iv);
                     EditText et = new EditText(WritePostActivity.this);
                     et.setLayoutParams(layparms);
                     et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
                     et.setHint("내용");
-                    parent.addView(et);
+                    linear.addView(et);
+                    break;
+                case CHANGE_ALBUM:
+                    mImageCaptureUri = data.getData();
+                    Glide.with(this).load(mImageCaptureUri).centerCrop().override(1000).into(selectediv);
                     break;
             }
         }
@@ -160,7 +183,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        doTakeAlbumAction();
+                        doTakeAlbumAction(0);
                     }
                 };
                 DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
@@ -184,6 +207,12 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     relative.setVisibility(View.GONE);
                 }
                 break;
+            case R.id.changeimage:
+                doTakeAlbumAction(1);
+                break;
+            case R.id.deleteimage:
+                parent.removeView((View)selectediv.getParent());
+                break;
         }
     }
 
@@ -197,17 +226,4 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 //            uploader(writeinfo);
 //        }
 //    }
-
-    private void uploader(WriteInfo writeinfo){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    }
-
-    private void startToast(String msg){Toast.makeText(this,msg, Toast.LENGTH_LONG).show();}
-
-    private void doActivity(Class c,String media){
-        Intent intent = new Intent(this,c);
-        intent.putExtra("media",media);
-        startActivityForResult(intent, 0);
-    }
 }
