@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "590459379270",
+    "firebase_url": "https://upcyclecommunity-bd8d4-default-rtdb.firebaseio.com",
     "project_id": "upcyclecommunity-bd8d4",
     "storage_bucket": "upcyclecommunity-bd8d4.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "590459379270-9fs66qate0ckd6hfjfdjmjmae248dn4t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.upcyclecommunity",
+            "certificate_hash": "443bf67fbff0f8adcf123539759d5aad12065791"
+          }
+        },
         {
           "client_id": "590459379270-0l0iorvih2jbsd2tiq02if0ec3g38gho.apps.googleusercontent.com",
           "client_type": 3

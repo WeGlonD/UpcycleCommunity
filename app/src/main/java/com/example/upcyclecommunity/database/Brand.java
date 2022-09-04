@@ -1,4 +1,4 @@
-package com.example.upcyclecommunity.BrandList;
+package com.example.upcyclecommunity.database;
 
 public class Brand {
 

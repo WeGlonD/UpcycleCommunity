@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Brand;
 
 import java.util.ArrayList;
 
@@ -61,7 +62,7 @@ public class BrandRecyclerAdapter extends RecyclerView.Adapter<BrandRecyclerAdap
             super(itemView);
             this.iv_pic = itemView.findViewById(R.id.iv_pic);
             this.tv_name = itemView.findViewById(R.id.tv_name);
-            this.tv_tags = itemView.findViewById(R.id.tv_event);
+            this.tv_tags = itemView.findViewById(R.id.tv_tags);
             this.tv_url = itemView.findViewById(R.id.tv_url);
             tv_url.setOnClickListener(new View.OnClickListener() {
                 @Override
