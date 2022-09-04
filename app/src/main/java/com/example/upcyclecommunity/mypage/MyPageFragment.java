@@ -1,5 +1,6 @@
 package com.example.upcyclecommunity.mypage;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.mypage.adapter.PostPageAdapter;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +37,8 @@ public class MyPageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirebaseAuth mAuth = null;
 
     private ImageView profile_iv;
     private TextView userName_tv;
@@ -77,6 +81,7 @@ public class MyPageFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -85,9 +90,10 @@ public class MyPageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
 
-//        if(userIsNotLogin){
-//            moveToLoginPage();
-//        }
+        if(mAuth.getCurrentUser() == null){
+            Intent it = new Intent(getContext(), LoginActivity.class);
+            startActivity(it);
+        }
 
         profile_iv = view.findViewById(R.id.my_page_profile_imageView);
         userName_tv = view.findViewById(R.id.my_page_user_name_textView);

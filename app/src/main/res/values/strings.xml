@@ -11,4 +11,15 @@
     <string name="activity_login_signUp_button_text">signUp</string>
     <string name="activity_login_signIn_button_text">signIn</string>
     <string name="activity_login_help_password_text">Forgot password?</string>
+    <string name="activity_login_login_success">SignIn success</string>
+    <string name="activity_login_login_fail">SignIn fail</string>
+
+    <string name="activity_signup_email_textView_hint">email</string>
+    <string name="activity_signup_password_textView_hint">password</string>
+    <string name="activity_signup_password_check_textView_hint">repeat password</string>
+    <string name="activity_signup_signUp_button_text">signUp</string>
+    <string name="activity_signup_invalid_password">invalid password</string>
+    <string name="activity_signup_password_is_not_same">password is not match</string>
+    <string name="activity_signup_create_account_success">SignUp success</string>
+    <string name="activity_signup_create_account_fail">SignUp fail</string>
 </resources>
