@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Post {
     String title;
     ArrayList<String> contents;
-    String kfjlk;
+    ArrayList<String> tags;
 
     public Post(String title, ArrayList<String> contents) {
         this.title = title;
