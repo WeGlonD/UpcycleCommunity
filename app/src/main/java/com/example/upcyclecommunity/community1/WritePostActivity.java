@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,7 +19,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -30,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Database;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -91,14 +95,6 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         //
     }
 
-    /**
-     * 앨범에서 동영상 가져오기
-     */
-    public void doTakeVideoAction(){
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(android.provider.MediaStore.Video.Media.CONTENT_TYPE);
-        startActivityForResult(intent, PICK_FROM_ALBUM);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -116,6 +112,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     ViewGroup.LayoutParams layparms = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     ImageView iv = new ImageView(WritePostActivity.this);
                     iv.setLayoutParams(layparms);
+
                     /*
                     with() : View, Fragment 혹은 Activity로부터 Context를 가져온다.
                     load() : 이미지를 로드한다. 다양한 방법으로 이미지를 불러올 수 있다. (Bitmap, Drawable, String, Uri, File, ResourId(Int), ByteArray)
@@ -126,6 +123,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     EditText et = new EditText(WritePostActivity.this);
                     et.setLayoutParams(layparms);
                     et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+                    et.setHint("내용");
                     parent.addView(et);
                     break;
             }
@@ -138,6 +136,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v){
         switch(v.getId()){
             case R.id.btn_check:
+                Database db = new Database(this);
+                //db.writePost();
                 break;
             case R.id.btn_image:
                 DialogInterface.OnClickListener cameraListener = new DialogInterface.OnClickListener() {
@@ -166,21 +166,21 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                         .show();
                 break;
             case R.id.btn_video:
-                //doActivity(Gallery.class,"video");
+                //doTakeVideoAction();
                 break;
         }
     }
 
-    private void update(){
-        final String name = ((EditText) findViewById(R.id.et_name)).getText().toString();
-        final String contents = ((EditText) findViewById(R.id.et_detail)).getText().toString();
-        if(name.length()>0 && contents.length()>0){
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            WriteInfo writeinfo = new WriteInfo(name,contents);
-            //upload
-            uploader(writeinfo);
-        }
-    }
+//    private void update(){
+//        final String name = ((EditText) findViewById(R.id.et_name)).getText().toString();
+//        final String contents = ((EditText) findViewById(R.id.et_detail)).getText().toString();
+//        if(name.length()>0 && contents.length()>0){
+//            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//            WriteInfo writeinfo = new WriteInfo(name,contents);
+//            //upload
+//            uploader(writeinfo);
+//        }
+//    }
 
     private void uploader(WriteInfo writeinfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
