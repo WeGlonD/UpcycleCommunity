@@ -28,7 +28,7 @@
             android:text="링크"
             android:layout_margin="5dp"/>
         <TextView
-            android:id="@+id/tv_event"
+            android:id="@+id/tv_tags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="취급품목"
