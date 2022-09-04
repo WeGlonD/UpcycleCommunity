@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -48,11 +49,15 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;
     private Uri mImageCaptureUri;
+    private RelativeLayout relative;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+
+        relative = findViewById(R.id.relative);
+        relative.setOnClickListener(this);
 
         findViewById(R.id.btn_check).setOnClickListener(this);
         findViewById(R.id.btn_image).setOnClickListener(this);
@@ -112,6 +117,12 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     ViewGroup.LayoutParams layparms = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     ImageView iv = new ImageView(WritePostActivity.this);
                     iv.setLayoutParams(layparms);
+                    iv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            relative.setVisibility(View.VISIBLE);
+                        }
+                    });
 
                     /*
                     with() : View, Fragment 혹은 Activity로부터 Context를 가져온다.
@@ -167,6 +178,11 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.btn_video:
                 //doTakeVideoAction();
+                break;
+            case R.id.relative:
+                if(relative.getVisibility() == View.VISIBLE){
+                    relative.setVisibility(View.GONE);
+                }
                 break;
         }
     }
