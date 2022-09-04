@@ -104,6 +104,10 @@ public class Database {
         return mStorage;
     }
 
+    public static StorageReference getUserProfileImageRoot() {
+        return userProfileImageRoot;
+    }
+
     public static StorageReference getBrandpictureRoot() {
         return brandpictureRoot;
     }

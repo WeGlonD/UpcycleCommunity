@@ -12,21 +12,18 @@ public class User {
     public static class  Data{
         private Boolean isManager;
         private String name;
-        private String pic;
 
         public Data() {
         }
 
-        public Data(String name, String pic){
+        public Data(String name){
             this.isManager = false;
             this.name = name;
-            this.pic = pic;
         }
 
-        public Data(Boolean isManager, String name, String pic){
+        public Data(Boolean isManager, String name){
             this.isManager = isManager;
             this.name = name;
-            this.pic = pic;
         }
 
         public Boolean getManager() {
@@ -37,10 +34,6 @@ public class User {
             return name;
         }
 
-        public String getPic() {
-            return pic;
-        }
-
         public void setManager(Boolean manager) {
             isManager = manager;
         }
@@ -49,9 +42,6 @@ public class User {
             this.name = name;
         }
 
-        public void setPic(String pic) {
-            this.pic = pic;
-        }
     }
 
     public static Context context = null;

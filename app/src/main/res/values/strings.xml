@@ -17,6 +17,7 @@
     <string name="activity_login_login_success">SignIn success</string>
     <string name="activity_login_login_fail">SignIn fail</string>
 
+    <string name="activity_signup_name_textView_hint">name</string>
     <string name="activity_signup_email_textView_hint">email</string>
     <string name="activity_signup_password_textView_hint">password</string>
     <string name="activity_signup_password_check_textView_hint">repeat password</string>

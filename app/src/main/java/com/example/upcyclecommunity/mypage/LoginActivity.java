@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         signUp_btn.setOnClickListener(view -> {
             Intent it = new Intent(this, SignUpActivity.class);
             startActivity(it);
+            finish();
         });
         signIn_btn.setOnClickListener(view -> {
             String email = email_et.getText().toString();

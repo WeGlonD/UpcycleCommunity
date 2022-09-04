@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.BrandList.FragmentBrand;
+import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Database db = new Database(this);
+        User user = new User(this);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -45,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         FirebaseAuth.getInstance().signOut();
+        super.onDestroy();
     }
 
     public void setFragment(int n) {

@@ -9,4 +9,8 @@
     <dimen name="my_page_user_dataLayout_leftMargin">5dp</dimen>
     <dimen name="my_page_viewPager_height">300dp</dimen>
 
+    <dimen name="signup_profile_image_size">100dp</dimen>
+    <dimen name="signup_profile_bottomMargin">20dp</dimen>
+    <dimen name="signup_name_bottomMargin">20dp</dimen>
+
 </resources>

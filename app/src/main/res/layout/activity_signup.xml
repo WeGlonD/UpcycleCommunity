@@ -11,27 +11,52 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/activity_signup_buttonLayout">
 
-        <EditText
-            android:id="@+id/activity_signup_email_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/activity_signup_email_textView_hint"
+        <ImageView
+            android:id="@+id/activity_signup_profile_imageView"
+            android:layout_width="@dimen/signup_profile_image_size"
+            android:layout_height="@dimen/signup_profile_image_size"
+            android:adjustViewBounds="true"
+            android:layout_marginBottom="@dimen/signup_profile_bottomMargin"
+            android:src="@drawable/ic_launcher_background"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/activity_signup_password_editText"/>
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/activity_signup_name_editText"/>
+
         <EditText
-            android:id="@+id/activity_signup_password_editText"
+            android:id="@+id/activity_signup_name_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/activity_signup_password_textView_hint"
-            app:layout_constraintTop_toBottomOf="@id/activity_signup_email_editText"
-            app:layout_constraintBottom_toTopOf="@id/activity_signup_password_check_editText"/>
-        <EditText
-            android:id="@+id/activity_signup_password_check_editText"
+            android:hint="@string/activity_signup_name_textView_hint"
+            android:layout_marginBottom="@dimen/signup_name_bottomMargin"
+            app:layout_constraintTop_toBottomOf="@id/activity_signup_profile_imageView"
+            app:layout_constraintBottom_toTopOf="@id/activity_signup_signupDataLayout"/>
+
+        <LinearLayout
+            android:id="@+id/activity_signup_signupDataLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/activity_signup_password_check_textView_hint"
-            app:layout_constraintTop_toBottomOf="@id/activity_signup_password_editText"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/activity_signup_name_editText"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <EditText
+                android:id="@+id/activity_signup_email_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/activity_signup_email_textView_hint"/>
+            <EditText
+                android:id="@+id/activity_signup_password_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/activity_signup_password_textView_hint"/>
+            <EditText
+                android:id="@+id/activity_signup_password_check_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/activity_signup_password_check_textView_hint"/>
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

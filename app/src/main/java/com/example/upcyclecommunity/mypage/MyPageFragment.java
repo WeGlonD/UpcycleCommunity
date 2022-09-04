@@ -1,6 +1,7 @@
 package com.example.upcyclecommunity.mypage;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,11 +25,13 @@ import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.adapter.PostPageAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,8 +48,6 @@ public class MyPageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private FirebaseAuth mAuth = null;
 
     private ImageView profile_iv;
     private TextView userName_tv;
@@ -89,7 +90,6 @@ public class MyPageFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -98,7 +98,8 @@ public class MyPageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
 
-        if(mAuth.getCurrentUser() == null){
+        Database db = new Database();
+        if(Database.getAuth().getCurrentUser() == null){
             Intent it = new Intent(getContext(), LoginActivity.class);
             startActivity(it);
         }
@@ -145,25 +146,19 @@ public class MyPageFragment extends Fragment {
         super.onResume();
         Database db = new Database();
 
-        if (mAuth.getCurrentUser() != null){
-//            FirebaseUser user = mAuth.getCurrentUser();
-//            profile_iv.setImageResource(user.pic);
-//            userName_tv.setText(user.name);
-//            userData1_tv.setText(user.data1);
-//            userData2_tv.setText(user.data2);
-//            userData3_tv.setText(user.data3);
-//            profile_iv.setImageResource(R.drawable.ic_launcher_background);
-//            userName_tv.setText("name");
-//            userData1_tv.setText(String.valueOf(1));
-//            userData2_tv.setText(String.valueOf(2));
-//            userData3_tv.setText(String.valueOf(3));
-
+        if (Database.getAuth().getCurrentUser() != null){
             db.readUser(new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
-                    Glide.with(getContext()).load(data.getPic()).into(profile_iv);
-                    userName_tv.setText(data.getName());
+                    StorageReference storageReference = db.readImage(Database.getUserProfileImageRoot(), Database.getAuth().getCurrentUser().getUid());
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(getContext()).load(uri).into(profile_iv);
+                            userName_tv.setText(data.getName());
+                        }
+                    });
                 }
 
                 @Override
