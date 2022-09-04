@@ -39,6 +39,7 @@
                 android:id="@+id/search_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:textSize="30dp"
                 android:hint="검색할 브랜드명"/>
             <HorizontalScrollView

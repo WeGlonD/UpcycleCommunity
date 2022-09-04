@@ -91,6 +91,15 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         //
     }
 
+    /**
+     * 앨범에서 동영상 가져오기
+     */
+    public void doTakeVideoAction(){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(android.provider.MediaStore.Video.Media.CONTENT_TYPE);
+        startActivityForResult(intent, PICK_FROM_ALBUM);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
