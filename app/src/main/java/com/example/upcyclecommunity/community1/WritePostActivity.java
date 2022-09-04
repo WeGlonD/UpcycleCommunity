@@ -126,6 +126,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     EditText et = new EditText(WritePostActivity.this);
                     et.setLayoutParams(layparms);
                     et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+                    et.setHint("내용");
                     parent.addView(et);
                     break;
             }

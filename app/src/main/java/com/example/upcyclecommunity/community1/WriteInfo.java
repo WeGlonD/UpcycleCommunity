@@ -3,6 +3,8 @@ package com.example.upcyclecommunity.community1;
 public class WriteInfo {
     private String title;
     private String Contents;
+    private String pic;
+    private String video;
 
     public WriteInfo(String title, String contents) {
         this.title = title;
