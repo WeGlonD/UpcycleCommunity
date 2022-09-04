@@ -4,12 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Post1;
+import com.example.upcyclecommunity.database.Post2;
 import com.example.upcyclecommunity.mypage.adapter.Post1_RecyclerViewAdapter;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +35,7 @@ public class MyPagePost1_Fragment extends Fragment {
 
     private RecyclerView recyclerView;
     private Post1_RecyclerViewAdapter recyclerViewAdapter;
+    private ArrayList<Post1> listData;
 
     public MyPagePost1_Fragment() {
         // Required empty public constructor
@@ -67,9 +74,28 @@ public class MyPagePost1_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_page_post1_, container, false);
 
+        listData = new ArrayList<>();
         recyclerView = view.findViewById(R.id.my_page_post1_recyclerView);
-        recyclerViewAdapter = new Post1_RecyclerViewAdapter();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(),3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        //커스텀 어댑터 생성
+        recyclerViewAdapter = new Post1_RecyclerViewAdapter(listData, getContext());
+        recyclerView.setAdapter(recyclerViewAdapter);
+
+        for (int i = 0;i < 15;i++){
+            Post1 data = new Post1();
+            recyclerViewAdapter.addItem(data);
+        }
+        recyclerViewAdapter.notifyDataSetChanged();
+
+        Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 }

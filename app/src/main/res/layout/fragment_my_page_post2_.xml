@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".mypage.MyPagePost2_Fragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="post2" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_page_post2_recyclerView"
         android:layout_width="match_parent"

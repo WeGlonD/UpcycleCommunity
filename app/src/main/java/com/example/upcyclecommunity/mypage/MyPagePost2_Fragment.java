@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Post1;
+import com.example.upcyclecommunity.database.Post2;
 import com.example.upcyclecommunity.mypage.adapter.Post1_RecyclerViewAdapter;
 import com.example.upcyclecommunity.mypage.adapter.Post2_RecyclerViewAdapter;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +37,7 @@ public class MyPagePost2_Fragment extends Fragment {
 
     private RecyclerView recyclerView;
     private Post2_RecyclerViewAdapter recyclerViewAdapter;
+    private ArrayList<Post2> listData;
 
     public MyPagePost2_Fragment() {
         // Required empty public constructor
@@ -68,8 +76,21 @@ public class MyPagePost2_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_page_post2_, container, false);
 
+        listData = new ArrayList<>();
         recyclerView = view.findViewById(R.id.my_page_post2_recyclerView);
-        recyclerViewAdapter = new Post2_RecyclerViewAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        //커스텀 어댑터 생성
+        recyclerViewAdapter = new Post2_RecyclerViewAdapter(listData, getContext());
+        recyclerView.setAdapter(recyclerViewAdapter);
+
+        for (int i = 0;i < 15;i++){
+            Post2 data = new Post2();
+            recyclerViewAdapter.addItem(data);
+        }
+        recyclerViewAdapter.notifyDataSetChanged();
+
+        Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
 
         return view;
     }

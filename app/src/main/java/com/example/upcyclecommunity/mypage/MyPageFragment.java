@@ -21,6 +21,7 @@ import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.mypage.adapter.PostPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -130,6 +131,25 @@ public class MyPageFragment extends Fragment {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mAuth.getCurrentUser() != null){
+//            FirebaseUser user = mAuth.getCurrentUser();
+//            profile_iv.setImageResource(user.pic);
+//            userName_tv.setText(user.name);
+//            userData1_tv.setText(user.data1);
+//            userData2_tv.setText(user.data2);
+//            userData3_tv.setText(user.data3);
+            profile_iv.setImageResource(R.drawable.ic_launcher_background);
+            userName_tv.setText("name");
+            userData1_tv.setText(String.valueOf(1));
+            userData2_tv.setText(String.valueOf(2));
+            userData3_tv.setText(String.valueOf(3));
+        }
     }
 }
 
