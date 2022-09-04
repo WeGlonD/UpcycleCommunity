@@ -28,6 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".community1.WritePostActivity"/>
+        <activity android:name=".mypage.LoginActivity"/>
+        <activity android:name=".mypage.SignUpActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

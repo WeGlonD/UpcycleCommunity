@@ -15,6 +15,8 @@ import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.BrandList.FragmentBrand;
 import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         //첫번째 프래그먼트 띄우도록 할 것.
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseAuth.getInstance().signOut();
     }
 
     public void setFragment(int n) {
