@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">UpcycleCommunity</string>
 
+    <string name="ST_userProfile">userProfiles</string>
+
+    <string name="Dirtfy_test">Dirtfy_test</string>
     <string name="my_page_user_name_initialValue">Unknown</string>
     <string name="my_page_user_data_initialValue">000</string>
     <string name="my_page_post1_tab_name">post1</string>

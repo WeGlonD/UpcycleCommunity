@@ -16,12 +16,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.adapter.PostPageAdapter;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -136,6 +143,7 @@ public class MyPageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Database db = new Database();
 
         if (mAuth.getCurrentUser() != null){
 //            FirebaseUser user = mAuth.getCurrentUser();
@@ -144,11 +152,25 @@ public class MyPageFragment extends Fragment {
 //            userData1_tv.setText(user.data1);
 //            userData2_tv.setText(user.data2);
 //            userData3_tv.setText(user.data3);
-            profile_iv.setImageResource(R.drawable.ic_launcher_background);
-            userName_tv.setText("name");
-            userData1_tv.setText(String.valueOf(1));
-            userData2_tv.setText(String.valueOf(2));
-            userData3_tv.setText(String.valueOf(3));
+//            profile_iv.setImageResource(R.drawable.ic_launcher_background);
+//            userName_tv.setText("name");
+//            userData1_tv.setText(String.valueOf(1));
+//            userData2_tv.setText(String.valueOf(2));
+//            userData3_tv.setText(String.valueOf(3));
+
+            db.readUser(new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
+                    Glide.with(getContext()).load(data.getPic()).into(profile_iv);
+                    userName_tv.setText(data.getName());
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
+                }
+            });
         }
     }
 }

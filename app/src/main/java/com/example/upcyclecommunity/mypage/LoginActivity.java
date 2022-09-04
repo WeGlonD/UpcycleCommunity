@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.database.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,28 +42,29 @@ public class LoginActivity extends AppCompatActivity {
         signIn_btn = findViewById(R.id.activity_login_signIn_button);
         helpPassword_tv = findViewById(R.id.activity_login_help_password_textView);
 
+        Database db = new Database(this);
+        User user = new User();
+
         signUp_btn.setOnClickListener(view -> {
             Intent it = new Intent(this, SignUpActivity.class);
             startActivity(it);
         });
         signIn_btn.setOnClickListener(view -> {
-            if(mAuth != null){
-                String email = email_et.getText().toString();
-                String password = password_et.getText().toString();
+            String email = email_et.getText().toString();
+            String password = password_et.getText().toString();
 
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                   if(task.isSuccessful()){
-                       Toast.makeText(this, getString(R.string.activity_login_login_success), Toast.LENGTH_LONG).show();
-                       finish();
-                   }
-                   else{
-                       Toast.makeText(this, getString(R.string.activity_login_login_fail), Toast.LENGTH_SHORT).show();
-                   }
-                });
-            }
-            else{
-                Toast.makeText(this, getString(R.string.activity_login_login_fail), Toast.LENGTH_SHORT).show();
-            }
+            user.login(email, password, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_success), Toast.LENGTH_LONG).show();
+                    finish();
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_fail), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         helpPassword_tv.setOnClickListener(view -> {
