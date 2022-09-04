@@ -273,13 +273,13 @@ public class Database {
         });
     }
 
-    public void readAllPost(ArrayList<String> returnList, BrandQuery con, Acts acts){
+    public void readAllPost(ArrayList<Post> returnList, BrandQuery con, Acts acts){
         String path = "firebase.Database.readAllPost - ";
 
-        postRoot.child("posting").get().addOnCompleteListener(task -> {
+        titleRoot.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    returnList.add(dataSnapshot.getValue(String.class));
+                    returnList.add(dataSnapshot.getValue(Post.class));
                 }
                 acts.ifSuccess(task);
                 Log.d("DB_Post", path+"success");
@@ -291,16 +291,21 @@ public class Database {
         });
     }
 
-    public void readPost(ArrayList<String> returnList,Long postnumber, BrandQuery con, Acts acts){
+    public void readPost(ArrayList<Post> returnList,String title, BrandQuery con, Acts acts){
         String path = "firebase.Database.readPost - ";
 
-        postRoot.child("posting").child(String.valueOf(postnumber)).get().addOnCompleteListener(task -> {
+        titleRoot.child(title).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
-                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    returnList.add(dataSnapshot.getValue(String.class));
-                }
-                acts.ifSuccess(task);
-                Log.d("DB_Post", path+"success");
+                Long postnumber1 = Long.parseLong(task.getResult().getValue(String.class));
+
+                postRoot.child(String.valueOf(postnumber1)).get().addOnCompleteListener(task1->{
+
+                    for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                        returnList.add(dataSnapshot.getValue(Post.class));
+                    }
+                    acts.ifSuccess(task);
+                    Log.d("DB_Post", path+"success");
+                });
             }
             else{
                 acts.ifFail(task);
