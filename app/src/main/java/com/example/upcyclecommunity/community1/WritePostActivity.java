@@ -25,6 +25,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
@@ -120,6 +122,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
             }
         }
     }
+
+
 
     @Override
     public void onClick(View v){
