@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (n) {
             case R.id.bottom_community1:
-                Fragment Community1 = new Fragment_CM1();
+                Fragment_CM1 Community1 = new Fragment_CM1();
                 fragmentTransaction.replace(R.id.main_frame,Community1).commit();
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
-                fragmentTransaction.replace(R.id.main_frame, new MyPageFragment()).commit();
+                MyPageFragment MyPageTab = new MyPageFragment();
+                fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
                 //Toast.makeText(this, "마이페이지", Toast.LENGTH_SHORT).show();
                 break;
         }

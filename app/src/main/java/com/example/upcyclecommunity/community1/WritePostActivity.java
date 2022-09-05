@@ -318,46 +318,5 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
             public void ifFail(Object task) {
             }
         });
-
-
-
-//        for(int i = 0; i < editTexts.size(); i++){
-//            contents.add(editTexts.get(i).getText().toString());
-//            if(i < imageViews.size()){
-//                StorageReference picRoot = db.getPostpictureRoot();
-//                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
-//                String time = sdf.format(new Timestamp(System.currentTimeMillis()));
-//                String picName = time + title + i;
-//                db.writeImage((BitmapDrawable) imageViews.get(i).getDrawable(), picRoot, picName, new Acts() {
-//                    @Override
-//                    public void ifSuccess(Object task) {
-//                        String url = db.readImage(picRoot,picName).getDownloadUrl().toString();
-//                        contents.add(url);
-//                        Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
-//                    }
-//
-//                    @Override
-//                    public void ifFail(Object task) {
-//
-//                    }
-//                });
-//            }
-//        }
-//        while(true){
-//            if(contents.size()==editTexts.size()+imageViews.size())
-//                break;
-//        }
-//        db.writePost(contents, title, tags);
     }
-
-//    private void update(){
-//        final String name = ((EditText) findViewById(R.id.et_name)).getText().toString();
-//        final String contents = ((EditText) findViewById(R.id.et_detail)).getText().toString();
-//        if(name.length()>0 && contents.length()>0){
-//            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//            WriteInfo writeinfo = new WriteInfo(name,contents);
-//            //upload
-//            uploader(writeinfo);
-//        }
-//    }
 }

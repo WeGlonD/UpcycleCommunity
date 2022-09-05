@@ -297,6 +297,7 @@ public class Database {
             //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
             postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("0").setValue(title);
             postRoot.child("Comment").child(""+postnumber).child("commentcnt").setValue(Long.parseLong("0"));
+            postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("writer").setValue(mAuth.getCurrentUser().getUid());
             userRoot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("post1").child("cnt").get().addOnCompleteListener(task -> {
                 Long hasPostcnt;
                 if(task.isSuccessful()){
