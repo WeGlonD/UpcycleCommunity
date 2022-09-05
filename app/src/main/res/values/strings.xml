@@ -31,4 +31,6 @@
     <string name="activity_signup_password_is_not_same">password is not match</string>
     <string name="activity_signup_create_account_success">SignUp success</string>
     <string name="activity_signup_create_account_fail">SignUp fail</string>
+
+    <string name="activity_setting_update_button_text">update!</string>
 </resources>

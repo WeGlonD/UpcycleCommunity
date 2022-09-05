@@ -54,6 +54,8 @@ public class MyPageFragment extends Fragment {
     private TextView userData1_tv;
     private TextView userData2_tv;
     private TextView userData3_tv;
+    private ImageView setting_iv;
+    private ImageView logout_iv;
 
     private TabLayout tabLayout;
     private int currentTabIndex = 0;
@@ -99,19 +101,60 @@ public class MyPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
 
         Database db = new Database();
-        if(Database.getAuth().getCurrentUser() == null){
-            Intent it = new Intent(getContext(), LoginActivity.class);
-            startActivity(it);
-        }
+//        if(Database.getAuth().getCurrentUser() == null){
+//            Intent it = new Intent(getContext(), LoginActivity.class);
+//            startActivity(it);
+//        }
 
         profile_iv = view.findViewById(R.id.my_page_profile_imageView);
         userName_tv = view.findViewById(R.id.my_page_user_name_textView);
-        userData1_tv = view.findViewById(R.id.my_page_data1_textView);
-        userData2_tv = view.findViewById(R.id.my_page_data2_textView);
-        userData3_tv = view.findViewById(R.id.my_page_data3_textView);
+//        userData1_tv = view.findViewById(R.id.my_page_data1_textView);
+//        userData2_tv = view.findViewById(R.id.my_page_data2_textView);
+//        userData3_tv = view.findViewById(R.id.my_page_data3_textView);
+        setting_iv = view.findViewById(R.id.my_page_setting_imageView);
+        logout_iv = view.findViewById(R.id.my_page_logout_imageView);
 
         tabLayout = view.findViewById(R.id.my_page_tabLayout);
         viewPager = view.findViewById(R.id.my_page_viewPager);
+
+        setting_iv.setOnClickListener(viw -> {
+            db.readUser(new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
+                    StorageReference storageReference = db.readImage(Database.getUserProfileImageRoot(), Database.getAuth().getCurrentUser().getUid());
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            String email = user.getEmail();
+
+                            Intent it = new Intent(getContext(), SettingActivity.class);
+                            it.putExtra("picUri", String.valueOf(uri));
+                            it.putExtra("name", data.getName());
+                            it.putExtra("email", email);
+                            startActivity(it);
+                        }
+                    });
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
+                }
+            });
+        });
+        logout_iv.setOnClickListener(viw -> {
+            if(Database.getAuth().getCurrentUser() == null){
+                Intent it = new Intent(getContext(), LoginActivity.class);
+                startActivity(it);
+            }
+            else {
+                Database.getAuth().signOut();
+                Toast.makeText(getContext(), "logout", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post1_tab_name));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post2_tab_name));

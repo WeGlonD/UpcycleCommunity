@@ -31,6 +31,7 @@
         <activity android:name=".community1.Personal_Post"/>
         <activity android:name=".mypage.LoginActivity"/>
         <activity android:name=".mypage.SignUpActivity"/>
+        <activity android:name=".mypage.SettingActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
