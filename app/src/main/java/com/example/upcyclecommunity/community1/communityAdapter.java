@@ -61,8 +61,9 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                 public void onClick(View view) {
                     Database.getTitleRoot().child(mTitle.getText().toString()).get().addOnCompleteListener(task -> {
                         Long postnum = task.getResult().getValue(Long.class);
+                        Log.d("minseok",postnum+"");
                         Intent intent = new Intent(mContext, Personal_Post.class);
-                        intent.putExtra("postn",postnum);
+                        intent.putExtra("postn",postnum.toString());
                         mContext.startActivity(intent);
                     });
                 }

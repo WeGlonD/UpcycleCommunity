@@ -23,6 +23,7 @@ import com.google.firebase.storage.StorageReference;
 
 import com.example.upcyclecommunity.R;
 
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -76,7 +77,7 @@ public class Database {
                 if (tagRoot == null)
                     tagRoot = postRoot.child("Tag");
                 if (commentRoot == null)
-                    commentRoot = mDBRoot.child("Comment");
+                    commentRoot = postRoot.child("Comment");
                 if (userRoot == null)
                     userRoot = mDBRoot.child("User");
             }
@@ -406,18 +407,36 @@ public class Database {
         });
     }
 
-    public void readOnePost(Long postNumber, Acts acts){
+    public void readOnePost(ArrayList<Post> returnList, Long postNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
 
-        postRoot.child(String.valueOf(postNumber)).
+        postRoot.child("posting").child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
+                    String Title="";
+                    ArrayList<String> Content = new ArrayList<>();
+                    ArrayList<String> Tag = new ArrayList<>();
+
                     if (task.isSuccessful()){
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                            String key = dataSnapshot.getKey();
+                            String value = dataSnapshot.getValue(String.class);
+                            if(key.equals("0")){
+                                Title = value;
+                            }else if(key.equals("tags")){
+                                Tag.add(value);
+                            }
+                            else{
+                                Content.add(value);
+                            }
+                        }
+                        Post newpost = new Post(Title,Content,Tag);
+                        returnList.add(newpost);
                         acts.ifSuccess(task);
-                        Log.d("DB_Post", path+"success");
+                        Log.d("Personal_Post", path+"success");
                     }
                     else{
                         acts.ifFail(task);
-                        Log.d("DB_Post", path+"fail");
+                        Log.d("Personal_Post", path+"fail");
                     }
                 });
     }
