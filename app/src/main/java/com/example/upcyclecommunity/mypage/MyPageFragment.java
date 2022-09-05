@@ -155,8 +155,10 @@ public class MyPageFragment extends Fragment {
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Glide.with(getContext()).load(uri).into(profile_iv);
-                            userName_tv.setText(data.getName());
+                            if (!(isDetached())){
+                                Glide.with(getContext()).load(uri).into(profile_iv);
+                                userName_tv.setText(data.getName());
+                            }
                         }
                     });
                 }

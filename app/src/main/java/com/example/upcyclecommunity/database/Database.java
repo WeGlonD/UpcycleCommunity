@@ -39,6 +39,7 @@ public class Database {
     private static StorageReference mStorage = null;
     private static StorageReference userProfileImageRoot = null;
     private static StorageReference brandpictureRoot = null;
+    private static StorageReference postImageRoot = null;
 
     private static FirebaseAuth mAuth = null;
 
@@ -55,6 +56,8 @@ public class Database {
                     brandpictureRoot = mStorage.child("Brand picture");
                 if(userProfileImageRoot == null)
                     userProfileImageRoot = mStorage.child(context.getString(R.string.ST_userProfile));
+                if(postImageRoot == null)
+                    postImageRoot = mStorage.child(context.getString(R.string.ST_posting));
             }
             if (mDBRoot == null)
                 mDBRoot = FirebaseDatabase.getInstance().getReference();
@@ -100,12 +103,20 @@ public class Database {
         return userRoot;
     }
 
+    public static DatabaseReference getPostRoot() {
+        return postRoot;
+    }
+
     public static StorageReference getStorage() {
         return mStorage;
     }
 
     public static StorageReference getUserProfileImageRoot() {
         return userProfileImageRoot;
+    }
+
+    public static StorageReference getPostImageRoot() {
+        return postImageRoot;
     }
 
     public static StorageReference getBrandpictureRoot() {
@@ -291,7 +302,7 @@ public class Database {
         });
     }
 
-    public void readPost(ArrayList<Post> returnList,String title, BrandQuery con, Acts acts){
+    public void readPost(ArrayList<Post> returnList, String title, PostQuery con, Acts acts){
         String path = "firebase.Database.readPost - ";
 
         titleRoot.child(title).get().addOnCompleteListener(task -> {
@@ -312,5 +323,70 @@ public class Database {
                 Log.d("DB_Post", path+"fail");
             }
         });
+    }
+
+    public void readOnePost(Long postNumber, Acts acts){
+        String path = "firebase.Database.readPost - ";
+
+        postRoot.child(String.valueOf(postNumber)).
+                get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                acts.ifSuccess(task);
+                Log.d("DB_Post", path+"success");
+            }
+            else{
+                acts.ifFail(task);
+                Log.d("DB_Post", path+"fail");
+            }
+        });
+    }
+    public void readOnePostLine(Long postNumber, Long lineNumber, Acts acts){
+        String path = "firebase.Database.readPost - ";
+
+        postRoot.child(String.valueOf(postNumber)).
+                child(String.valueOf(lineNumber)).
+                get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        acts.ifSuccess(task);
+                        Log.d("DB_Post", path+"success");
+                    }
+                    else{
+                        acts.ifFail(task);
+                        Log.d("DB_Post", path+"fail");
+                    }
+                });
+    }
+
+    public void readAllUserPost1(ArrayList<Long> returnList, Acts acts){
+        userRoot.child(mAuth.getCurrentUser().getUid()).
+                child(context.getString(R.string.DB_user_posting1)).
+                get().addOnCompleteListener(task -> {
+
+                    if(task.isSuccessful()){
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                            returnList.add(dataSnapshot.getValue(Long.class));
+                        }
+                        acts.ifSuccess(task);
+                    }
+                    else{
+                        acts.ifFail(task);
+                    }
+        });
+    }
+    public void readAllUserPost2(ArrayList<Long> returnList, Acts acts){
+        userRoot.child(mAuth.getCurrentUser().getUid()).
+                child(context.getString(R.string.DB_user_posting2)).
+                get().addOnCompleteListener(task -> {
+
+                    if(task.isSuccessful()){
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                            returnList.add(dataSnapshot.getValue(Long.class));
+                        }
+                        acts.ifSuccess(task);
+                    }
+                    else{
+                        acts.ifFail(task);
+                    }
+                });
     }
 }

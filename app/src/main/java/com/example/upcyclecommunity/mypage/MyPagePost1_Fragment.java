@@ -1,6 +1,7 @@
 package com.example.upcyclecommunity.mypage;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post1;
 import com.example.upcyclecommunity.database.Post2;
 import com.example.upcyclecommunity.mypage.adapter.Post1_RecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,9 +38,11 @@ public class MyPagePost1_Fragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    Database db = new Database();
+
     private RecyclerView recyclerView;
     private Post1_RecyclerViewAdapter recyclerViewAdapter;
-    private ArrayList<Post1> listData;
+    private ArrayList<Long> listData;
 
     public MyPagePost1_Fragment() {
         // Required empty public constructor
@@ -82,13 +89,14 @@ public class MyPagePost1_Fragment extends Fragment {
         recyclerViewAdapter = new Post1_RecyclerViewAdapter(listData, getContext());
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        for (int i = 0;i < 15;i++){
-            Post1 data = new Post1();
-            recyclerViewAdapter.addItem(data);
-        }
-        recyclerViewAdapter.notifyDataSetChanged();
+//        for (int i = 0;i < 15;i++){
+//            Post1 data = new Post1();
+//            recyclerViewAdapter.addItem(data);
+//        }
+//        recyclerViewAdapter.notifyDataSetChanged();
+//
+//        Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
 
         return view;
     }
@@ -97,5 +105,22 @@ public class MyPagePost1_Fragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        if(db.getAuth().getCurrentUser() != null){
+            listData.clear();
+            db.readAllUserPost1(listData, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    Collections.sort(listData);
+                    recyclerViewAdapter.notifyDataSetChanged();
+                    Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
+                    Log.d(getContext().getString(R.string.Dirtfy_test), "post1 list count "+String.valueOf(listData.size()));
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "user post loading fail", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

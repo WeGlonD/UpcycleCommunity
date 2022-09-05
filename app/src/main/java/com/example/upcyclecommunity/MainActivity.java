@@ -49,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        FirebaseAuth.getInstance().signOut();
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         FirebaseAuth.getInstance().signOut();
         super.onDestroy();

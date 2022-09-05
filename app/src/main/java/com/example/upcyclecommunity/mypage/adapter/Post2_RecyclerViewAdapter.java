@@ -1,6 +1,7 @@
 package com.example.upcyclecommunity.mypage.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +12,23 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post1;
 import com.example.upcyclecommunity.database.Post2;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
 public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_ViewHolder>{
 
-    private ArrayList<Post2> listData;
+    private ArrayList<Long> listData;
     private Context context;
 
-    public Post2_RecyclerViewAdapter(ArrayList<Post2> listData, Context context){
+    public Post2_RecyclerViewAdapter(ArrayList<Long> listData, Context context){
         this.listData = listData;
         this.context = context;
     }
@@ -36,11 +42,38 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull Post2_ViewHolder holder, int position) {
-        Post2 data = listData.get(position);
 //        holder.post_iv.setImageResource(data.pic);
 //        holder.post_tv.setText(data.title);
         holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
         holder.post_tv.setText("test");
+        Database db = new Database();
+        Long postNumber = listData.get(position);
+        db.readOnePostLine(postNumber, Long.valueOf(1), new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+                holder.post_tv.setText(line);
+                db.readOnePostLine(postNumber, Long.valueOf(2), new Acts() {
+                    @Override
+                    public void ifSuccess(Object task) {
+                        String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+                        Uri downloadUri = Uri.parse(line);
+                        Glide.with(holder.itemView).load(downloadUri).into(holder.post_iv);
+                    }
+
+                    @Override
+                    public void ifFail(Object task) {
+                        holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+                    }
+                });
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                holder.post_tv.setText("test");
+            }
+        });
+
     }
 
     @Override
@@ -48,10 +81,13 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_ViewHo
         return listData.size();
     }
 
-    public void addItem(Post2 data) {
-        // 외부에서 item을 추가시킬 함수입니다.
+    public void addItem(Long data){
         listData.add(data);
     }
+//    public void addItem(Post2 data) {
+//        // 외부에서 item을 추가시킬 함수입니다.
+//        listData.add(data);
+//    }
 }
 class Post2_ViewHolder extends RecyclerView.ViewHolder{
     ImageView post_iv;

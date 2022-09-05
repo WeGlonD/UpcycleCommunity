@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">UpcycleCommunity</string>
 
+    <string name="DB_posting">posting</string>
+    <string name="DB_user_posting1">post1</string>
+    <string name="DB_user_posting2">post2</string>
+    <string name="ST_posting">postImages</string>
     <string name="ST_userProfile">userProfiles</string>
 
     <string name="Dirtfy_test">Dirtfy_test</string>
