@@ -66,7 +66,7 @@ public class Database {
                 if (brandRoot == null)
                     brandRoot = mDBRoot.child("Brand");
                 if (postRoot == null)
-                    postRoot = mDBRoot.child("posting");
+                    postRoot = mDBRoot.child("Post");
                 if (titleRoot == null)
                     titleRoot = mDBRoot.child("title");
                 if (tagRoot == null)
@@ -254,15 +254,21 @@ public class Database {
         return filePath.child(name);
     }
 
-    public void writePostByLine(Long lineNumber, String data, String title){
-        postRoot.child("totalnumber").get().addOnCompleteListener(task -> {
+    public void writePostByLine(Long lineNumber, String data, String title, ArrayList<String> tags){
+        postRoot.child("posting").child("totalnumber").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Long postnumber = task.getResult().getValue(Long.class);
                 if (lineNumber == 1) {
                     postnumber++;
-                    postRoot.child("totalnumber").setValue(postnumber);
+                    postRoot.child("posting").child("totalnumber").setValue(postnumber);
                     //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
-
+                    postRoot.child("0").child(title).setValue(postnumber);
+                    postRoot.child("posting").child("title").setValue(title);
+                    String resultTagStr = "";
+                    for(String str : tags){
+                        //postRoot.child("tag").child(str).set
+                    }
+                    //postRoot.child()
                 }
 
                 postRoot.child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);

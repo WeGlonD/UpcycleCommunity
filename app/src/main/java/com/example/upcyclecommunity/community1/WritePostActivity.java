@@ -172,11 +172,13 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
                     Glide.with(this).load(mImageCaptureUri).centerCrop().override(1000).into(iv);
                     linear.addView(iv);
+                    imageViews.add(iv);
                     EditText et = new EditText(WritePostActivity.this);
                     et.setLayoutParams(layparms);
                     et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
                     et.setHint("내용");
                     linear.addView(et);
+                    editTexts.add(et);
                     break;
                 case CHANGE_ALBUM:
                     mImageCaptureUri = data.getData();
@@ -292,7 +294,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String url = uri.toString();
-                                    db.writePostByLine(finalI, url, title);
+                                    db.writePostByLine(finalI, url, title, tags);
                                     Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -306,7 +308,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     });
                     break;
                 case 1:
-                    db.writePostByLine(i, editTexts.get((int)((i-1)/2)).getText().toString(), title);
+                    db.writePostByLine(i, editTexts.get((int)((i-1)/2)).getText().toString(), title, tags);
             }
         }
 
