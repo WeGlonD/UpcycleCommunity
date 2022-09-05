@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.BrandList.FragmentBrand;
 import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

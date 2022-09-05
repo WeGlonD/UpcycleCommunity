@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -34,16 +36,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import io.grpc.Context;
 
 public class WritePostActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "WritePostActivity";
@@ -51,6 +60,9 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private static final int PICK_FROM_ALBUM = 1;
     private static final int CHANGE_ALBUM = 2;
     private Uri mImageCaptureUri;
+    private ArrayList<EditText> editTexts;
+    private ArrayList<ImageView> imageViews;
+    private ArrayList<String> tags;
     private RelativeLayout relative;
     private ImageView selectediv;
     private LinearLayout parent;
@@ -60,6 +72,12 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
 
+        editTexts = new ArrayList<>();
+        imageViews = new ArrayList<>();
+        tags = new ArrayList<>();
+
+        editTexts.add(findViewById(R.id.et_detail));
+
         relative = findViewById(R.id.relative);
         relative.setOnClickListener(this);
 
@@ -68,6 +86,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.btn_check).setOnClickListener(this);
         findViewById(R.id.btn_image).setOnClickListener(this);
         findViewById(R.id.btn_video).setOnClickListener(this);
+        findViewById(R.id.btn_tagInput).setOnClickListener(this);
     }
 
     public void doTakePhotoAction() // 카메라 촬영 후 이미지 가져오기
@@ -138,7 +157,10 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     iv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            relative.setVisibility(View.VISIBLE);
+                            if(relative.getVisibility()==View.GONE)
+                                relative.setVisibility(View.VISIBLE);
+                            else
+                                relative.setVisibility(View.GONE);
                             selectediv = (ImageView)view;
                         }
                     });
@@ -170,8 +192,38 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v){
         switch(v.getId()){
             case R.id.btn_check:
-                Database db = new Database(this);
-                //db.writePost();
+                uploadPost();
+                break;
+            case R.id.btn_tagInput:
+                EditText et_tag = findViewById(R.id.et_tagInput);
+                String newTag = et_tag.getText().toString();
+                et_tag.setText("");
+                if(!newTag.equals("")){
+                    LinearLayout tags_field = findViewById(R.id.tagLayout);
+                    TextView newTagTv = new TextView(this);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(5,5,5,5);
+                    newTagTv.setLayoutParams(layoutParams);
+                    newTagTv.setTextSize(15);
+                    newTagTv.setText(newTag);
+                    tags.add(newTag);
+                    newTagTv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            TextView now = (TextView) view;
+                            //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
+                            for(String tmp : tags){
+                                if(tmp.equals(now.getText())){
+                                    tags.remove(tmp);
+                                    break;
+                                }
+                            }
+                            ((ViewGroup)now.getParent()).removeView(now);
+                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    tags_field.addView(newTagTv);
+                }
                 break;
             case R.id.btn_image:
                 DialogInterface.OnClickListener cameraListener = new DialogInterface.OnClickListener() {
@@ -214,6 +266,77 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 parent.removeView((View)selectediv.getParent());
                 break;
         }
+    }
+
+    public void uploadPost(){
+        Database db = new Database();
+        ArrayList<String> contents = new ArrayList<>();
+        String title = ((EditText)findViewById(R.id.et_name)).getText().toString();
+
+        for(int i = 0; i < tags.size(); i++){
+
+        }
+
+        for(long i = 1;i <= editTexts.size();i++){
+            switch ((int)i%2){
+                case 0:
+                    StorageReference picRoot = db.getPostpictureRoot();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
+                    String time = sdf.format(new Timestamp(System.currentTimeMillis()));
+                    String picName = time + title + i;
+                    Long finalI = (Long)i;
+                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName, new Acts() {
+                        @Override
+                        public void ifSuccess(Object task) {
+                            db.readImage(picRoot,picName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String url = uri.toString();
+                                    db.writePostByLine(finalI, url, title);
+                                    Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void ifFail(Object task) {
+
+                        }
+                    });
+                    break;
+                case 1:
+                    db.writePostByLine(i, editTexts.get((int)((i-1)/2)).getText().toString(), title);
+            }
+        }
+
+//        for(int i = 0; i < editTexts.size(); i++){
+//            contents.add(editTexts.get(i).getText().toString());
+//            if(i < imageViews.size()){
+//                StorageReference picRoot = db.getPostpictureRoot();
+//                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
+//                String time = sdf.format(new Timestamp(System.currentTimeMillis()));
+//                String picName = time + title + i;
+//                db.writeImage((BitmapDrawable) imageViews.get(i).getDrawable(), picRoot, picName, new Acts() {
+//                    @Override
+//                    public void ifSuccess(Object task) {
+//                        String url = db.readImage(picRoot,picName).getDownloadUrl().toString();
+//                        contents.add(url);
+//                        Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    @Override
+//                    public void ifFail(Object task) {
+//
+//                    }
+//                });
+//            }
+//        }
+//        while(true){
+//            if(contents.size()==editTexts.size()+imageViews.size())
+//                break;
+//        }
+//        db.writePost(contents, title, tags);
     }
 
 //    private void update(){
