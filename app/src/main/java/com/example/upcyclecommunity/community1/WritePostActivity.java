@@ -286,6 +286,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
                     String time = sdf.format(new Timestamp(System.currentTimeMillis()));
                     String picName = time + title + i;
+                    final String postTitle = time + title;
                     Long finalI = (Long)i;
                     db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName, new Acts() {
                         @Override
@@ -294,7 +295,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String url = uri.toString();
-                                    db.writePostByLine(finalI, url, title, tags);
+                                    db.writePostByLine(finalI, url, postTitle, tags);
                                     Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                 }
                             });

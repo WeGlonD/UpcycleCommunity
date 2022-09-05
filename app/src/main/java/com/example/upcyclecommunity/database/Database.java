@@ -262,16 +262,29 @@ public class Database {
                     postnumber++;
                     postRoot.child("posting").child("totalnumber").setValue(postnumber);
                     //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
-                    postRoot.child("0").child(title).setValue(postnumber);
-                    postRoot.child("posting").child("title").setValue(title);
+                    postRoot.child("posting").child(""+postnumber).child("0").setValue(title);
+                    postRoot.child("Title").child(title).setValue(postnumber);
                     String resultTagStr = "";
                     for(String str : tags){
-                        //postRoot.child("tag").child(str).set
+                        Long finalPostnumber = postnumber;
+                        postRoot.child("Tag").child(str).child("cnt").get().addOnCompleteListener(task1 -> {
+                            Long cnt;
+                            if (task1.isSuccessful()){
+                                cnt = task.getResult().getValue(Long.class);
+                            }
+                            else{
+                                cnt = Long.parseLong("0");
+                            }
+                            cnt++;
+                            postRoot.child("Tag").child(str).child("cnt").setValue(cnt);
+                            postRoot.child("Tag").child(str).child(cnt+"").setValue(finalPostnumber);
+                        });
+                        resultTagStr += "#"+str+" ";
                     }
-                    //postRoot.child()
+                    postRoot.child("posting").child(""+postnumber).child("tags").setValue(resultTagStr);
                 }
 
-                postRoot.child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);
+                postRoot.child("posting").child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);
             }
             else{
                 Toast.makeText(context, "실패!", Toast.LENGTH_LONG).show();
