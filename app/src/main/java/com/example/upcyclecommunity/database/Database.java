@@ -265,41 +265,59 @@ public class Database {
         return filePath.child(name);
     }
 
-    public void writePostByLine(Long lineNumber, String data, String title, ArrayList<String> tags){
+    public void setNewPostNumber(Acts acts){
         postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Long postnumber = task.getResult().getValue(Long.class);
-                if (lineNumber == 1) {
-                    postnumber++;
-                    postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").setValue(postnumber);
-                    //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
-                    postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("0").setValue(title);
-                    postRoot.child("Title").child(title).setValue(postnumber);
-                    String resultTagStr = "";
-                    for(String str : tags){
-                        Long finalPostnumber = postnumber;
-                        postRoot.child("Tag").child(str).child("cnt").get().addOnCompleteListener(task1 -> {
-                            Long cnt;
-                            if (task1.isSuccessful()){
-                                cnt = task.getResult().getValue(Long.class);
-                            }
-                            else{
-                                cnt = Long.parseLong("0");
-                            }
-                            cnt++;
-                            postRoot.child("Tag").child(str).child("cnt").setValue(cnt);
-                            postRoot.child("Tag").child(str).child(cnt+"").setValue(finalPostnumber);
-                        });
-                        resultTagStr += "#"+str+" ";
-                    }
-                    postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("tags").setValue(resultTagStr);
-                }
-
-                postRoot.child(context.getString(R.string.DB_posting)).child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);
+            Long postnum;
+            if(task.isSuccessful()){
+                postnum = task.getResult().getValue(Long.class);
+                if(postnum == null)
+                    postnum = Long.parseLong("0");
             }
             else{
-                Toast.makeText(context, "실패!", Toast.LENGTH_LONG).show();
+                postnum = Long.parseLong("0");
             }
+            postnum = postnum + 1;
+
+            postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").setValue(postnum);
+            postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").get().addOnCompleteListener(task1 -> {
+                if(task1.isSuccessful())
+                    acts.ifSuccess(task1);
+            });
+        });
+    }
+
+    public void writePostByLine(Long postnumber, Long lineNumber, String data, String title, ArrayList<String> tags){
+        if (lineNumber == 1) {
+            //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
+            postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("0").setValue(title);
+            postRoot.child("Title").child(title).setValue(postnumber);
+            String resultTagStr = "";
+            for(String str : tags){
+                Long finalPostnumber = postnumber;
+                postRoot.child("Tag").child(str).child("cnt").get().addOnCompleteListener(task -> {
+                    Long cnt;
+                    if (task.isSuccessful()){
+                        cnt = task.getResult().getValue(Long.class);
+                        if(cnt == null)
+                            cnt = Long.parseLong("0");
+                    }
+                    else{
+                        cnt = Long.parseLong("0");
+                    }
+                    cnt = cnt + 1;
+                    postRoot.child("Tag").child(str).child("cnt").setValue(cnt);
+                    postRoot.child("Tag").child(str).child(cnt+"").setValue(finalPostnumber);
+                });
+                resultTagStr += "#"+str+" ";
+            }
+            postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("tags").setValue(resultTagStr);
+        }
+
+        postRoot.child(context.getString(R.string.DB_posting)).child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data).addOnCompleteListener(tsk ->{
+            if(tsk.isSuccessful())
+                Log.d("fuck", "setValue success");
+            else
+                Log.d("tag", "setValue fail");
         });
     }
     public void writePost(ArrayList<String> data,String title,ArrayList<String> tags){

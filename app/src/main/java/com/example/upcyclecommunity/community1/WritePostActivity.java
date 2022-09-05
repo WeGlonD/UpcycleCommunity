@@ -39,9 +39,11 @@ import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 
@@ -275,44 +277,49 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         ArrayList<String> contents = new ArrayList<>();
         String title = ((EditText)findViewById(R.id.et_name)).getText().toString();
 
-        for(int i = 0; i < tags.size(); i++){
-
-        }
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
         String time = sdf.format(new Timestamp(System.currentTimeMillis()));
         String picName = time + title;
         final String postTitle = time + title;
 
-        for(long i = 1;i <= editTexts.size();i++){
-            switch ((int)i%2){
-                case 0:
-                    StorageReference picRoot = db.getPostpictureRoot();
-                    Long finalI = (Long)i;
-                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName + i, new Acts() {
-                        @Override
-                        public void ifSuccess(Object task) {
-                            db.readImage(picRoot,picName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        db.setNewPostNumber(new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                Long postnum = ((Task<DataSnapshot>)task).getResult().getValue(Long.class);
+                for(long i = 1;i <= editTexts.size()+imageViews.size();i++){
+                    switch ((int)i%2){
+                        case 0:
+                            StorageReference picRoot = db.getPostpictureRoot();
+                            Long finalI = (Long)i;
+                            db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName + i, new Acts() {
                                 @Override
-                                public void onSuccess(Uri uri) {
-                                    String url = uri.toString();
-                                    db.writePostByLine(finalI, url, postTitle, tags);
-                                    Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+                                public void ifSuccess(Object task1) {
+                                    db.readImage(picRoot,picName + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String url = uri.toString();
+                                            db.writePostByLine(postnum,finalI, url, postTitle, tags);
+                                            Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                                @Override
+                                public void ifFail(Object task) {
                                 }
                             });
-
-                        }
-
-                        @Override
-                        public void ifFail(Object task) {
-
-                        }
-                    });
-                    break;
-                case 1:
-                    db.writePostByLine(i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, tags);
+                            break;
+                        case 1:
+                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, tags);
+                            Log.d("fuck", "edit call"+((i-1)/2));
+                    }
+                }
             }
-        }
+            @Override
+            public void ifFail(Object task) {
+            }
+        });
+
+
 
 //        for(int i = 0; i < editTexts.size(); i++){
 //            contents.add(editTexts.get(i).getText().toString());
