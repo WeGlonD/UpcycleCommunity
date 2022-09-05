@@ -445,7 +445,9 @@ public class Database {
 
                     if(task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                            returnList.add(dataSnapshot.getValue(Long.class));
+                            if(!(dataSnapshot.getKey().equals("cnt"))){
+                                returnList.add(dataSnapshot.getValue(Long.class));
+                            }
                         }
                         acts.ifSuccess(task);
                     }
@@ -461,7 +463,9 @@ public class Database {
 
                     if(task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                            returnList.add(dataSnapshot.getValue(Long.class));
+                            if(!(dataSnapshot.getKey().equals("cnt"))){
+                                returnList.add(dataSnapshot.getValue(Long.class));
+                            }
                         }
                         acts.ifSuccess(task);
                     }
