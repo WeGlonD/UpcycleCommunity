@@ -24,6 +24,7 @@ import com.example.upcyclecommunity.R;
 
 import java.sql.Timestamp;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Database {
@@ -40,6 +41,7 @@ public class Database {
     private static StorageReference userProfileImageRoot = null;
     private static StorageReference brandpictureRoot = null;
     private static StorageReference postImageRoot = null;
+    private static StorageReference postpictureRoot = null;
 
     private static FirebaseAuth mAuth = null;
 
@@ -56,6 +58,8 @@ public class Database {
                     brandpictureRoot = mStorage.child("Brand picture");
                 if(userProfileImageRoot == null)
                     userProfileImageRoot = mStorage.child(context.getString(R.string.ST_userProfile));
+                if(postpictureRoot == null)
+                    postpictureRoot = mStorage.child("Post picture");
                 if(postImageRoot == null)
                     postImageRoot = mStorage.child(context.getString(R.string.ST_posting));
             }
@@ -65,7 +69,7 @@ public class Database {
                 if (brandRoot == null)
                     brandRoot = mDBRoot.child("Brand");
                 if (postRoot == null)
-                    postRoot = mDBRoot.child("posting");
+                    postRoot = mDBRoot.child("Post");
                 if (titleRoot == null)
                     titleRoot = mDBRoot.child("title");
                 if (tagRoot == null)
@@ -121,6 +125,10 @@ public class Database {
 
     public static StorageReference getBrandpictureRoot() {
         return brandpictureRoot;
+    }
+
+    public static StorageReference getPostpictureRoot(){
+        return postpictureRoot;
     }
 
     public static FirebaseAuth getAuth() {
@@ -257,8 +265,43 @@ public class Database {
         return filePath.child(name);
     }
 
+    public void writePostByLine(Long lineNumber, String data, String title, ArrayList<String> tags){
+        postRoot.child("posting").child("totalnumber").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Long postnumber = task.getResult().getValue(Long.class);
+                if (lineNumber == 1) {
+                    postnumber++;
+                    postRoot.child("posting").child("totalnumber").setValue(postnumber);
+                    //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
+                    postRoot.child("posting").child(""+postnumber).child("0").setValue(title);
+                    postRoot.child("Title").child(title).setValue(postnumber);
+                    String resultTagStr = "";
+                    for(String str : tags){
+                        Long finalPostnumber = postnumber;
+                        postRoot.child("Tag").child(str).child("cnt").get().addOnCompleteListener(task1 -> {
+                            Long cnt;
+                            if (task1.isSuccessful()){
+                                cnt = task.getResult().getValue(Long.class);
+                            }
+                            else{
+                                cnt = Long.parseLong("0");
+                            }
+                            cnt++;
+                            postRoot.child("Tag").child(str).child("cnt").setValue(cnt);
+                            postRoot.child("Tag").child(str).child(cnt+"").setValue(finalPostnumber);
+                        });
+                        resultTagStr += "#"+str+" ";
+                    }
+                    postRoot.child("posting").child(""+postnumber).child("tags").setValue(resultTagStr);
+                }
 
-
+                postRoot.child("posting").child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);
+            }
+            else{
+                Toast.makeText(context, "실패!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     public void writePost(ArrayList<String> data,String title,ArrayList<String> tags){
         postRoot.child("totalnumber").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
@@ -271,8 +314,11 @@ public class Database {
 
                 titleRoot.child(title).setValue(postnumber);
 
-                timeRoot.child((new Timestamp(System.currentTimeMillis())).toString()).setValue(postnumber);
-                for(int i = 0;i<data.size();i++) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
+                String time = sdf.format(new Timestamp(System.currentTimeMillis()));
+
+                timeRoot.child(time).setValue(postnumber);
+                for(int i = 0;i<tags.size();i++) {
                     tagRoot.child(tags.get(i)).setValue(postnumber);
                 }
 
