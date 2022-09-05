@@ -122,6 +122,7 @@
                         android:text="작성"/>
                 </LinearLayout>
 
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

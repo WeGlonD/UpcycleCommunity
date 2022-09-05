@@ -514,7 +514,7 @@ public class Database {
                 });
     }
 
-    public void writeComment(Long postnumber,String text){
+    public void writeComment(Long postnumber, String text){
         commentRoot.child(""+postnumber).child("commentcnt").get().addOnCompleteListener(task -> {
             Long commentNum;
             if(task.isSuccessful()){
@@ -529,7 +529,27 @@ public class Database {
             currentComment.child("userId").setValue(mAuth.getCurrentUser().getUid());
             currentComment.child("text").setValue(text);
         });
+    }
 
-
+    public void readComment(ArrayList<Comment> data, Long postnum, Acts acts){
+        commentRoot.child(postnum+"").get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                if(task.getResult().getChildren()!=null) {
+                    for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                        if (!dataSnapshot.getKey().equals("commentcnt")) {
+                            Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("userId").getValue(String.class));
+                            Log.d("minseok_1", dataSnapshot.child("text").getValue(String.class));
+                            Log.d("minseok_1",dataSnapshot.child("userId").getValue(String.class));
+                            data.add(tmp);
+                        }
+                    }
+                    acts.ifSuccess(task);
+                }
+                else
+                    acts.ifFail(task);
+            }
+            else
+                acts.ifFail(task);
+        });
     }
 }

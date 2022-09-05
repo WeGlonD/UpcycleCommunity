@@ -2,7 +2,10 @@ package com.example.upcyclecommunity.community1;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.database.Comment;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post;
 import com.example.upcyclecommunity.database.User;
@@ -34,6 +38,9 @@ public class Personal_Post extends AppCompatActivity {
     TextView profile_name;
     TextView profile_date;
     CircleImageView profile_src;
+    EditText et_comment;
+    Button btn_comment;
+    LinearLayout comment_layout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +56,59 @@ public class Personal_Post extends AppCompatActivity {
         profile_date = findViewById(R.id.profile_date);
         profile_src = findViewById(R.id.circle_iv);
         parent = findViewById(R.id.personal_contentsLayout);
+        et_comment = findViewById(R.id.et_commentInput);
+        btn_comment = findViewById(R.id.btn_commentInput);
+        btn_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.writeComment(postn, et_comment.getText().toString());
+            }
+        });
+
+        comment_layout = findViewById(R.id.comments_layout);
+        ArrayList<Comment> commentDatas = new ArrayList<>();
+        db.readComment(commentDatas, postn, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                for(Comment cmt : commentDatas){
+                    LinearLayout newCommentContainer = new LinearLayout(getApplicationContext());
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 250);
+                    newCommentContainer.setOrientation(LinearLayout.HORIZONTAL);
+                    newCommentContainer.setLayoutParams(layoutParams);
+
+
+                    Database.getUserRoot().child(cmt.getWriterUid()).child("name").get().addOnCompleteListener(task1 -> {
+                        String username;
+                        if(task1.isSuccessful()){
+                            username = task1.getResult().getValue(String.class);
+                            LinearLayout.LayoutParams usernameViewlayoutParams = new LinearLayout.LayoutParams(250, ViewGroup.LayoutParams.MATCH_PARENT);
+                            TextView tv_username = new TextView(getApplicationContext());
+                            tv_username.setText(username);
+                            tv_username.setTextSize(15);
+                            tv_username.setLayoutParams(usernameViewlayoutParams);
+                            newCommentContainer.addView(tv_username);
+
+                            TextView tv_text = new TextView(getApplicationContext());
+                            LinearLayout.LayoutParams textViewlayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                            tv_text.setText(cmt.getText());
+                            tv_text.setTextSize(10);
+                            tv_text.setLayoutParams(textViewlayoutParams);
+                            newCommentContainer.addView(tv_text);
+
+                            comment_layout.addView(newCommentContainer);
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void ifFail(Object task) {
+
+            }
+        });
+
+
         db.readOnePost(postArray, postn, new Acts() {
             @Override
             public void ifSuccess(Object task) {
