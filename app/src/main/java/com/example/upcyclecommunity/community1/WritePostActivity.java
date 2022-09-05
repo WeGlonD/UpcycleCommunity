@@ -279,16 +279,17 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
         }
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
+        String time = sdf.format(new Timestamp(System.currentTimeMillis()));
+        String picName = time + title;
+        final String postTitle = time + title;
+
         for(long i = 1;i <= editTexts.size();i++){
             switch ((int)i%2){
                 case 0:
                     StorageReference picRoot = db.getPostpictureRoot();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
-                    String time = sdf.format(new Timestamp(System.currentTimeMillis()));
-                    String picName = time + title + i;
-                    final String postTitle = time + title;
                     Long finalI = (Long)i;
-                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName, new Acts() {
+                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName + i, new Acts() {
                         @Override
                         public void ifSuccess(Object task) {
                             db.readImage(picRoot,picName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -309,7 +310,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     });
                     break;
                 case 1:
-                    db.writePostByLine(i, editTexts.get((int)((i-1)/2)).getText().toString(), title, tags);
+                    db.writePostByLine(i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, tags);
             }
         }
 

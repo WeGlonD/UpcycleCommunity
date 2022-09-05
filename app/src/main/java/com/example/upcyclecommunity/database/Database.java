@@ -33,7 +33,7 @@ public class Database {
     private static DatabaseReference postRoot = null;
     private static DatabaseReference titleRoot = null;
     private static DatabaseReference tagRoot = null;
-    private static DatabaseReference timeRoot = null;
+    private static DatabaseReference commentRoot = null;
     private static DatabaseReference userRoot = null;
     private static ValueEventListener userDataListener = null;
 
@@ -71,11 +71,11 @@ public class Database {
                 if (postRoot == null)
                     postRoot = mDBRoot.child("Post");
                 if (titleRoot == null)
-                    titleRoot = mDBRoot.child("title");
+                    titleRoot = postRoot.child("Title");
                 if (tagRoot == null)
-                    tagRoot = mDBRoot.child("tag");
-                if (timeRoot == null)
-                    timeRoot = mDBRoot.child("time");
+                    tagRoot = postRoot.child("Tag");
+                if (commentRoot == null)
+                    commentRoot = postRoot.child("Comment");
                 if (userRoot == null)
                     userRoot = mDBRoot.child("User");
             }
@@ -232,7 +232,7 @@ public class Database {
         StorageReference newFile = filePath.child(fileName);
         newFile.putFile(file).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-               acts.ifSuccess(task);
+                acts.ifSuccess(task);
                 Log.d(context.getString(R.string.Dirtfy_test), path+"success");
             }
             else{
@@ -266,14 +266,14 @@ public class Database {
     }
 
     public void writePostByLine(Long lineNumber, String data, String title, ArrayList<String> tags){
-        postRoot.child("posting").child("totalnumber").get().addOnCompleteListener(task -> {
+        postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Long postnumber = task.getResult().getValue(Long.class);
                 if (lineNumber == 1) {
                     postnumber++;
-                    postRoot.child("posting").child("totalnumber").setValue(postnumber);
+                    postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").setValue(postnumber);
                     //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
-                    postRoot.child("posting").child(""+postnumber).child("0").setValue(title);
+                    postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("0").setValue(title);
                     postRoot.child("Title").child(title).setValue(postnumber);
                     String resultTagStr = "";
                     for(String str : tags){
@@ -292,10 +292,10 @@ public class Database {
                         });
                         resultTagStr += "#"+str+" ";
                     }
-                    postRoot.child("posting").child(""+postnumber).child("tags").setValue(resultTagStr);
+                    postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("tags").setValue(resultTagStr);
                 }
 
-                postRoot.child("posting").child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);
+                postRoot.child(context.getString(R.string.DB_posting)).child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data);
             }
             else{
                 Toast.makeText(context, "실패!", Toast.LENGTH_LONG).show();
@@ -313,11 +313,9 @@ public class Database {
                 }
 
                 titleRoot.child(title).setValue(postnumber);
-
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
                 String time = sdf.format(new Timestamp(System.currentTimeMillis()));
 
-                timeRoot.child(time).setValue(postnumber);
                 for(int i = 0;i<tags.size();i++) {
                     tagRoot.child(tags.get(i)).setValue(postnumber);
                 }
@@ -376,20 +374,20 @@ public class Database {
 
         postRoot.child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                acts.ifSuccess(task);
-                Log.d("DB_Post", path+"success");
-            }
-            else{
-                acts.ifFail(task);
-                Log.d("DB_Post", path+"fail");
-            }
-        });
+                    if (task.isSuccessful()){
+                        acts.ifSuccess(task);
+                        Log.d("DB_Post", path+"success");
+                    }
+                    else{
+                        acts.ifFail(task);
+                        Log.d("DB_Post", path+"fail");
+                    }
+                });
     }
     public void readOnePostLine(Long postNumber, Long lineNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
 
-        postRoot.child(String.valueOf(postNumber)).
+        postRoot.child(context.getString(R.string.DB_posting)).child(String.valueOf(postNumber)).
                 child(String.valueOf(lineNumber)).
                 get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
@@ -417,7 +415,7 @@ public class Database {
                     else{
                         acts.ifFail(task);
                     }
-        });
+                });
     }
     public void readAllUserPost2(ArrayList<Long> returnList, Acts acts){
         userRoot.child(mAuth.getCurrentUser().getUid()).
@@ -434,5 +432,24 @@ public class Database {
                         acts.ifFail(task);
                     }
                 });
+    }
+
+    public void writeComment(Long postnumber,String text){
+        commentRoot.child(""+postnumber).child("commentcnt").get().addOnCompleteListener(task -> {
+            Long commentNum;
+            if(task.isSuccessful()){
+                commentNum = task.getResult().getValue(Long.class);
+            }
+            else{
+                commentNum = Long.parseLong("0");
+            }
+            commentNum++;
+            commentRoot.child(""+postnumber).child("commentcnt").setValue(commentNum);
+            DatabaseReference currentComment = commentRoot.child(""+postnumber).child(commentNum+"");
+            currentComment.child("userId").setValue(mAuth.getCurrentUser().getUid());
+            currentComment.child("text").setValue(text);
+        });
+
+
     }
 }
