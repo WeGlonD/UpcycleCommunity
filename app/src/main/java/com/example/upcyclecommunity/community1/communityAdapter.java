@@ -36,7 +36,10 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
-        holder.mTitle.setText(mTitles.get(i).getTitle());
+        String realtitlee= mTitles.get(i).getTitle();
+        holder.realtitle = realtitlee;
+        realtitlee = realtitlee.substring(20,realtitlee.length());
+        holder.mTitle.setText(realtitlee);
         holder.mcomment.setText(mTitles.get(i).getCommentcnt().toString());
     }
 
@@ -50,6 +53,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public final TextView mTitle;
         public final TextView mcomment;
+        public String realtitle;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -59,7 +63,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Database.getTitleRoot().child(mTitle.getText().toString()).get().addOnCompleteListener(task -> {
+                    Database.getTitleRoot().child(realtitle).get().addOnCompleteListener(task -> {
                         Long postnum = task.getResult().getValue(Long.class);
                         Log.d("minseok",postnum+"");
                         Intent intent = new Intent(mContext, Personal_Post.class);

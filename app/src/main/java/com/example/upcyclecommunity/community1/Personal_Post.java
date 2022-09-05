@@ -24,6 +24,7 @@ public class Personal_Post extends AppCompatActivity {
     ArrayList<String> contents;
     ArrayList<String> tags;
     LinearLayout parent;
+    TextView tag_detail;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,12 +35,16 @@ public class Personal_Post extends AppCompatActivity {
         contents = new ArrayList<>();
         tags = new ArrayList<>();
         titleview = findViewById(R.id.tv_personal_name);
+        tag_detail = findViewById(R.id.tag_detail);
         parent = findViewById(R.id.personal_contentsLayout);
         db.readOnePost(postArray, postn, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 Post personal_p = postArray.get(0);
-                titleview.setText(personal_p.getTitle());
+                String Ttitle = personal_p.getTitle();
+                Ttitle = Ttitle.substring(20,Ttitle.length());
+                titleview.setText(Ttitle);
+                tag_detail.setText(personal_p.getTags());
                 LinearLayout.LayoutParams layparms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 parent.setLayoutParams(layparms);
                 parent.setOrientation(LinearLayout.VERTICAL);

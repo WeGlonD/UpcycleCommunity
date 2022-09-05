@@ -424,12 +424,11 @@ public class Database {
 
     public void readOnePost(ArrayList<Post> returnList, Long postNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
-
         postRoot.child("posting").child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
                     String Title="";
                     ArrayList<String> Content = new ArrayList<>();
-                    ArrayList<String> Tag = new ArrayList<>();
+                    String Tag = "";
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
@@ -438,7 +437,7 @@ public class Database {
                             if(key.equals("0")){
                                 Title = value;
                             }else if(key.equals("tags")){
-                                Tag.add(value);
+                                Tag = value;
                             }
                             else{
                                 Content.add(value);
@@ -455,6 +454,7 @@ public class Database {
                     }
                 });
     }
+
     public void readOnePostLine(Long postNumber, Long lineNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
 

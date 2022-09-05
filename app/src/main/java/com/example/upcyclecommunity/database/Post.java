@@ -4,9 +4,9 @@ import java.util.ArrayList;
 public class Post {
     String title;
     ArrayList<String> contents;
-    ArrayList<String> tags;
+    String tags;
 
-    public Post(String title, ArrayList<String> contents, ArrayList<String> tags) {
+    public Post(String title, ArrayList<String> contents, String tags) {
         this.title = title;
         this.contents = contents;
         this.tags = tags;
@@ -28,11 +28,11 @@ public class Post {
         this.contents = contents;
     }
 
-    public ArrayList<String> getTags() {
+    public String getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList<String> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 }
