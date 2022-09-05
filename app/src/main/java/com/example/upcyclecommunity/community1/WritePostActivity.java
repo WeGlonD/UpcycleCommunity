@@ -298,7 +298,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             String url = uri.toString();
-                                            db.writePostByLine(postnum,finalI, url, postTitle, tags);
+                                            db.writePostByLine(postnum,finalI, url, postTitle, tags,1);
                                             Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                         }
                                     });
@@ -309,7 +309,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                             });
                             break;
                         case 1:
-                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, tags);
+                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, tags,1);
                             Log.d("fuck", "edit call"+((i-1)/2));
                     }
                 }

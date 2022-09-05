@@ -292,10 +292,25 @@ public class Database {
         });
     }
 
-    public void writePostByLine(Long postnumber, Long lineNumber, String data, String title, ArrayList<String> tags){
+    public void writePostByLine(Long postnumber, Long lineNumber, String data, String title, ArrayList<String> tags, int cartegory){
         if (lineNumber == 1) {
             //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
             postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("0").setValue(title);
+            postRoot.child("Comment").child(""+postnumber).child("commentcnt").setValue(Long.parseLong("0"));
+            userRoot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("post1").child("cnt").get().addOnCompleteListener(task -> {
+                Long hasPostcnt;
+                if(task.isSuccessful()){
+                    hasPostcnt = task.getResult().getValue(Long.class);
+                    if(hasPostcnt == null)
+                        hasPostcnt = Long.parseLong("0");
+                }
+                else{
+                    hasPostcnt = Long.parseLong("0");
+                }
+                hasPostcnt++;
+                userRoot.child(mAuth.getCurrentUser().getUid()).child("post"+cartegory).child("cnt").setValue(hasPostcnt);
+                userRoot.child(mAuth.getCurrentUser().getUid()).child("post"+cartegory).child(hasPostcnt+"").setValue(postnumber);
+            });
             postRoot.child("Title").child(title).setValue(postnumber);
             String resultTagStr = "";
             for(String str : tags){
