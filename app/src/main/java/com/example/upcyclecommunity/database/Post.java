@@ -1,7 +1,6 @@
 package com.example.upcyclecommunity.database;
-
 import java.util.ArrayList;
-//regrdfvsfdsvbgndnhdnhnnr
+
 public class Post {
     String title;
     ArrayList<String> contents;

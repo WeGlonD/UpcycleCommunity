@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.upcyclecommunity.community1.TitleInfo;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -75,7 +76,7 @@ public class Database {
                 if (tagRoot == null)
                     tagRoot = postRoot.child("Tag");
                 if (commentRoot == null)
-                    commentRoot = postRoot.child("Comment");
+                    commentRoot = mDBRoot.child("Comment");
                 if (userRoot == null)
                     userRoot = mDBRoot.child("User");
             }
@@ -133,6 +134,10 @@ public class Database {
 
     public static FirebaseAuth getAuth() {
         return mAuth;
+    }
+
+    public static DatabaseReference getTitleRoot() {
+        return titleRoot;
     }
 
     //리스너 제거(유저)
@@ -346,20 +351,34 @@ public class Database {
         });
     }
 
-    public void readAllPost(ArrayList<Post> returnList, BrandQuery con, Acts acts){
+    public void readAllPost(ArrayList<TitleInfo> returnList, Acts acts){
         String path = "firebase.Database.readAllPost - ";
 
         titleRoot.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    returnList.add(dataSnapshot.getValue(Post.class));
+                    String title = dataSnapshot.getKey();
+                    Long postn = dataSnapshot.getValue(Long.class);
+                    commentRoot.child(""+postn).child("commentcnt").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            // null이어도 Successful
+                            Long cmt = task1.getResult().getValue(Long.class);
+                            if(cmt == null){
+                                cmt = new Long(0);
+                            }
+                            TitleInfo titleinfo = new TitleInfo(title,cmt);
+                            acts.ifSuccess(task);
+                            returnList.add(titleinfo);
+                        }
+                        else{
+                            acts.ifFail(task);
+                            return;
+                        }
+                    });
                 }
-                acts.ifSuccess(task);
-                Log.d("DB_Post", path+"success");
             }
             else{
-                acts.ifFail(task);
-                Log.d("DB_Post", path+"fail");
+                return;
             }
         });
     }
