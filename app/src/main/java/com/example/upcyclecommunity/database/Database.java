@@ -430,6 +430,7 @@ public class Database {
                     String Title="";
                     ArrayList<String> Content = new ArrayList<>();
                     String Tag = "";
+                    String User_Id = "";
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
@@ -440,11 +441,14 @@ public class Database {
                             }else if(key.equals("tags")){
                                 Tag = value;
                             }
+                            else if(key.equals("writer")){
+                                User_Id = value;
+                            }
                             else{
                                 Content.add(value);
                             }
                         }
-                        Post newpost = new Post(Title,Content,Tag);
+                        Post newpost = new Post(Title,Content,Tag,User_Id);
                         returnList.add(newpost);
                         acts.ifSuccess(task);
                         Log.d("Personal_Post", path+"success");

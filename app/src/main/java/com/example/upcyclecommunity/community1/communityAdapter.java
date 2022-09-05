@@ -63,6 +63,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //realtitle이 key인 곳에 접근
                     Database.getTitleRoot().child(realtitle).get().addOnCompleteListener(task -> {
                         Long postnum = task.getResult().getValue(Long.class);
                         Log.d("minseok",postnum+"");
