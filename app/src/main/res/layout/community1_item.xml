@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/border_line">
     <!-- 무조건 wrap_content해야한다 그래야 리스트 하나가 가득 안차고 여러개 가능 -->
 
     <TextView
@@ -77,7 +78,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/community1_item_linearLayout"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/community1_item_linearLayout"
@@ -87,7 +89,8 @@
         android:layout_marginEnd="7dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/layout_background">
 
         <TextView
             android:id="@+id/tv_comment1"
@@ -107,11 +110,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="3dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
             android:text="댓글"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_comment1"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_comment1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
