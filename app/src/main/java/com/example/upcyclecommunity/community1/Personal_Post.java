@@ -56,12 +56,12 @@ public class Personal_Post extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Database.getPostRoot().child(getApplicationContext().getString(R.string.DB_posting)).child(postn+"").child("writer").get().addOnCompleteListener(task -> {
+        Database.getPostingRoot().child(postn+"").child("writer").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 String writerUid = task.getResult().getValue(String.class);
-                //Log.d("WeGlonD", Database.getAuth().getCurrentUser().getUid());
-                //Log.d("WeGlonD", writerUid);
-                if(writerUid.equals(Database.getAuth().getCurrentUser().getUid().toString())){
+                Log.d("WeGlonD", "get : "+Database.getAuth().getCurrentUser().getUid());
+                Log.d("WeGlonD", "post writer : "+writerUid);
+                if(writerUid.equals(Database.getAuth().getCurrentUser().getUid())){
                     switch (item.getItemId()){
                         case R.id.menu_deltePost:
                             db.deletePost(postn, writerUid, new Acts() {
@@ -94,7 +94,7 @@ public class Personal_Post extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_post);
 
-        Long postn = Long.parseLong(getIntent().getStringExtra("postn"));
+        postn = Long.parseLong(getIntent().getStringExtra("postn"));
         postArray = new ArrayList<>();
         contents = new ArrayList<>();
         tags = new ArrayList<>();

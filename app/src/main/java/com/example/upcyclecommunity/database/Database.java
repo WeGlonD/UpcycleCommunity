@@ -511,44 +511,59 @@ public class Database {
         });
     }
 
-//    public ArrayList<TitleInfo> readName(String keyword) {
-//        ArrayList<TitleInfo> contacts = new ArrayList<>();
-//        readAllPost();
-//
-//    }
-
-    public void readName(ArrayList<TitleInfo> returnList, Acts acts){
+    public void readName(ArrayList<Long> returnList, String keyword, Acts acts){
         String path = "firebase.Database.readAllPost - ";
-
+        Log.d("minseok", "readName called");
         titleRoot.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    String title = dataSnapshot.getKey();
-                    Long postn = dataSnapshot.getValue(Long.class);
-                    commentRoot.child(""+postn).child("commentcnt").get().addOnCompleteListener(task1 -> {
-                        if(task1.isSuccessful()){
-                            // null이어도 Successful
-                            Long cmt = task1.getResult().getValue(Long.class);
-                            if(cmt == null){
-                                cmt = new Long(0);
+                    String post_title = dataSnapshot.getKey();
+                    Log.d("minseok", "readName - post_title : "+post_title);
+                    Log.d("minseok", "readName - keyword : "+keyword);
+                    if(post_title.contains(keyword)){
+                        Log.d("minseok", "readName - contains True");
+                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                            Log.d("minseok", "readName - datasnapshot1 Key : "+dataSnapshot1.getKey());
+                            if(!dataSnapshot1.getKey().equals("cnt")){
+                                returnList.add(dataSnapshot1.getValue(Long.class));
+                                Log.d("minseok", "readName - datasnapshot1 Key NOT EQUALS cnt");
                             }
-                            TitleInfo titleinfo = new TitleInfo(title,cmt);
-                            acts.ifSuccess(task);
-                            returnList.add(titleinfo);
                         }
-                        else{
-                            acts.ifFail(task);
-                            return;
-                        }
-                    });
+                    }
                 }
+                acts.ifSuccess(task);
             }
             else{
+                acts.ifFail(task);
                 return;
             }
         });
     }
 
+    public void readTag(ArrayList<Long> returnList, String keyword, Acts acts){
+        String path = "firebase.Database.readAllPost - ";
+        tagRoot.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                    String post_tag = dataSnapshot.getKey();
+                    if(post_tag.contains(keyword)){
+                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                            if(!dataSnapshot1.getKey().equals("cnt")){
+                                Long tmp = dataSnapshot1.getValue(Long.class);
+                                if(!returnList.contains(tmp))
+                                    returnList.add(tmp);
+                            }
+                        }
+                    }
+                }
+                acts.ifSuccess(task);
+            }
+            else{
+                acts.ifFail(task);
+                return;
+            }
+        });
+    }
 
 //    public void readPost(ArrayList<Post> returnList, String title, PostQuery con, Acts acts){
 //        String path = "firebase.Database.readPost - ";
