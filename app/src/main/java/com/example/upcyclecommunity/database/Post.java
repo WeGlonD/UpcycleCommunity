@@ -6,12 +6,16 @@ public class Post {
     ArrayList<String> contents;
     String tags;
     String user_id;
+    String timeStamp;
+    Long clickCnt;
 
-    public Post(String title, ArrayList<String> contents, String tags, String user_id) {
+    public Post(String title, ArrayList<String> contents, String tags, String user_id, String timeStamp, Long clickCnt) {
         this.title = title;
         this.contents = contents;
         this.tags = tags;
         this.user_id = user_id;
+        this.timeStamp = timeStamp;
+        this.clickCnt = clickCnt;
     }
 
     public String getTitle() {
@@ -44,5 +48,21 @@ public class Post {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public Long getClickCnt() {
+        return clickCnt;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public void setClickCnt(Long clickCnt) {
+        this.clickCnt = clickCnt;
     }
 }

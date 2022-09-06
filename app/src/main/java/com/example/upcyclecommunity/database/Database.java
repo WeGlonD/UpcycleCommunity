@@ -581,24 +581,30 @@ public class Database {
                     ArrayList<String> Content = new ArrayList<>();
                     String Tag = "";
                     String User_Id = "";
+                    String timeStamp = "";
+                    Long clickCnt = 0L;
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                            String key = dataSnapshot.getKey();
-                            String value = dataSnapshot.getValue(String.class);
-                            if(key.equals("0")){
-                                Title = value;
-                            }else if(key.equals("tags")){
-                                Tag = value;
-                            }
-                            else if(key.equals("writer")){
-                                User_Id = value;
-                            }
-                            else{
-                                Content.add(value);
+                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt"))) {
+                                String key = dataSnapshot.getKey();
+                                String value = dataSnapshot.getValue(String.class);
+                                if (key.equals("0")) {
+                                    Title = value;
+                                } else if (key.equals("tags")) {
+                                    Tag = value;
+                                } else if (key.equals("writer")) {
+                                    User_Id = value;
+                                } else if (key.equals("timestamp")){
+                                    timeStamp = value;
+                                } else {
+                                    Content.add(value);
+                                }
+                            } else if (dataSnapshot.getKey().equals("clickcnt")){
+                                clickCnt = dataSnapshot.getValue(Long.class);
                             }
                         }
-                        Post newpost = new Post(Title,Content,Tag,User_Id);
+                        Post newpost = new Post(Title,Content,Tag,User_Id, timeStamp, clickCnt);
                         returnList.add(newpost);
                         acts.ifSuccess(task);
                         Log.d("Personal_Post", path+"success");

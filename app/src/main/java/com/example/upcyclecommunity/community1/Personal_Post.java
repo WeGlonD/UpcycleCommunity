@@ -93,10 +93,12 @@ public class Personal_Post extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_post);
-        postn = Long.parseLong(getIntent().getStringExtra("postn"));
+
+        Long postn = Long.parseLong(getIntent().getStringExtra("postn"));
         postArray = new ArrayList<>();
         contents = new ArrayList<>();
         tags = new ArrayList<>();
+
         titleview = findViewById(R.id.tv_personal_name);
         tag_detail = findViewById(R.id.tag_detail);
         profile_name = findViewById(R.id.profile_name);
@@ -105,6 +107,7 @@ public class Personal_Post extends AppCompatActivity {
         parent = findViewById(R.id.personal_contentsLayout);
         et_comment = findViewById(R.id.et_commentInput);
         btn_comment = findViewById(R.id.btn_commentInput);
+
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,8 +165,7 @@ public class Personal_Post extends AppCompatActivity {
 
                 Post personal_p = postArray.get(0);
                 String Ttitle = personal_p.getTitle();
-                String Ttitle1 = Ttitle;
-                Ttitle = Ttitle.substring(20, Ttitle.length());
+
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());
                 User_Id = personal_p.getUser_id();
@@ -174,9 +176,9 @@ public class Personal_Post extends AppCompatActivity {
                         Database.getUserProfileImageRoot().child(User_Id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                String Date = Ttitle1.substring(0,10);
+
                                 profile_name.setText(Name);
-                                profile_date.setText(Date);
+                                profile_date.setText(personal_p.getTimeStamp());
                                 String iv_url = uri.toString();
                                 Glide.with(getApplicationContext()).load(iv_url).into(profile_src);
                                 LinearLayout.LayoutParams layparms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

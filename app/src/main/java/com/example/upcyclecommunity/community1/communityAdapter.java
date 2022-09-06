@@ -94,11 +94,10 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
             view.setOnClickListener(viw -> {
                     String postNumber = String.valueOf(listData.get(getAdapterPosition()));
+                    Log.d("Dirtfy_test", postNumber);
 
                     Intent it = new Intent(mContext, Personal_Post.class);
                     it.putExtra("postn", postNumber);
-
-                    Log.d("Dirtfy_test", postNumber);
 
                     mContext.startActivity(it);
             });
