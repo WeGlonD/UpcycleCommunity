@@ -686,31 +686,34 @@ public class Database {
     }
 
     public void writeComment(Long postnumber, String text){
-        commentRoot.child(""+postnumber).child("commentcnt").get().addOnCompleteListener(task -> {
+        DatabaseReference currPosting = postingRoot.child(postnumber+"");
+        currPosting.child("comment").child("cnt").get().addOnCompleteListener(task -> {
             Long commentNum;
             if(task.isSuccessful()){
                 commentNum = task.getResult().getValue(Long.class);
+
             }
             else{
                 commentNum = Long.parseLong("0");
             }
             commentNum++;
-            commentRoot.child(""+postnumber).child("commentcnt").setValue(commentNum);
-            DatabaseReference currentComment = commentRoot.child(""+postnumber).child(commentNum+"");
-            currentComment.child("userId").setValue(mAuth.getCurrentUser().getUid());
+            currPosting.child("comment").child("cnt").setValue(commentNum);
+            DatabaseReference currentComment = currPosting.child("comment").child(commentNum+"");
+            currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid());
             currentComment.child("text").setValue(text);
         });
     }
 
     public void readComment(ArrayList<Comment> data, Long postnum, Acts acts){
-        commentRoot.child(postnum+"").get().addOnCompleteListener(task -> {
+        DatabaseReference currPosting = postingRoot.child(postnum+"");
+        currPosting.child("comment").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                if(task.getResult().getChildren()!=null) {
+                if(task.getResult().getChildrenCount() > 1) {
                     for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                        if (!dataSnapshot.getKey().equals("commentcnt")) {
-                            Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("userId").getValue(String.class));
-                            Log.d("minseok_1", dataSnapshot.child("text").getValue(String.class));
-                            Log.d("minseok_1",dataSnapshot.child("userId").getValue(String.class));
+                        if (!dataSnapshot.getKey().equals("cnt")) {
+                            Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("writer").getValue(String.class));
+                            Log.d("WeGlonD", dataSnapshot.child("text").getValue(String.class));
+                            Log.d("WeGlonD", dataSnapshot.child("writer").getValue(String.class));
                             data.add(tmp);
                         }
                     }
