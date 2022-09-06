@@ -26,6 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="링크"
+            android:textColor="@color/blue"
+            android:textStyle="italic"
             android:layout_margin="5dp"/>
         <TextView
             android:id="@+id/tv_tags"
