@@ -1,7 +1,9 @@
 package com.example.upcyclecommunity.mypage.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community1.Personal_Post;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post1;
@@ -24,7 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
-public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_ViewHolder>{
+public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_RecyclerViewAdapter.Post2_ViewHolder>{
 
     private ArrayList<Long> listData;
     private Context context;
@@ -92,19 +95,26 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_ViewHo
 //        // 외부에서 item을 추가시킬 함수입니다.
 //        listData.add(data);
 //    }
-}
-class Post2_ViewHolder extends RecyclerView.ViewHolder{
-    ImageView post_iv;
-    TextView post_tv;
 
-    public Post2_ViewHolder(@NonNull View itemView) {
-        super(itemView);
+    class Post2_ViewHolder extends RecyclerView.ViewHolder{
+        ImageView post_iv;
+        TextView post_tv;
 
-        post_iv = itemView.findViewById(R.id.post2_item_imageView);
-        post_tv = itemView.findViewById(R.id.post2_item_textView);
+        public Post2_ViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-        itemView.setOnClickListener(view -> {
-            Toast.makeText(itemView.getContext(), "click2", Toast.LENGTH_SHORT).show();
-        });
+            post_iv = itemView.findViewById(R.id.post2_item_imageView);
+            post_tv = itemView.findViewById(R.id.post2_item_textView);
+
+            itemView.setOnClickListener(view -> {
+                String postNumber = String.valueOf(listData.get(getAdapterPosition()));
+                Log.d("Dirtfy_test", postNumber);
+
+                Intent it = new Intent(context, Personal_Post.class);
+                it.putExtra("postn", postNumber);
+
+                context.startActivity(it);
+            });
+        }
     }
 }
