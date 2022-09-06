@@ -3,6 +3,7 @@ package com.example.upcyclecommunity.database;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.icu.text.CaseMap;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -400,28 +401,67 @@ public class Database {
         });
     }
 
-    public void readPost(ArrayList<Post> returnList, String title, PostQuery con, Acts acts){
-        String path = "firebase.Database.readPost - ";
+//    public ArrayList<TitleInfo> readName(String keyword) {
+//        ArrayList<TitleInfo> contacts = new ArrayList<>();
+//        readAllPost();
+//
+//    }
 
-        titleRoot.child(title).get().addOnCompleteListener(task -> {
+    public void readName(ArrayList<TitleInfo> returnList, Acts acts){
+        String path = "firebase.Database.readAllPost - ";
+
+        titleRoot.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
-                Long postnumber1 = Long.parseLong(task.getResult().getValue(String.class));
-
-                postRoot.child(String.valueOf(postnumber1)).get().addOnCompleteListener(task1->{
-
-                    for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                        returnList.add(dataSnapshot.getValue(Post.class));
-                    }
-                    acts.ifSuccess(task);
-                    Log.d("DB_Post", path+"success");
-                });
+                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                    String title = dataSnapshot.getKey();
+                    Long postn = dataSnapshot.getValue(Long.class);
+                    commentRoot.child(""+postn).child("commentcnt").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            // null이어도 Successful
+                            Long cmt = task1.getResult().getValue(Long.class);
+                            if(cmt == null){
+                                cmt = new Long(0);
+                            }
+                            TitleInfo titleinfo = new TitleInfo(title,cmt);
+                            acts.ifSuccess(task);
+                            returnList.add(titleinfo);
+                        }
+                        else{
+                            acts.ifFail(task);
+                            return;
+                        }
+                    });
+                }
             }
             else{
-                acts.ifFail(task);
-                Log.d("DB_Post", path+"fail");
+                return;
             }
         });
     }
+
+
+//    public void readPost(ArrayList<Post> returnList, String title, PostQuery con, Acts acts){
+//        String path = "firebase.Database.readPost - ";
+//
+//        titleRoot.child(title).get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful()){
+//                Long postnumber1 = Long.parseLong(task.getResult().getValue(String.class));
+//
+//                postRoot.child(String.valueOf(postnumber1)).get().addOnCompleteListener(task1->{
+//
+//                    for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+//                        returnList.add(dataSnapshot.getValue(Post.class));
+//                    }
+//                    acts.ifSuccess(task);
+//                    Log.d("DB_Post", path+"success");
+//                });
+//            }
+//            else{
+//                acts.ifFail(task);
+//                Log.d("DB_Post", path+"fail");
+//            }
+//        });
+//    }
 
     public void readOnePost(ArrayList<Post> returnList, Long postNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
