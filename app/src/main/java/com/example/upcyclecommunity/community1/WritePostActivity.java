@@ -277,28 +277,28 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         ArrayList<String> contents = new ArrayList<>();
         String title = ((EditText)findViewById(R.id.et_name)).getText().toString();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss-");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String time = sdf.format(new Timestamp(System.currentTimeMillis()));
-        String picName = time + title;
-        final String postTitle = time + title;
+        String picName = title;
+        final String postTitle = title;
 
         db.setNewPostNumber(new Acts() {
             @Override
             public void ifSuccess(Object task) {
-                Long postnum = ((Task<DataSnapshot>)task).getResult().getValue(Long.class);
+                final Long postnum = ((Task<DataSnapshot>)task).getResult().getValue(Long.class);
                 for(long i = 1;i <= editTexts.size()+imageViews.size();i++){
                     switch ((int)i%2){
                         case 0:
                             StorageReference picRoot = db.getPostpictureRoot();
                             Long finalI = (Long)i;
-                            db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, picName + i, new Acts() {
+                            db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, postnum + picName + i, new Acts() {
                                 @Override
                                 public void ifSuccess(Object task1) {
-                                    db.readImage(picRoot,picName + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    db.readImage(picRoot,postnum + picName + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             String url = uri.toString();
-                                            db.writePostByLine(postnum,finalI, url, postTitle, tags,1);
+                                            db.writePostByLine(postnum,finalI, url, postTitle, time, tags,1);
                                             Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                         }
                                     });
@@ -309,7 +309,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                             });
                             break;
                         case 1:
-                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, tags,1);
+                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, time, tags,1);
                             Log.d("fuck", "edit call"+((i-1)/2));
                     }
                 }

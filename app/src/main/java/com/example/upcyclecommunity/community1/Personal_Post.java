@@ -2,6 +2,9 @@ package com.example.upcyclecommunity.community1;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -9,7 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,12 +46,54 @@ public class Personal_Post extends AppCompatActivity {
     EditText et_comment;
     Button btn_comment;
     LinearLayout comment_layout;
+    Long postn;
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_personal_post,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Database.getPostRoot().child(getApplicationContext().getString(R.string.DB_posting)).child(postn+"").child("writer").get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String writerUid = task.getResult().getValue(String.class);
+                //Log.d("WeGlonD", Database.getAuth().getCurrentUser().getUid());
+                //Log.d("WeGlonD", writerUid);
+                if(writerUid.equals(Database.getAuth().getCurrentUser().getUid().toString())){
+                    switch (item.getItemId()){
+                        case R.id.menu_deltePost:
+                            db.deletePost(postn, writerUid, new Acts() {
+                                @Override
+                                public void ifSuccess(Object task) {
+                                    finish();
+                                }
+
+                                @Override
+                                public void ifFail(Object task) {
+                                    Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        case R.id.menu_editPost:
+                            //수정 코드
+                            break;
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "자신의 게시물만 수정/삭제 가능합니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_post);
-        Long postn = Long.parseLong(getIntent().getStringExtra("postn"));
+        postn = Long.parseLong(getIntent().getStringExtra("postn"));
         postArray = new ArrayList<>();
         contents = new ArrayList<>();
         tags = new ArrayList<>();

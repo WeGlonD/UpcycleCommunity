@@ -29,8 +29,10 @@ import java.sql.Timestamp;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Database {
+    public final Long FIRST_POSTNUM = Long.MAX_VALUE;
     private static DatabaseReference mDBRoot = null;
     private static DatabaseReference brandRoot = null;
     private static DatabaseReference postRoot = null;
@@ -38,6 +40,7 @@ public class Database {
     private static DatabaseReference tagRoot = null;
     private static DatabaseReference commentRoot = null;
     private static DatabaseReference userRoot = null;
+    private static DatabaseReference postingRoot = null;
     private static ValueEventListener userDataListener = null;
 
     private static StorageReference mStorage = null;
@@ -75,6 +78,8 @@ public class Database {
                     postRoot = mDBRoot.child("Post");
                 if (titleRoot == null)
                     titleRoot = postRoot.child("Title");
+                if (postingRoot == null)
+                    postingRoot = postRoot.child(context.getString(R.string.DB_posting));
                 if (tagRoot == null)
                     tagRoot = postRoot.child("Tag");
                 if (commentRoot == null)
@@ -140,6 +145,10 @@ public class Database {
 
     public static DatabaseReference getTitleRoot() {
         return titleRoot;
+    }
+
+    public static DatabaseReference getPostingRoot(){
+        return postingRoot;
     }
 
     //리스너 제거(유저)
@@ -273,33 +282,42 @@ public class Database {
     }
 
     public void setNewPostNumber(Acts acts){
-        postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").get().addOnCompleteListener(task -> {
+        Log.d("WeGlonD", "1");
+        postingRoot.child("totalnumber").get().addOnCompleteListener(task -> {
             Long postnum;
             if(task.isSuccessful()){
                 postnum = task.getResult().getValue(Long.class);
                 if(postnum == null)
-                    postnum = Long.parseLong("0");
+                    postnum = FIRST_POSTNUM;
             }
             else{
-                postnum = Long.parseLong("0");
+                postnum = FIRST_POSTNUM;
             }
-            postnum = postnum + 1;
+            postnum = postnum - Long.parseLong("1");
+            Log.d("WeGlonD", ""+postnum);
+            final Long finalPostnum = postnum;
+            postingRoot.child("totalnumber").setValue(finalPostnum).addOnCompleteListener(task2 -> {
 
-            postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").setValue(postnum);
-            postRoot.child(context.getString(R.string.DB_posting)).child("totalnumber").get().addOnCompleteListener(task1 -> {
-                if(task1.isSuccessful())
-                    acts.ifSuccess(task1);
+                postingRoot.child("totalnumber").get().addOnCompleteListener(task1 -> {
+                    if(task1.isSuccessful())
+                        acts.ifSuccess(task1);
+                });
             });
         });
     }
 
-    public void writePostByLine(Long postnumber, Long lineNumber, String data, String title, ArrayList<String> tags, int cartegory){
+    public void writePostByLine(Long postnumber, Long lineNumber, String data, String title, String timestamp, ArrayList<String> tags, int cartegory){
+        Log.d("WeGlonD", "2");
+        final Long finalPostnum = postnumber;
+        DatabaseReference currentPosting = postingRoot.child(finalPostnum+"");
         if (lineNumber == 1) {
             //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
-            postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("0").setValue(title);
-            postRoot.child("Comment").child(""+postnumber).child("commentcnt").setValue(Long.parseLong("0"));
-            postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("writer").setValue(mAuth.getCurrentUser().getUid());
-            userRoot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("post1").child("cnt").get().addOnCompleteListener(task -> {
+            currentPosting.child("0").setValue(title);
+            currentPosting.child("comment").child("cnt").setValue(Long.parseLong("0"));
+            currentPosting.child("clickcnt").setValue(Long.parseLong("0"));
+            currentPosting.child("writer").setValue(mAuth.getCurrentUser().getUid());
+            currentPosting.child("timestamp").setValue(timestamp);
+            userRoot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("post"+cartegory).child("cnt").get().addOnCompleteListener(task -> {
                 Long hasPostcnt;
                 if(task.isSuccessful()){
                     hasPostcnt = task.getResult().getValue(Long.class);
@@ -311,12 +329,25 @@ public class Database {
                 }
                 hasPostcnt++;
                 userRoot.child(mAuth.getCurrentUser().getUid()).child("post"+cartegory).child("cnt").setValue(hasPostcnt);
-                userRoot.child(mAuth.getCurrentUser().getUid()).child("post"+cartegory).child(hasPostcnt+"").setValue(postnumber);
+                userRoot.child(mAuth.getCurrentUser().getUid()).child("post"+cartegory).child(hasPostcnt+"").setValue(finalPostnum);
             });
-            postRoot.child("Title").child(title).setValue(postnumber);
+            titleRoot.child(title).child("cnt").get().addOnCompleteListener(task -> {
+                Long sameTitlecnt;
+                if(task.isSuccessful()){
+                    sameTitlecnt = task.getResult().getValue(Long.class);
+                    if(sameTitlecnt==null){
+                        sameTitlecnt = Long.parseLong("0");
+                    }
+                }
+                else{
+                    sameTitlecnt = Long.parseLong("0");
+                }
+                sameTitlecnt++;
+                titleRoot.child(title).child("cnt").setValue(sameTitlecnt);
+                titleRoot.child(title).child(sameTitlecnt+"").setValue(finalPostnum);
+            });
             String resultTagStr = "";
             for(String str : tags){
-                Long finalPostnumber = postnumber;
                 postRoot.child("Tag").child(str).child("cnt").get().addOnCompleteListener(task -> {
                     Long cnt;
                     if (task.isSuccessful()){
@@ -328,19 +359,19 @@ public class Database {
                         cnt = Long.parseLong("0");
                     }
                     cnt = cnt + 1;
-                    postRoot.child("Tag").child(str).child("cnt").setValue(cnt);
-                    postRoot.child("Tag").child(str).child(cnt+"").setValue(finalPostnumber);
+                    tagRoot.child(str).child("cnt").setValue(cnt);
+                    postRoot.child("Tag").child(str).child(cnt+"").setValue(finalPostnum);
                 });
                 resultTagStr += "#"+str+" ";
             }
-            postRoot.child(context.getString(R.string.DB_posting)).child(""+postnumber).child("tags").setValue(resultTagStr);
+            currentPosting.child("tags").setValue(resultTagStr);
         }
 
-        postRoot.child(context.getString(R.string.DB_posting)).child(String.valueOf(postnumber)).child(lineNumber + "").setValue(data).addOnCompleteListener(tsk ->{
+        currentPosting.child(lineNumber + "").setValue(data).addOnCompleteListener(tsk ->{
             if(tsk.isSuccessful())
-                Log.d("fuck", "setValue success");
+                Log.d("WeGlonD", "setValue success");
             else
-                Log.d("tag", "setValue fail");
+                Log.d("WeGlond", "setValue fail");
         });
     }
     public void writePost(ArrayList<String> data,String title,ArrayList<String> tags){
@@ -369,6 +400,66 @@ public class Database {
         });
     }
 
+    public void deletePost(Long postnum, String writerUid, Acts acts){
+        postingRoot.child(""+postnum).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                String title = null;
+                ArrayList<String> tags = null;
+                long contentsCnt = task.getResult().getChildrenCount() - 6;
+                for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                    if (dataSnapshot.getKey().equals("0")) {
+                        title = dataSnapshot.getValue(String.class);
+                    } else if (dataSnapshot.getKey().equals("tags")) {
+                        String tagstr = dataSnapshot.getValue(String.class);
+                        tags = new ArrayList<>(Arrays.asList(tagstr.split("#")));
+                        for (int i = 0; i < tags.size(); i++) {
+                            tags.add(tags.get(0).trim());
+                            tags.remove(0);
+                        }
+                        tags.remove(0);
+                    }
+                }
+                if(title!=null) {
+                    titleRoot.child(title).removeValue();
+                }
+                if(tags!=null) {
+                    for (String tag : tags) {
+                        Log.d("WeGlonD", "tag : " + tag);
+                        tagRoot.child(tag).get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                for (DataSnapshot dataSnapshot : task1.getResult().getChildren()) {
+                                    Log.d("WeGlonD", dataSnapshot.toString() + "asdf");
+                                    if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
+                                        String removeKey = dataSnapshot.getKey();
+                                        tagRoot.child(tag).child(removeKey).removeValue();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+                userRoot.child(writerUid).child("post1").get().addOnCompleteListener(task1 -> {
+                    if(task1.isSuccessful()){
+                        for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                            if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
+                                String removeKey = dataSnapshot.getKey();
+                                userRoot.child(writerUid).child("post1").child(removeKey).removeValue();
+                            }
+                        }
+                    }
+                });
+                for(int i = 1; i <= contentsCnt; i++){
+                    if(i%2==0){
+                        postpictureRoot.child(postnum+title+i).delete();
+                    }
+                }
+                commentRoot.child(postnum+"").removeValue();
+                postingRoot.child(postnum+"").removeValue();
+            }
+        });
+    }
+
+//    public void readAllPost(ArrayList<TitleInfo> returnList, Acts acts){
 //    public void readAllPost(ArrayList<TitleInfo> returnList, Acts acts){
 //        String path = "firebase.Database.readAllPost - ";
 //
@@ -484,7 +575,7 @@ public class Database {
 
     public void readOnePost(ArrayList<Post> returnList, Long postNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
-        postRoot.child("posting").child(String.valueOf(postNumber)).
+        postingRoot.child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
                     String Title="";
                     ArrayList<String> Content = new ArrayList<>();
@@ -522,7 +613,7 @@ public class Database {
     public void readOnePostLine(Long postNumber, Long lineNumber, Acts acts){
         String path = "firebase.Database.readPost - ";
 
-        postRoot.child(context.getString(R.string.DB_posting)).child(String.valueOf(postNumber)).
+        postingRoot.child(String.valueOf(postNumber)).
                 child(String.valueOf(lineNumber)).
                 get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
