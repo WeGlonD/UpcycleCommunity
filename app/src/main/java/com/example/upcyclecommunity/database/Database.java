@@ -616,7 +616,8 @@ public class Database {
                                     Content.add(value);
                                 }
                             } else if (dataSnapshot.getKey().equals("clickcnt")){
-                                clickCnt = dataSnapshot.getValue(Long.class);
+                                clickCnt = dataSnapshot.getValue(Long.class) + 1;
+                                postingRoot.child(String.valueOf(postNumber)).child("clickcnt").setValue(clickCnt);
                             }
                         }
                         Post newpost = new Post(Title,Content,Tag,User_Id, timeStamp, clickCnt);
