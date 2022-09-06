@@ -65,9 +65,11 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
             @Override
             public void ifSuccess(Object task) {
                 String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
-                Uri downloadUri = Uri.parse(line);
-                if(mGlideRequestManager != null)
-                    mGlideRequestManager.load(downloadUri).into(holder.post_iv);
+                if(line != null){
+                    Uri downloadUri = Uri.parse(line);
+                    if(mGlideRequestManager != null)
+                        mGlideRequestManager.load(downloadUri).into(holder.post_iv);
+                }
             }
 
             @Override
