@@ -1,4 +1,4 @@
-package com.example.upcyclecommunity.community1;
+package com.example.upcyclecommunity.community2;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,17 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community1.Personal_Post;
+import com.example.upcyclecommunity.community1.communityAdapter;
 import com.example.upcyclecommunity.database.Database;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
-public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyViewHolder>{
+public class community2Adapter extends RecyclerView.Adapter<community2Adapter.MyViewHolder>{
     private ArrayList<Long> listData;
     private Context mContext;
 
-    public communityAdapter(ArrayList<Long> listData, Context mContext) {
+    public community2Adapter(ArrayList<Long> listData, Context mContext) {
         this.listData = listData;
         this.mContext = mContext;
     }
@@ -35,7 +37,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.community1_item, parent, false);
+                .inflate(R.layout.community2_item, parent, false);
         return new MyViewHolder(v);
     }
 
@@ -64,24 +66,30 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                                 holder.mComment.setText(String.valueOf(value));
                             }
                             else if (key.equals("clickcnt")){
-                                String value = String.valueOf(data.getValue(Long.class));
-                                holder.commentCnt_tv.setText(value);
+                                Long value = Long.valueOf(data.getValue(Long.class));
+                                holder.clickCnt_tv.setText(String.valueOf(value));
                             }
                             else if (key.equals("timestamp")){
                                 String value = data.getValue(String.class).substring(0, 10).replace("-", ".");
-                                holder.date_tv.setText(value);
+                                holder.timeStamp_tv.setText(value);
+                            }
+                            else if (key.equals("tags")){
+                                String value = data.getValue(String.class);
+                                holder.tags_tv.setText(value);
                             }
                             else if (key.equals("writer")){
                                 String value = data.getValue(String.class);
-                                Database.getUserRoot().child(value).
-                                        child("name").get().addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()){
-                                        String name = task1.getResult().getValue(String.class);
-                                        holder.userName_tv.setText(name);
-                                    }
-                                    else{
-                                        holder.userName_tv.setText("error");
-                                    }
+                                Database.getUserRoot().child(value).child("name").get().addOnCompleteListener(task1 -> {
+                                   if (task1.isSuccessful()){
+                                       String name = task1.getResult().getValue(String.class);
+                                       holder.userName.setText(name);
+                                   }
+                                   else{
+                                       holder.userName.setText("error");
+                                   }
+                                });
+                                Database.getUserProfileImageRoot().child(value).getDownloadUrl().addOnSuccessListener(uri -> {
+                                   Glide.with(mContext).load(uri).into(holder.userPic);
                                 });
                             }
                         }
@@ -91,7 +99,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                         holder.postFirstImage_iv.setImageResource(R.drawable.search);
                         holder.mComment.setText("?");
                     }
-        });
+                });
     }
 
     @Override
@@ -102,31 +110,35 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        public ImageView userPic;
+        public TextView userName;
         public TextView mTitle;
-        public TextView userName_tv;
-        public TextView date_tv;
-        public TextView commentCnt_tv;
-        public TextView mComment;
         public ImageView postFirstImage_iv;
+        public TextView tags_tv;
+        public TextView timeStamp_tv;
+        public TextView clickCnt_tv;
+        public TextView mComment;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
 
-            mTitle = view.findViewById(R.id.tv_post_title1);
-            userName_tv = view.findViewById(R.id.community1_item_userName_textView);
-            date_tv = view.findViewById(R.id.community1_item_date_textView);
-            commentCnt_tv = view.findViewById(R.id.community1_item_clickCnt_textView);
-            mComment = view.findViewById(R.id.tv_comment1);
-            postFirstImage_iv = view.findViewById(R.id.post_iv);
+            userPic = view.findViewById(R.id.community2_item_userPic_imageView);
+            mTitle = view.findViewById(R.id.community2_item_title_textView);
+            userName = view.findViewById(R.id.community2_item_userName_textView);
+            postFirstImage_iv = view.findViewById(R.id.community2_item_firstImage_imageView);
+            tags_tv = view.findViewById(R.id.community2_item_tags_textView);
+            timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
+            clickCnt_tv = view.findViewById(R.id.community2_item_clickCnt_textView);
+            mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
 
             view.setOnClickListener(viw -> {
-                    String postNumber = String.valueOf(listData.get(getAdapterPosition()));
-                    Log.d("Dirtfy_test", postNumber);
+                String postNumber = String.valueOf(listData.get(getAdapterPosition()));
+                Log.d("Dirtfy_test", postNumber);
 
-                    Intent it = new Intent(mContext, Personal_Post.class);
-                    it.putExtra("postn", postNumber);
+                Intent it = new Intent(mContext, Personal_Post.class);
+                it.putExtra("postn", postNumber);
 
-                    mContext.startActivity(it);
+                mContext.startActivity(it);
             });
         }
     }

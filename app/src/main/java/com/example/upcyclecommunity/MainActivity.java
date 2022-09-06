@@ -22,6 +22,7 @@ import com.example.upcyclecommunity.BrandList.FragmentBrand;
 import com.example.upcyclecommunity.community1.TitleInfo;
 import com.example.upcyclecommunity.community1.communityAdapter;
 import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.community2.Fragment_CM2;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
@@ -88,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_community2:
-                //fragmentTransaction.replace(R.id.main_frame, Fragment2).commit();
+                Fragment_CM2 Community2 = new Fragment_CM2();
+                fragmentTransaction.replace(R.id.main_frame, Community2).commit();
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_brandlist:
