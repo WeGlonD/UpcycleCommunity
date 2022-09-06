@@ -259,8 +259,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 //doTakeVideoAction();
                 break;
             case R.id.relative:
-                if(relative.getVisibility() == View.VISIBLE){
-                    relative.setVisibility(View.GONE);
+                if(relative.getVisibility() == View.GONE){
+                    relative.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.changeimage:
