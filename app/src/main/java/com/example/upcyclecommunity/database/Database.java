@@ -369,34 +369,53 @@ public class Database {
         });
     }
 
-    public void readAllPost(ArrayList<TitleInfo> returnList, Acts acts){
+//    public void readAllPost(ArrayList<TitleInfo> returnList, Acts acts){
+//        String path = "firebase.Database.readAllPost - ";
+//
+//        titleRoot.get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful()){
+//                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+//                    String title = dataSnapshot.getKey();
+//                    Long postn = dataSnapshot.getValue(Long.class);
+//                    commentRoot.child(""+postn).child("commentcnt").get().addOnCompleteListener(task1 -> {
+//                        if(task1.isSuccessful()){
+//                            // null이어도 Successful
+//                            Long cmt = task1.getResult().getValue(Long.class);
+//                            if(cmt == null){
+//                                cmt = new Long(0);
+//                            }
+//                            TitleInfo titleinfo = new TitleInfo(title,cmt);
+//                            acts.ifSuccess(task);
+//                            returnList.add(titleinfo);
+//                        }
+//                        else{
+//                            acts.ifFail(task);
+//                            return;
+//                        }
+//                    });
+//                }
+//            }
+//            else{
+//                return;
+//            }
+//        });
+//    }
+
+    public void readAllPost(ArrayList<Long> returnList, Acts acts){
         String path = "firebase.Database.readAllPost - ";
 
-        titleRoot.get().addOnCompleteListener(task -> {
+        postRoot.child("posting").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
-                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    String title = dataSnapshot.getKey();
-                    Long postn = dataSnapshot.getValue(Long.class);
-                    commentRoot.child(""+postn).child("commentcnt").get().addOnCompleteListener(task1 -> {
-                        if(task1.isSuccessful()){
-                            // null이어도 Successful
-                            Long cmt = task1.getResult().getValue(Long.class);
-                            if(cmt == null){
-                                cmt = new Long(0);
-                            }
-                            TitleInfo titleinfo = new TitleInfo(title,cmt);
-                            acts.ifSuccess(task);
-                            returnList.add(titleinfo);
-                        }
-                        else{
-                            acts.ifFail(task);
-                            return;
-                        }
-                    });
+                for (DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                    if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                        Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                        returnList.add(postNumber);
+                    }
                 }
+                acts.ifSuccess(task);
             }
             else{
-                return;
+                acts.ifFail(task);
             }
         });
     }
