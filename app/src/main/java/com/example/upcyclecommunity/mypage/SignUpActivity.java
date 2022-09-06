@@ -5,7 +5,10 @@ import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -73,7 +76,8 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         signUp_btn.setOnClickListener(view -> {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) profile_iv.getDrawable();
+            Bitmap bitmap = makeBitmap(profile_iv.getDrawable());
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
             String name = name_et.getText().toString();
             String email = email_et.getText().toString();
             String password = password_et.getText().toString();
@@ -119,6 +123,22 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.activity_signup_password_is_not_same), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public Bitmap makeBitmap(Drawable drawable){
+        try {
+            Bitmap bitmap;
+
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            // Handle the error
+            return null;
+        }
     }
 
     public void doTakePhotoAction() // 카메라 촬영 후 이미지 가져오기

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
@@ -63,6 +64,8 @@ public class MyPageFragment extends Fragment {
     private ViewPager viewPager;
     private PostPageAdapter postPageAdapter;
 
+    private RequestManager mGlideRequestManager;
+
     public MyPageFragment() {
         // Required empty public constructor
     }
@@ -92,6 +95,7 @@ public class MyPageFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mGlideRequestManager = Glide.with(getActivity());
     }
 
     @Override
@@ -198,8 +202,8 @@ public class MyPageFragment extends Fragment {
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            if (!(isDetached())){
-                                Glide.with(getContext()).load(uri).into(profile_iv);
+                            if (mGlideRequestManager != null){
+                                mGlideRequestManager.load(uri).into(profile_iv);
                                 userName_tv.setText(data.getName());
                             }
                         }

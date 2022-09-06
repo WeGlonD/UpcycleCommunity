@@ -1,5 +1,6 @@
 package com.example.upcyclecommunity.mypage;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
@@ -39,6 +42,8 @@ public class MyPagePost1_Fragment extends Fragment {
     private String mParam2;
 
     Database db = new Database();
+    private Context mContext;
+    private RequestManager mGlideRequestManager;
 
     private RecyclerView recyclerView;
     private Post1_RecyclerViewAdapter recyclerViewAdapter;
@@ -73,6 +78,8 @@ public class MyPagePost1_Fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mContext = getContext();
+        mGlideRequestManager = Glide.with(getContext());
     }
 
     @Override
@@ -86,7 +93,7 @@ public class MyPagePost1_Fragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(),3);
         recyclerView.setLayoutManager(gridLayoutManager);
         //커스텀 어댑터 생성
-        recyclerViewAdapter = new Post1_RecyclerViewAdapter(listData, getContext());
+        recyclerViewAdapter = new Post1_RecyclerViewAdapter(listData, getContext(), mGlideRequestManager);
         recyclerView.setAdapter(recyclerViewAdapter);
 
 //        for (int i = 0;i < 15;i++){
@@ -112,13 +119,16 @@ public class MyPagePost1_Fragment extends Fragment {
                 public void ifSuccess(Object task) {
                     Collections.sort(listData);
                     recyclerViewAdapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
-                    Log.d(getContext().getString(R.string.Dirtfy_test), "post1 list count "+String.valueOf(listData.size()));
+                    if(mContext != null){
+                        Toast.makeText(mContext, String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
+                        Log.d(mContext.getString(R.string.Dirtfy_test), "post1 list count "+String.valueOf(listData.size()));
+                    }
                 }
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "user post loading fail", Toast.LENGTH_SHORT).show();
+                    if (mContext != null)
+                        Toast.makeText(mContext, "user post loading fail", Toast.LENGTH_SHORT).show();
                 }
             });
         }

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
@@ -31,10 +32,12 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_ViewHo
     private ArrayList<Long> listData;
 //    private HashMap<Long, Long> listData;
     private Context context;
+    private RequestManager mGlideRequestManager;
 
-    public Post1_RecyclerViewAdapter(ArrayList<Long> listData, Context context){
+    public Post1_RecyclerViewAdapter(ArrayList<Long> listData, Context context, RequestManager mGlideRequestManager){
         this.listData = listData;
         this.context = context;
+        this.mGlideRequestManager = mGlideRequestManager;
     }
 
 //    public Post1_RecyclerViewAdapter(HashMap<Long, Long> listData, Context context){
@@ -60,7 +63,8 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_ViewHo
             public void ifSuccess(Object task) {
                 String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
                 Uri downloadUri = Uri.parse(line);
-                Glide.with(holder.itemView).load(downloadUri).into(holder.post_iv);
+                if(mGlideRequestManager != null)
+                    mGlideRequestManager.load(downloadUri).into(holder.post_iv);
             }
 
             @Override
