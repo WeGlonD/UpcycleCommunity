@@ -257,6 +257,9 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 if(relative.getVisibility() == View.GONE){
                     relative.setVisibility(View.VISIBLE);
                 }
+                else{
+                    relative.setVisibility(View.GONE);
+                }
                 break;
             case R.id.changeimage:
                 doTakeAlbumAction(1);
