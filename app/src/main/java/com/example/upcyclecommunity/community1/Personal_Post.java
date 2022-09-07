@@ -1,5 +1,8 @@
 package com.example.upcyclecommunity.community1;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ import com.example.upcyclecommunity.database.Post;
 import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.LoginActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -50,6 +54,7 @@ public class Personal_Post extends AppCompatActivity {
     Button btn_comment;
     LinearLayout comment_layout;
     Long postn;
+    Context context;
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
@@ -106,6 +111,8 @@ public class Personal_Post extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_post);
 
+        context = this;
+
         postn = Long.parseLong(getIntent().getStringExtra("postn"));
         postArray = new ArrayList<>();
         contents = new ArrayList<>();
@@ -138,6 +145,81 @@ public class Personal_Post extends AppCompatActivity {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 250);
                     newCommentContainer.setOrientation(LinearLayout.HORIZONTAL);
                     newCommentContainer.setLayoutParams(layoutParams);
+                    newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
+                    newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
+                    newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            DialogInterface.OnClickListener editListener = new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FirebaseUser currUser = Database.getAuth().getCurrentUser();
+                                    if(currUser==null){
+                                        Toast.makeText(context, "로그인 후 댓글수정이 가능합니다.", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                    else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
+                                        Toast.makeText(context, "자신의 댓글만 수정 할 수 있습니다.", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                    else{
+                                        dialog.dismiss();
+                                        EditText et_editComment = new EditText(context);
+                                        DialogInterface.OnClickListener editCommentListener = new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                String editStr = et_editComment.getText().toString();
+                                                db.editComment(postn,(String)view.getTag(R.string.tagKey1),editStr,CATEGORY);
+                                                dialogInterface.dismiss();
+                                            }
+                                        };
+                                        DialogInterface.OnClickListener editCancelListener = new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        };
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("댓글을 다시 작성해주세요.")
+                                                .setView(et_editComment)
+                                                .setPositiveButton("수정", editCommentListener)
+                                                .setNeutralButton("취소", editCancelListener)
+                                                .show();
+                                    }
+                                }
+                            };
+                            DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FirebaseUser currUser = Database.getAuth().getCurrentUser();
+                                    if(currUser==null){
+                                        Toast.makeText(context, "로그인 후 댓글삭제가 가능합니다.", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                    else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
+                                        Toast.makeText(context, "자신의 댓글만 삭제 할 수 있습니다.", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                    else{
+                                        db.deleteComment(postn, (String)view.getTag(R.string.tagKey1), CATEGORY);
+                                    }
+                                }
+                            };
+                            DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            };
+                            new AlertDialog.Builder(context)
+                                    .setTitle("댓글 작업 선택")
+                                    .setPositiveButton("댓글 삭제", deleteListener)
+                                    .setNeutralButton("취소", cancelListener)
+                                    .setNegativeButton("댓글 수정", editListener)
+                                    .show();
+                            return true;
+                        }
+                    });
 
 
                     Database.getUserRoot().child(cmt.getWriterUid()).child("name").get().addOnCompleteListener(task1 -> {

@@ -797,7 +797,7 @@ public class Database {
                 if(task.getResult().getChildrenCount() > 1) {
                     for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
                         if (!dataSnapshot.getKey().equals("cnt")) {
-                            Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("writer").getValue(String.class));
+                            Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("writer").getValue(String.class),dataSnapshot.getKey());
                             Log.d("WeGlonD", dataSnapshot.child("text").getValue(String.class));
                             Log.d("WeGlonD", dataSnapshot.child("writer").getValue(String.class));
                             data.add(tmp);
@@ -815,5 +815,16 @@ public class Database {
                 acts.ifFail(task);
             }
         });
+    }
+
+    public void editComment(Long postnum, String key, String newText, String category){
+        DatabaseReference currComment = mDBRoot.child("Post"+category).child("posting").child(""+postnum).child("comment").child(key);
+        currComment.child("text").setValue(newText);
+        Log.d("WeGlonD", "editComment " + currComment.toString());
+    }
+
+    public void deleteComment(Long postnum, String key, String category){
+        DatabaseReference currComment = mDBRoot.child("Post"+category).child("posting").child(""+postnum).child("comment").child(key);
+        currComment.removeValue();
     }
 }
