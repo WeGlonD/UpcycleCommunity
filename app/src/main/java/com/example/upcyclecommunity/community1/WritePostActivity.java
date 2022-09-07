@@ -407,7 +407,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         Log.d("WeGlonD", "postnum " + msgFromIntent);
 
         if(editing){
-            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, preImageCnt, CATEGORY);
+            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, CATEGORY);
             Uploading(msgFromIntent,db,title,time+" (수정됨)");
         }
         else {

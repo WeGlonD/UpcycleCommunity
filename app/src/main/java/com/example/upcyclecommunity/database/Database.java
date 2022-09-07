@@ -371,18 +371,32 @@ public class Database {
         });
     }
 
-    public void deletePostForUpdate(Long postnum, String preTitle, String preTagStr, int imageCnt, String category){
+    public void deletePostForUpdate(Long postnum, String preTitle, String preTagStr, String userUid, int imageCnt, String category){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference titleRoot = postRoot.child("Title");
         DatabaseReference tagRoot = postRoot.child("Tag");
 
         titleRoot.child(preTitle).get().addOnCompleteListener(task1 -> {
-            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
-                if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
-                    String removeKey = dataSnapshot.getKey();
-                    titleRoot.child(preTitle).child(removeKey).removeValue();
-                    Log.d("WeGlonD", "deletePostForUpdate - title 삭제");
-                    break;
+            if(task1.isSuccessful()) {
+                for (DataSnapshot dataSnapshot : task1.getResult().getChildren()) {
+                    if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
+                        String removeKey = dataSnapshot.getKey();
+                        titleRoot.child(preTitle).child(removeKey).removeValue();
+                        Log.d("WeGlonD", "deletePostForUpdate - title 삭제");
+                        break;
+                    }
+                }
+            }
+        });
+
+        userRoot.child(userUid).child("post"+category).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                    if(postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")){
+                        String removeKey = dataSnapshot.getKey();
+                        userRoot.child(userUid).child("post"+category).child(removeKey).removeValue();
+                        Log.d("WeGlonD", "deletePostForUpdate - user - postnum 삭제");
+                    }
                 }
             }
         });
