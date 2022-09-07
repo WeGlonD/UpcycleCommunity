@@ -289,8 +289,22 @@ public class Database {
         if (lineNumber == 1) {
             //postRoot.child("totalnumber").child(""+postnumber).child("title").setValue(title);
             currentPosting.child("0").setValue(title);
-            currentPosting.child("comment").child("cnt").setValue(Long.parseLong("0"));
-            currentPosting.child("clickcnt").setValue(Long.parseLong("0"));
+            currentPosting.child("comment").child("cnt").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    Long commentCnt = task.getResult().getValue(Long.class);
+                    if(commentCnt==null){
+                        currentPosting.child("comment").child("cnt").setValue(Long.parseLong("0"));
+                    }
+                }
+            });
+            currentPosting.child("clickcnt").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    Long clickCnt = task.getResult().getValue(Long.class);
+                    if(clickCnt==null){
+                        currentPosting.child("clickcnt").setValue(Long.parseLong("0"));
+                    }
+                }
+            });
             currentPosting.child("writer").setValue(mAuth.getCurrentUser().getUid());
             currentPosting.child("timestamp").setValue(timestamp);
             userRoot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("post"+category).child("cnt").get().addOnCompleteListener(task -> {
@@ -349,6 +363,53 @@ public class Database {
             else
                 Log.d("WeGlond", "setValue fail");
         });
+    }
+
+    public void deletePostForUpdate(Long postnum, String preTitle, String preTagStr, int imageCnt, String category){
+        DatabaseReference postRoot = mDBRoot.child("Post"+category);
+        DatabaseReference titleRoot = postRoot.child("Title");
+        DatabaseReference tagRoot = postRoot.child("Tag");
+
+        titleRoot.child(preTitle).get().addOnCompleteListener(task1 -> {
+            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
+                    String removeKey = dataSnapshot.getKey();
+                    titleRoot.child(preTitle).child(removeKey).removeValue();
+                    Log.d("WeGlonD", "deletePostForUpdate - title 삭제");
+                    break;
+                }
+            }
+        });
+
+        if(preTagStr!=null) {
+            ArrayList<String> preTags = new ArrayList<>(Arrays.asList(preTagStr.split("#")));
+            for (int i = 0; i < preTags.size(); i++) {
+                String str = preTags.get(0);
+                str = str.trim();
+                preTags.add(str);
+                preTags.remove(0);
+            }
+            preTags.remove(0);
+            for (String str : preTags) {
+                Log.d("WeGlonD", "preTags - " + str);
+                tagRoot.child(str).get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        for (DataSnapshot dataSnapshot : task1.getResult().getChildren()) {
+                            if (postnum.equals(dataSnapshot.getValue()) && !dataSnapshot.getKey().equals("cnt")) {
+                                String removeKey = dataSnapshot.getKey();
+                                tagRoot.child(str).child(removeKey).removeValue();
+                                Log.d("WeGlonD", "deletePostForUpdate - Existing Tag Found - " + str + " " + removeKey + " " + dataSnapshot.getValue(Long.class));
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        for(int i = 1; i <= imageCnt; i++) {
+            postpictureRoot.child(category + "-" + postnum + "-" + preTitle + "-" + i*2).delete();
+            Log.d("WeGlonD", "deletePostForUpdate - image Found - " + category + "-" + postnum + "-" + preTitle + "-" + i*2);
+        }
     }
 
     public void deletePost(Long postnum, String writerUid, String category, Acts acts){

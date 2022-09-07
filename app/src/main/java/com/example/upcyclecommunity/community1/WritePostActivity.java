@@ -65,6 +65,9 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private WritePostUploading writePostUploading;
     private Context context;
     boolean editing;
+    String preTitle;
+    String preTagStr;
+    int preImageCnt;
     Long msgFromIntent;
 
     @Override
@@ -112,8 +115,10 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 Post post = posts.get(0);
                 //제목
                 ((EditText)findViewById(R.id.et_name)).setText(post.getTitle());
+                preTitle = post.getTitle();
 
                 //태그
+                preTagStr = post.getTags();
                 ArrayList<String> tagStrings = new ArrayList<>(Arrays.asList(post.getTags().split("#")));
                 tagStrings.remove(0);
                 LinearLayout tagLayout = ((LinearLayout)findViewById(R.id.tagLayout));
@@ -191,6 +196,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                             break;
                     }
                 }
+                preImageCnt = imageViews.size();
                 Log.d("WeGlonD", "기존 게시물 불러오기 완료");
                 Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
             }
@@ -314,7 +320,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 EditText et_tag = findViewById(R.id.et_tagInput);
                 String newTag = et_tag.getText().toString();
                 et_tag.setText("");
-                if(!newTag.equals("")){
+                if(!newTag.equals("") && !tags.contains(newTag)){
                     LinearLayout tags_field = findViewById(R.id.tagLayout);
                     TextView newTagTv = new TextView(this);
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -401,18 +407,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         Log.d("WeGlonD", "postnum " + msgFromIntent);
 
         if(editing){
-            db.deletePost(msgFromIntent, Database.getAuth().getCurrentUser().getUid(), CATEGORY, new Acts() {
-                @Override
-                public void ifSuccess(Object task) {
-                    Log.d("WeGlonD", "삭제완료");
-                    Uploading(msgFromIntent, db, title, time);
-                }
-
-                @Override
-                public void ifFail(Object task) {
-                    Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
-                }
-            });
+            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, preImageCnt, CATEGORY);
+            Uploading(msgFromIntent,db,title,time+" (수정됨)");
         }
         else {
             db.setNewPostNumber(CATEGORY, new Acts() {
