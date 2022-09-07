@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.TitleInfo;
+import com.example.upcyclecommunity.community2.Fragment_CM2;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -423,13 +425,95 @@ public class Database {
                         Log.d("WeGlonD", postNumber+"");
                         returnList.add(postNumber);
                     }
+                    acts.ifSuccess(task);
+                    if (category.equals("1")){
+                        Fragment_CM1.isUpdating = false;
+                    }
+                    if (category.equals("2")){
+                        Fragment_CM2.isUpdating = false;
+                    }
                 }
-                acts.ifSuccess(task);
             }
             else{
                 acts.ifFail(task);
             }
         });
+    }
+
+    public void readPostsFirst(ArrayList<Long> returnList, int count, String category, Acts acts) {
+        String path = "firebase.Database.readAllPost - ";
+
+        DatabaseReference postRoot = mDBRoot.child("Post" + category);
+
+        postRoot.child("posting").limitToFirst(count).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                Log.d("WeGlonD", postNumber+"");
+                                returnList.add(postNumber);
+                                acts.ifSuccess(snapshot);
+                            }
+                        }
+                        if (category.equals("1")){
+                            Fragment_CM1.isUpdating = false;
+                        }
+                        if (category.equals("2")){
+                            Fragment_CM2.isUpdating = false;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    public void readPostsWith(ArrayList<Long> returnList, Long str, Long end, String category, Acts acts){
+        String path = "firebase.Database.readAllPost - ";
+
+        DatabaseReference postRoot = mDBRoot.child("Post"+category);
+
+        if (str < 0){
+            str = Long.valueOf(0);
+        }
+        if (end < 0){
+            end = FIRST_POSTNUM;
+        }
+
+        String from = String.valueOf(str);
+        String to = String.valueOf(end);
+
+//        Toast.makeText(context, from+" "+to, Toast.LENGTH_LONG).show();
+
+        postRoot.child("posting").orderByKey().startAt(from).endAt(to).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                Log.d("WeGlonD", postNumber + "");
+                                returnList.add(postNumber);
+                                acts.ifSuccess(snapshot);
+                            }
+                        }
+                        if (category.equals("1")){
+                            Fragment_CM1.isUpdating = false;
+                        }
+                        if (category.equals("2")){
+                            Fragment_CM2.isUpdating = false;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     public void readName(ArrayList<Long> returnList, String keyword, String category, Acts acts){

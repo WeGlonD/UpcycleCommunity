@@ -3,6 +3,7 @@ package com.example.upcyclecommunity.community1;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class Fragment_CM1 extends Fragment {
     ArrayList<Long> listData;
 
     Context mContext;
+    public static boolean isUpdating;
 
     @Nullable
     @Override
@@ -59,16 +61,34 @@ public class Fragment_CM1 extends Fragment {
         layoutManager = new LinearLayoutManager(mContext);
         CommunityRecycler.setLayoutManager(layoutManager);
 
-        db.readAllPost(listData, CATEGORY, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                Cadapter.notifyDataSetChanged();
-            }
+        isUpdating = true;
+        getFirstListData(10);
 
+        CommunityRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void ifFail(Object task) {
-                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
-                return;
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                LinearLayoutManager nowLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if (newState == RecyclerView.SCROLL_STATE_SETTLING){
+                    if (isUpdating == false){
+                        if (nowLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
+//                            Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
+                            isUpdating = true;
+                            resetListData(10);
+                        }
+                        else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1){
+                            int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
+                            Long lastPostNumber = listData.get(position);
+//                            Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+//                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
+                            isUpdating = true;
+                            getListDataWith(lastPostNumber+1, lastPostNumber+5);
+                        }
+                    }
+                }
             }
         });
 
@@ -79,4 +99,70 @@ public class Fragment_CM1 extends Fragment {
 
         return root;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    public void resetListData(int count){
+        Database db = new Database();
+        listData.clear();
+        Cadapter.notifyDataSetChanged();
+        db.readPostsFirst(listData, count, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                int position = listData.size()-1;
+                Cadapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
+    }
+
+    public void getFirstListData(int count){
+        Database db = new Database();
+        db.readPostsFirst(listData, count, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+//                int position = listData.size();
+//                Cadapter.notifyItemInserted(position);
+                Cadapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
+    }
+
+    public void getListDataWith(Long str, Long end){
+        Database db = new Database();
+        db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                int position = listData.size()-1;
+                Cadapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+//                int position = layoutManager.findLastCompletelyVisibleItemPosition();
+//                Long lastPostNumber = listData.get(position);
+//                Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
+    }
+
 }

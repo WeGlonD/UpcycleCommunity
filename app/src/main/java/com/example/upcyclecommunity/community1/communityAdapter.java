@@ -43,11 +43,13 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         Long postNumber = listData.get(i);
+
         Database.getDBRoot().child("Post"+CATEGORY).
                 child("posting").child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()){
+                        boolean hasImage = false;
                         Iterable<DataSnapshot> postData = task.getResult().getChildren();
                         for(DataSnapshot data : postData){
                             String key = data.getKey();
@@ -57,6 +59,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                             }
                             else if(key.equals("2")){
                                 String value = data.getValue(String.class);
+                                hasImage = true;
                                 Uri uri = Uri.parse(value);
                                 Glide.with(holder.itemView).load(uri).into(holder.postFirstImage_iv);
                             }
@@ -85,6 +88,9 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                                     }
                                 });
                             }
+                        }
+                        if (!(hasImage)){
+                            holder.postFirstImage_iv.setImageResource(R.drawable.transparent);
                         }
                     }
                     else{

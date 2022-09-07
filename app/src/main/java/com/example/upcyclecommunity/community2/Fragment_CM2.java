@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 
@@ -34,6 +35,8 @@ public class Fragment_CM2 extends Fragment {
     ArrayList<Long> listData;
 
     Context mContext;
+
+    public static boolean isUpdating = false;
 
     @Nullable
     @Override
@@ -54,9 +57,74 @@ public class Fragment_CM2 extends Fragment {
         layoutManager = new LinearLayoutManager(mContext);
         CommunityRecycler.setLayoutManager(layoutManager);
 
-        db.readAllPost(listData, CATEGORY, new Acts() {
+        isUpdating = true;
+        getFirstListData(5);
+
+        CommunityRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                LinearLayoutManager nowLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if (newState == RecyclerView.SCROLL_STATE_SETTLING){
+                    if (isUpdating == false){
+                        if (nowLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
+//                            Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
+                            isUpdating = true;
+                            resetListData(5);
+                        }
+                        else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1) {
+                            int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
+                            if (position >= 0){
+                                Long lastPostNumber = listData.get(position);
+    //                            Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
+    //                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+    //                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
+                                isUpdating = true;
+                                getListDataWith(lastPostNumber + 1, lastPostNumber + 5);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        upload_btn.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), WritePostActivity.class);
+            startActivity(intent);
+        });
+
+        return root;
+    }
+
+    public void resetListData(int count){
+        Database db = new Database();
+        listData.clear();
+        Cadapter.notifyDataSetChanged();
+        db.readPostsFirst(listData, count, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
+                int position = listData.size()-1;
+                Cadapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
+    }
+
+    public void getFirstListData(int count){
+        Database db = new Database();
+        db.readPostsFirst(listData, count, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+//                int position = listData.size();
+//                Cadapter.notifyItemInserted(position);
                 Cadapter.notifyDataSetChanged();
             }
 
@@ -66,12 +134,26 @@ public class Fragment_CM2 extends Fragment {
                 return;
             }
         });
+    }
 
-        upload_btn.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), community2_upload.class);
-            startActivity(intent);
+    public void getListDataWith(Long str, Long end){
+        Database db = new Database();
+        db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                int position = listData.size()-1;
+                Cadapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+//                int position = layoutManager.findLastCompletelyVisibleItemPosition();
+//                Long lastPostNumber = listData.get(position);
+//                Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                return;
+            }
         });
-
-        return root;
     }
 }
