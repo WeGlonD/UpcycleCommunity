@@ -29,6 +29,7 @@
         </activity>
         <activity android:name=".community1.WritePostActivity"/>
         <activity android:name=".community1.Personal_Post"/>
+        <activity android:name=".community2.community2_upload"/>
         <activity android:name=".mypage.LoginActivity"/>
         <activity android:name=".mypage.SignUpActivity"/>
         <activity android:name=".mypage.SettingActivity"/>

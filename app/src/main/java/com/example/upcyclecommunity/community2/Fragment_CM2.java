@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,13 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.upcyclecommunity.BrandList.BrandRecyclerAdapter;
 import com.example.upcyclecommunity.R;
-import com.example.upcyclecommunity.community1.WritePostActivity;
-import com.example.upcyclecommunity.community1.communityAdapter;
 import com.example.upcyclecommunity.database.Acts;
-import com.example.upcyclecommunity.database.Brand;
-import com.example.upcyclecommunity.database.BrandQuery;
 import com.example.upcyclecommunity.database.Database;
 
 import java.util.ArrayList;
@@ -75,7 +68,7 @@ public class Fragment_CM2 extends Fragment {
         });
 
         upload_btn.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), WritePostActivity.class);
+            Intent intent = new Intent(getContext(), community2_upload.class);
             startActivity(intent);
         });
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/community2_upload_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="제목 : "/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_addimage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Add View" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/page_mark"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center" />
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="500dp" />
+
+            <EditText
+                android:id="@+id/community2_upload_tag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="내용을 입력하세요"
+                android:text="태그 : "/>
+
+            <EditText
+                android:id="@+id/community2_upload_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="내용을 입력하세요"
+                android:text="내용 : \n\n\n\n\n\n"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
