@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Personal_Post extends AppCompatActivity {
+    public static final String CATEGORY = "1";
     Database db = new Database();
     ArrayList<Post> postArray;
     TextView titleview;
@@ -56,7 +57,7 @@ public class Personal_Post extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Database.getPostingRoot().child(postn+"").child("writer").get().addOnCompleteListener(task -> {
+        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postn+"").child("writer").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 String writerUid = task.getResult().getValue(String.class);
                 Log.d("WeGlonD", "get : "+Database.getAuth().getCurrentUser().getUid());
@@ -64,7 +65,7 @@ public class Personal_Post extends AppCompatActivity {
                 if(writerUid.equals(Database.getAuth().getCurrentUser().getUid())){
                     switch (item.getItemId()){
                         case R.id.menu_deltePost:
-                            db.deletePost(postn, writerUid, new Acts() {
+                            db.deletePost(postn, writerUid, CATEGORY, new Acts() {
                                 @Override
                                 public void ifSuccess(Object task) {
                                     finish();
@@ -111,13 +112,14 @@ public class Personal_Post extends AppCompatActivity {
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.writeComment(postn, et_comment.getText().toString());
+                db.writeComment(postn, et_comment.getText().toString(), CATEGORY);
+                et_comment.setText("");
             }
         });
 
         comment_layout = findViewById(R.id.comments_layout);
         ArrayList<Comment> commentDatas = new ArrayList<>();
-        db.readComment(commentDatas, postn, new Acts() {
+        db.readComment(commentDatas, postn, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 for(Comment cmt : commentDatas){
@@ -159,7 +161,7 @@ public class Personal_Post extends AppCompatActivity {
         });
 
 
-        db.readOnePost(postArray, postn, new Acts() {
+        db.readOnePost(postArray, postn, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
 

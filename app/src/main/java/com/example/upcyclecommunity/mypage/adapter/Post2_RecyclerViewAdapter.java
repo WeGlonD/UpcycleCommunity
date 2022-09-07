@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_RecyclerViewAdapter.Post2_ViewHolder>{
+    public static final String CATEGORY = "2";
 
     private ArrayList<Long> listData;
     private Context context;
@@ -54,12 +55,12 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
         holder.post_tv.setText("test");
         Database db = new Database();
         Long postNumber = listData.get(position);
-        db.readOnePostLine(postNumber, Long.valueOf(1), new Acts() {
+        db.readOnePostLine(postNumber, Long.valueOf(1), CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
                 holder.post_tv.setText(line);
-                db.readOnePostLine(postNumber, Long.valueOf(2), new Acts() {
+                db.readOnePostLine(postNumber, Long.valueOf(2), CATEGORY, new Acts() {
                     @Override
                     public void ifSuccess(Object task) {
                         String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);

@@ -58,6 +58,7 @@ import io.grpc.Context;
 
 public class WritePostActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "WritePostActivity";
+    public static final String CATEGORY = "1";
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;
     private static final int CHANGE_ALBUM = 2;
@@ -282,7 +283,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         String picName = title;
         final String postTitle = title;
 
-        db.setNewPostNumber(new Acts() {
+        db.setNewPostNumber(CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 final Long postnum = ((Task<DataSnapshot>)task).getResult().getValue(Long.class);
@@ -298,7 +299,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             String url = uri.toString();
-                                            db.writePostByLine(postnum,finalI, url, postTitle, time, tags,1);
+                                            db.writePostByLine(postnum,finalI, url, postTitle, time, tags,CATEGORY);
                                             Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                         }
                                     });
@@ -309,7 +310,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                             });
                             break;
                         case 1:
-                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, time, tags,1);
+                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, time, tags,CATEGORY);
                             Log.d("fuck", "edit call"+((i-1)/2));
                     }
                 }

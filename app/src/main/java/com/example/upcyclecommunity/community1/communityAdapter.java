@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyViewHolder>{
+    public static final String CATEGORY = "1";
     private ArrayList<Long> listData;
     private Context mContext;
 
@@ -42,7 +43,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         Long postNumber = listData.get(i);
-        Database.getDBRoot().child("Post").
+        Database.getDBRoot().child("Post"+CATEGORY).
                 child("posting").child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
 

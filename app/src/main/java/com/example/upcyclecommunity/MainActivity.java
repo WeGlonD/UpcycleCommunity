@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public int mode = 1;
     public final int Namesearch = 1;
     public final int Tagsearch = 2;
+    int currentTab;
     RecyclerView CommunityRecycler;
 
     @Override
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //첫번째 프래그먼트 띄우도록 할 것.
-
+        setFragment(R.id.bottom_community1);
     }
 
     @Override
@@ -86,21 +87,25 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bottom_community1:
                 Fragment_CM1 Community1 = new Fragment_CM1();
                 fragmentTransaction.replace(R.id.main_frame,Community1).commit();
+                currentTab = 1;
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_community2:
                 Fragment_CM2 Community2 = new Fragment_CM2();
                 fragmentTransaction.replace(R.id.main_frame, Community2).commit();
+                currentTab = 2;
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_brandlist:
                 FragmentBrand BrandListTab = new FragmentBrand();
                 fragmentTransaction.replace(R.id.main_frame,BrandListTab).commit();
+                currentTab = 3;
                 //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
                 MyPageFragment MyPageTab = new MyPageFragment();
                 fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
+                currentTab = 4;
                 //Toast.makeText(this, "마이페이지", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -179,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("minseok","onMenuItemActionCollapse called");
                 Database db = new Database(mainContext);
                 ArrayList<Long> listData = new ArrayList<>();
-                db.readAllPost(listData, new Acts() {
+                db.readAllPost(listData, currentTab+"", new Acts() {
                     @Override
                     public void ifSuccess(Object task) {
                         CommunityRecycler.setAdapter(new communityAdapter(listData, mainContext));
@@ -220,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         CommunityRecycler = findViewById(R.id.title_community1);
 //        registerForContextMenu(CommunityRecycler);
         Database db = new Database(getApplicationContext());
-        db.readName(searched, keyword, new Acts() {
+        db.readName(searched, keyword, currentTab+"", new Acts() {
             @Override
             public void ifSuccess(Object task) {
 
@@ -246,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         CommunityRecycler = findViewById(R.id.title_community1);
         //registerForContextMenu(CommunityRecycler);
         Database db = new Database(getApplicationContext());
-        db.readTag(searched, keyword, new Acts() {
+        db.readTag(searched, keyword, currentTab+"", new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 if (searched != null) {

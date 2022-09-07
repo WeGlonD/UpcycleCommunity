@@ -30,6 +30,8 @@ import java.util.ArrayList;
 
 
 public class Fragment_CM2 extends Fragment {
+    public static final String CATEGORY = "2";
+
     View root;
     Button upload_btn;
 
@@ -59,7 +61,7 @@ public class Fragment_CM2 extends Fragment {
         layoutManager = new LinearLayoutManager(mContext);
         CommunityRecycler.setLayoutManager(layoutManager);
 
-        db.readAllPost(listData, new Acts() {
+        db.readAllPost(listData, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 Cadapter.notifyDataSetChanged();

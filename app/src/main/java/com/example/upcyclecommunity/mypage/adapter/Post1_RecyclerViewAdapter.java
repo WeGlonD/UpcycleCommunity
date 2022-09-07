@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_RecyclerViewAdapter.Post1_ViewHolder>{
-
+    public static final String CATEGORY = "1";
     private ArrayList<Long> listData;
 //    private HashMap<Long, Long> listData;
     private Context context;
@@ -61,7 +61,7 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
 //        Long postKey = listData.get(Long.valueOf(position));
         Database db = new Database();
         Long postNumber = listData.get(position);
-        db.readOnePostLine(postNumber, Long.valueOf(2), new Acts() {
+        db.readOnePostLine(postNumber, Long.valueOf(2), CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
