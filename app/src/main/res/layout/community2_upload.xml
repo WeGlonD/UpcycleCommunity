@@ -37,6 +37,11 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="500dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/test"
+                android:src="@drawable/search"/>
 
             <EditText
                 android:id="@+id/community2_upload_tag"
