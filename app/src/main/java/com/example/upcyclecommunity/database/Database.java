@@ -599,7 +599,7 @@ public class Database {
                 });
     }
 
-    public void writeComment(Long postnumber, String category, String text){
+    public void writeComment(Long postnumber, String text, String category){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference postingRoot = postRoot.child("posting");
 
