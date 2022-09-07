@@ -292,10 +292,10 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                         case 0:
                             StorageReference picRoot = db.getPostpictureRoot();
                             Long finalI = (Long)i;
-                            db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot, postnum + picName + i, new Acts() {
+                            db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot,CATEGORY+ "-" + postnum+ "-" + picName+ "-" + i, new Acts() {
                                 @Override
                                 public void ifSuccess(Object task1) {
-                                    db.readImage(picRoot,postnum + picName + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    db.readImage(picRoot,CATEGORY+ "-" + postnum+ "-" + picName+ "-" + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             String url = uri.toString();
