@@ -5,6 +5,7 @@ import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.database.Post;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -43,7 +45,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class WritePostActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "WritePostActivity";
@@ -59,11 +63,21 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private ImageView selectediv;
     private LinearLayout parent;
     private WritePostUploading writePostUploading;
+    private Context context;
+    boolean editing;
+    Long msgFromIntent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+
+        Intent it = getIntent();
+        msgFromIntent = Long.parseLong(it.getStringExtra("postn"));
+
+        context = this;
+
+        editing = msgFromIntent != Long.MAX_VALUE;
 
         editTexts = new ArrayList<>();
         imageViews = new ArrayList<>();
@@ -83,6 +97,109 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
         writePostUploading = new WritePostUploading(this);
         writePostUploading.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (editing){
+            loadExistingPost(msgFromIntent);
+        }
+    }
+
+    public void loadExistingPost(Long postnum){
+        Database db = new Database(this);
+        ArrayList<Post> posts = new ArrayList<>();
+        db.readOnePost(posts, postnum, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                Post post = posts.get(0);
+                //제목
+                ((EditText)findViewById(R.id.et_name)).setText(post.getTitle());
+
+                //태그
+                ArrayList<String> tagStrings = new ArrayList<>(Arrays.asList(post.getTags().split("#")));
+                tagStrings.remove(0);
+                LinearLayout tagLayout = ((LinearLayout)findViewById(R.id.tagLayout));
+                while(tagStrings.size() > 0){
+                    String tmp = tagStrings.get(0).trim();
+                    Log.d("WeGlonD", tmp);
+                    tags.add(tmp);
+                    TextView newTagTv = new TextView(context);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(5,5,5,5);
+                    newTagTv.setLayoutParams(layoutParams);
+                    newTagTv.setTextSize(15);
+                    newTagTv.setText(tmp);
+                    newTagTv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            TextView now = (TextView) view;
+                            //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
+                            for(String tmp1 : tags){
+                                if(tmp1.equals(now.getText())){
+                                    tags.remove(tmp1);
+                                    break;
+                                }
+                            }
+                            ((ViewGroup)now.getParent()).removeView(now);
+                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    tagLayout.addView(newTagTv);
+                    tagStrings.remove(0);
+                }
+
+                //컨텐츠
+                ArrayList<String> contents = post.getContents();
+                ViewGroup.LayoutParams layparms = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                parent = findViewById(R.id.contentsLayout);
+                LinearLayout linear=null;
+                for(int i = 0; i < contents.size(); i++){
+                    switch(i%2){
+                        case 1:
+                            linear = new LinearLayout(context);
+                            linear.setLayoutParams(layparms);
+                            linear.setOrientation(LinearLayout.VERTICAL);
+                            parent.addView(linear);
+
+                            ImageView iv = new ImageView(context);
+                            iv.setLayoutParams(layparms);
+                            iv.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if(relative.getVisibility()==View.GONE)
+                                        relative.setVisibility(View.VISIBLE);
+                                    else
+                                        relative.setVisibility(View.GONE);
+                                    selectediv = (ImageView)view;
+                                }
+                            });
+                            Glide.with(getApplicationContext()).load(contents.get(i)).centerCrop().override(1000).into(iv);
+                            linear.addView(iv);
+                            imageViews.add(iv);
+                            break;
+                        case 0:
+                            if(i==0){
+                                ((EditText)findViewById(R.id.et_detail)).setText(contents.get(i));
+                            }
+                            else{
+                                EditText et = new EditText(WritePostActivity.this);
+                                et.setLayoutParams(layparms);
+                                et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+                                et.setHint("내용");
+                                et.setText(contents.get(i));
+                                linear.addView(et);
+                                editTexts.add(et);
+                            }
+                            break;
+                    }
+                }
+                Log.d("WeGlonD", "기존 게시물 불러오기 완료");
+                Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
+            }
+
+            @Override
+            public void ifFail(Object task) {
+
+            }
+        });
     }
 
     public void doTakePhotoAction() // 카메라 촬영 후 이미지 가져오기
@@ -280,56 +397,81 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String time = sdf.format(new Timestamp(System.currentTimeMillis()));
-        String picName = title;
-        final String postTitle = title;
 
-        db.setNewPostNumber(CATEGORY, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                final Long postnum = ((Task<DataSnapshot>)task).getResult().getValue(Long.class);
-                for(long i = 1;i <= editTexts.size()+imageViews.size()-1;i++){
-                    switch ((int)i%2){
-                        case 0:
-                            StorageReference picRoot = db.getPostpictureRoot();
-                            Long finalI = (Long)i;
-                            db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot,CATEGORY+ "-" + postnum+ "-" + picName+ "-" + i, new Acts() {
+        Log.d("WeGlonD", "postnum " + msgFromIntent);
+
+        if(editing){
+            db.deletePost(msgFromIntent, Database.getAuth().getCurrentUser().getUid(), CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    Log.d("WeGlonD", "삭제완료");
+                    Uploading(msgFromIntent, db, title, time);
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            db.setNewPostNumber(CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    Long postnum = ((Task<DataSnapshot>) task).getResult().getValue(Long.class);
+                    Uploading(postnum, db, title, time);
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                }
+            });
+        }
+
+    }
+
+    public void Uploading(Long postnum, Database db, String title, String time){
+        Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
+        for(long i = 1;i <= editTexts.size()+imageViews.size()-1;i++){
+            switch ((int)i%2){
+                case 0:
+                    Log.d("WeGlonD", "Uploading for - " + i);
+                    StorageReference picRoot = Database.getPostpictureRoot();
+                    Long finalI = (Long)i;
+                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot,CATEGORY+ "-" + postnum+ "-" + title+ "-" + i, new Acts() {
+                        @Override
+                        public void ifSuccess(Object task1) {
+                            Log.d("WeGlonD", "after writeImage " + finalI);
+                            db.readImage(picRoot,CATEGORY+ "-" + postnum+ "-" + title+ "-" + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
-                                public void ifSuccess(Object task1) {
-                                    db.readImage(picRoot,CATEGORY+ "-" + postnum+ "-" + picName+ "-" + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            String url = uri.toString();
-                                            db.writePostByLine(postnum,finalI, url, postTitle, time, tags,CATEGORY);
-                                            Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
-                                            if((int)((finalI-1)/2) == imageViews.size()-1){
-                                                db.writePostByLine(postnum, finalI+1, editTexts.get((int)(finalI/2)).getText().toString(), postTitle, time, tags,CATEGORY);
-                                                writePostUploading.dismiss();
-                                                finish();
-                                            }
-                                        }
-                                    });
-                                }
-                                @Override
-                                public void ifFail(Object task) {
+                                public void onSuccess(Uri uri) {
+                                    String url = uri.toString();
+                                    db.writePostByLine(postnum,finalI, url, title, time, tags,CATEGORY);
+                                    Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+                                    if((int)((finalI-1)/2) == imageViews.size()-1){
+                                        db.writePostByLine(postnum, finalI+1, editTexts.get((int)(finalI/2)).getText().toString(), title, time, tags,CATEGORY);
+                                        writePostUploading.dismiss();
+                                        finish();
+                                    }
                                 }
                             });
-                            break;
-                        case 1:
-                            db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, time, tags,CATEGORY);
-                            Log.d("WeGlonD", "editText 작성");
-                            break;
-                    }
-                }
-                if(editTexts.size()==1){
-                    db.writePostByLine(postnum,1l, editTexts.get(0).getText().toString(), postTitle, time, tags,CATEGORY);
-                    Log.d("WeGlonD", "하나뿐인 editText 작성");
-                    writePostUploading.dismiss();
-                    finish();
-                }
+                        }
+                        @Override
+                        public void ifFail(Object task) {
+                        }
+                    });
+                    break;
+                case 1:
+                    db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), title, time, tags,CATEGORY);
+                    Log.d("WeGlonD", "editText 작성" + i);
+                    break;
             }
-            @Override
-            public void ifFail(Object task) {
-            }
-        });
+        }
+        if(editTexts.size()==1){
+            db.writePostByLine(postnum,1l, editTexts.get(0).getText().toString(), title, time, tags,CATEGORY);
+            Log.d("WeGlonD", "하나뿐인 editText 작성 1");
+            writePostUploading.dismiss();
+            finish();
+        }
     }
 }

@@ -24,6 +24,7 @@ import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Brand;
 import com.example.upcyclecommunity.database.BrandQuery;
 import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.mypage.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -93,17 +94,18 @@ public class Fragment_CM1 extends Fragment {
         });
 
         upload_btn.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), WritePostActivity.class);
-            startActivity(intent);
+            if(Database.getAuth().getCurrentUser()!=null) {
+                Intent intent = new Intent(getContext(), WritePostActivity.class);
+                intent.putExtra("postn", Long.MAX_VALUE + "");
+                startActivity(intent);
+            }
+            else{
+                Toast.makeText(mContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }
         });
-
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
     }
 
     public void resetListData(int count){
@@ -131,8 +133,6 @@ public class Fragment_CM1 extends Fragment {
         db.readPostsFirst(listData, count, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
-//                int position = listData.size();
-//                Cadapter.notifyItemInserted(position);
                 Cadapter.notifyDataSetChanged();
             }
 
@@ -142,8 +142,10 @@ public class Fragment_CM1 extends Fragment {
                 return;
             }
         });
-    }
 
+
+
+    }
     public void getListDataWith(Long str, Long end){
         Database db = new Database();
         db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
@@ -165,4 +167,9 @@ public class Fragment_CM1 extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        resetListData(10);
+    }
 }

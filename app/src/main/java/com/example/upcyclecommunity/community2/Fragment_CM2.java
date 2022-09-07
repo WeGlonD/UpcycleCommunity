@@ -19,6 +19,7 @@ import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.mypage.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -91,8 +92,15 @@ public class Fragment_CM2 extends Fragment {
         });
 
         upload_btn.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), WritePostActivity.class);
-            startActivity(intent);
+            if(Database.getAuth().getCurrentUser()!=null) {
+                Intent intent = new Intent(getContext(), community2_upload.class);
+                startActivity(intent);
+            }
+            else{
+                Toast.makeText(mContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }
         });
 
         return root;

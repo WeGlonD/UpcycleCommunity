@@ -1,5 +1,6 @@
 package com.example.upcyclecommunity.community1;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.example.upcyclecommunity.database.Comment;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post;
 import com.example.upcyclecommunity.database.User;
+import com.example.upcyclecommunity.mypage.LoginActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
@@ -60,30 +62,39 @@ public class Personal_Post extends AppCompatActivity {
         Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postn+"").child("writer").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 String writerUid = task.getResult().getValue(String.class);
-                Log.d("WeGlonD", "get : "+Database.getAuth().getCurrentUser().getUid());
-                Log.d("WeGlonD", "post writer : "+writerUid);
-                if(writerUid.equals(Database.getAuth().getCurrentUser().getUid())){
-                    switch (item.getItemId()){
-                        case R.id.menu_deltePost:
-                            db.deletePost(postn, writerUid, CATEGORY, new Acts() {
-                                @Override
-                                public void ifSuccess(Object task) {
-                                    finish();
-                                }
+                if(Database.getAuth().getCurrentUser()==null){
+                    Toast.makeText(getApplicationContext(), "로그인 후 게시물을 수정/삭제할 수 있습니다!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                }else {
+                    Log.d("WeGlonD", "get : " + Database.getAuth().getCurrentUser().getUid());
+                    Log.d("WeGlonD", "post writer : " + writerUid);
+                    if (writerUid.equals(Database.getAuth().getCurrentUser().getUid())) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_deltePost:
+                                db.deletePost(postn, writerUid, CATEGORY, new Acts() {
+                                    @Override
+                                    public void ifSuccess(Object task) {
+                                        finish();
+                                    }
 
-                                @Override
-                                public void ifFail(Object task) {
-                                    Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            break;
-                        case R.id.menu_editPost:
-                            //수정 코드
-                            break;
+                                    @Override
+                                    public void ifFail(Object task) {
+                                        Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                break;
+                            case R.id.menu_editPost:
+                                //수정 코드
+                                Intent it = new Intent(this, WritePostActivity.class);
+                                it.putExtra("postn", postn + "");
+                                startActivity(it);
+                                finish();
+                                break;
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "자신의 게시물만 수정/삭제 가능합니다", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "자신의 게시물만 수정/삭제 가능합니다", Toast.LENGTH_SHORT).show();
                 }
             }
         });
