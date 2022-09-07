@@ -149,6 +149,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
             ((ViewPager)pager).removeView((View)view);
         }
 
+
         // instantiateItem메소드에서 생성한 객체를 이용할 것인지
         @Override public boolean isViewFromObject(View view, Object obj) { return view == obj; }
         @Override public void finishUpdate(View arg0) {}
