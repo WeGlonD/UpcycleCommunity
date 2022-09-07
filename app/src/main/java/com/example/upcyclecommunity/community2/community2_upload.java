@@ -38,8 +38,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private ImageView selected_iv;
     private int pos = 0;
     private ArrayList<Uri> mItems;
-    private ArrayList<View> mList;
-    private ImageView test;
+    private ArrayList<ImageView> mPages;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,13 +47,12 @@ public class community2_upload extends Activity implements View.OnClickListener 
 
         btn_addimage = (Button)findViewById(R.id.btn_addimage);      //추가 버튼
         btn_addimage.setOnClickListener(this);                  //클릭 리스너 등록
-        test = findViewById(R.id.test);
         mPageMark = (LinearLayout)findViewById(R.id.page_mark);         //상단의 현재 페이지 나타내는 뷰
 
         viewpager = (ViewPager)findViewById(R.id.view_pager);                  //뷰 페이저
         mItems = new ArrayList<>();
-        mList = new ArrayList<>();
-        mViewAdapter = new ViewAdapter(mItems,mList,getApplicationContext());
+        mPages = new ArrayList<>();
+        mViewAdapter = new ViewAdapter(mItems,getApplicationContext());
         viewpager.setAdapter(mViewAdapter);
         //PagerAdapter로 설정
         viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {   //아이템이 변경되면, gallery나 listview의 onItemSelectedListener와 비슷
@@ -78,17 +76,16 @@ public class community2_upload extends Activity implements View.OnClickListener 
         iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         iv.setBackgroundResource(R.drawable.page_not);
         mPageMark.addView(iv);//LinearLayout에 추가
+        mPages.add(iv);
     }
 
     //Pager 아답터 구현
     private class ViewAdapter extends PagerAdapter {
         private Context mContext;
         private ArrayList<Uri> mItems;         //아이템 뷰의 타입. 아이템 갯수 만큼
-        private ArrayList<View> mList;
-        public ViewAdapter(ArrayList<Uri> mItems, ArrayList<View> mList,Context con) {
+        public ViewAdapter(ArrayList<Uri> mItems,Context con) {
             super(); mContext = con;
             this.mItems = mItems;     //아답터 생성시 리스트 생성
-            this.mList = mList;
         }
         //뷰 페이저의 아이템 갯수는 리스트의 갯수
         //나중에 뷰 페이저에 아이템을 추가하면 리스트에 아이템의 타입을 추가 후 새로 고침하게 되면
@@ -142,30 +139,16 @@ public class community2_upload extends Activity implements View.OnClickListener 
         }
 
         public void removeView(int position) {
-            Log.d("minseok",position+"remove"+mList.get(position));
-            for(int i = 0;i<mList.size();i++){
-                Log.d("minseok","before"+mList.get(i));
-            }
-            Uri a = mItems.remove(position);
-            View v = mList.remove(position);
-            for(int i = 0;i<mList.size();i++){
-                Log.d("minseok","after"+mList.get(i));
-            }
-
-            Log.d("minseok",""+v);
-            Glide.with(mContext).load(a).into(test);
+            viewpager.setAdapter(null);
+            mItems.remove(position);
+            mViewAdapter = new ViewAdapter(mItems,mContext);
+            viewpager.setAdapter(mViewAdapter);
+            mPageMark.removeView(mPages.get(position));
+            mPages.remove(position);
+            mPrePosition-=1;
             mViewAdapter.notifyDataSetChanged();
         }
 
-        /*@Override
-        public int getItemPosition(Object object) {
-            if (mList.contains(object)) {
-                return mList.indexOf(object);
-            } else {
-                return POSITION_NONE;
-            }
-
-        }*/
 
 
         //뷰 객체 삭제.
@@ -173,17 +156,6 @@ public class community2_upload extends Activity implements View.OnClickListener 
             ((ViewPager)pager).removeView((View)view);
             mViewAdapter.notifyDataSetChanged();
         }
-
-        /*@Override
-        public int getItemPosition(Object object) {
-            Log.d("minseok","getItemPositionfirst"+object);
-            if (mList.contains((View)object)) {
-                Log.d("minseok","getItemPosition"+object);
-                return mList.indexOf((View)object);
-            } else {
-                return POSITION_NONE;
-            }
-        }*/
 
         @Override
         public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
@@ -201,7 +173,6 @@ public class community2_upload extends Activity implements View.OnClickListener 
         public void addItem(Uri uri){
             mItems.add(uri);            //아이템 목록에 추가
             View v = getView(uri,mContext);
-            mList.add(v);
             Log.d("minseok","뭐임"+(Object)v);
             notifyDataSetChanged();      //아답터에 데이터 변경되었다고 알림. 알아서 새로고침
         }
@@ -259,18 +230,5 @@ public class community2_upload extends Activity implements View.OnClickListener 
         Glide.with(con).load(uri).centerCrop().override(1000).into(iv);
         return iv;
     }
-/*
-    private static TextView getTextView(Context con) {
-        int color = (int)(Math.random()*256);
-        TextView tv = new TextView(con);
-        tv.setBackgroundColor(Color.rgb(color, color, color));   //배경색 지정
-        tv.setText("TextView Item");                           //글자지정
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);      //글자 크기 24sp
-        color = 255 - color;
-        tv.setTextColor(Color.rgb(color, color, color));         //글자 색상은 배경과 다른 색으로
-        tv.setGravity(Gravity.CENTER);
-        return tv;
-    }
-*/
 }
 
