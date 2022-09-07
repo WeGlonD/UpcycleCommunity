@@ -34,6 +34,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private static final int PICK_FROM_ALBUM = 0,CHANGE_ALBUM = 1;
     private ImageView selected_iv;
     private int pos = 0;
+    private ArrayList<Uri> mItems;
 
 
     @Override
@@ -47,7 +48,8 @@ public class community2_upload extends Activity implements View.OnClickListener 
         mPageMark = (LinearLayout)findViewById(R.id.page_mark);         //상단의 현재 페이지 나타내는 뷰
 
         viewpager = (ViewPager)findViewById(R.id.view_pager);                  //뷰 페이저
-        mViewAdapter = new ViewAdapter(getApplicationContext());
+        mItems = new ArrayList<>();
+        mViewAdapter = new ViewAdapter(mItems,getApplicationContext());
         viewpager.setAdapter(mViewAdapter);
         //PagerAdapter로 설정
         viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {   //아이템이 변경되면, gallery나 listview의 onItemSelectedListener와 비슷
@@ -81,9 +83,9 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private class ViewAdapter extends PagerAdapter {
         private Context mContext;
         private ArrayList<Uri> mItems;         //아이템 뷰의 타입. 아이템 갯수 만큼
-        public ViewAdapter( Context con) {
+        public ViewAdapter(ArrayList<Uri> mItems, Context con) {
             super(); mContext = con;
-            mItems = new ArrayList<>();      //아답터 생성시 리스트 생성
+            this.mItems = mItems;     //아답터 생성시 리스트 생성
         }
         //뷰 페이저의 아이템 갯수는 리스트의 갯수
         //나중에 뷰 페이저에 아이템을 추가하면 리스트에 아이템의 타입을 추가 후 새로 고침하게 되면
@@ -193,6 +195,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
                 case CHANGE_ALBUM:
                     mImageCaptureUri = data.getData();
                     Glide.with(this).load(mImageCaptureUri).centerCrop().override(1000).into(selected_iv);
+                    mItems.set(pos,mImageCaptureUri);
                     mViewAdapter.notifyDataSetChanged();
             }
         }
