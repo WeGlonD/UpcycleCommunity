@@ -258,6 +258,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     relative.setVisibility(View.VISIBLE);
                 }
                 else{
+
                     relative.setVisibility(View.GONE);
                 }
                 break;
