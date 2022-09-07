@@ -7,8 +7,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaPlayer;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,19 +21,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
@@ -40,11 +35,7 @@ import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.api.Distribution;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -53,8 +44,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import io.grpc.Context;
 
 public class WritePostActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "WritePostActivity";
@@ -69,6 +58,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private RelativeLayout relative;
     private ImageView selectediv;
     private LinearLayout parent;
+    private WritePostUploading writePostUploading;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +80,9 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.btn_image).setOnClickListener(this);
         findViewById(R.id.btn_video).setOnClickListener(this);
         findViewById(R.id.btn_tagInput).setOnClickListener(this);
+
+        writePostUploading = new WritePostUploading(this);
+        writePostUploading.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     public void doTakePhotoAction() // 카메라 촬영 후 이미지 가져오기
@@ -197,6 +190,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v){
         switch(v.getId()){
             case R.id.btn_check:
+                writePostUploading.show();
                 uploadPost();
                 break;
             case R.id.btn_tagInput:
@@ -287,7 +281,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void ifSuccess(Object task) {
                 final Long postnum = ((Task<DataSnapshot>)task).getResult().getValue(Long.class);
-                for(long i = 1;i <= editTexts.size()+imageViews.size();i++){
+                for(long i = 1;i <= editTexts.size()+imageViews.size()-1;i++){
                     switch ((int)i%2){
                         case 0:
                             StorageReference picRoot = db.getPostpictureRoot();
@@ -301,6 +295,11 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                             String url = uri.toString();
                                             db.writePostByLine(postnum,finalI, url, postTitle, time, tags,CATEGORY);
                                             Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+                                            if((int)((finalI-1)/2) == imageViews.size()-1){
+                                                db.writePostByLine(postnum, finalI+1, editTexts.get((int)(finalI/2)).getText().toString(), postTitle, time, tags,CATEGORY);
+                                                writePostUploading.dismiss();
+                                                finish();
+                                            }
                                         }
                                     });
                                 }
@@ -311,8 +310,15 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                             break;
                         case 1:
                             db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), postTitle, time, tags,CATEGORY);
-                            Log.d("fuck", "edit call"+((i-1)/2));
+                            Log.d("WeGlonD", "editText 작성");
+                            break;
                     }
+                }
+                if(editTexts.size()==1){
+                    db.writePostByLine(postnum,1l, editTexts.get(0).getText().toString(), postTitle, time, tags,CATEGORY);
+                    Log.d("WeGlonD", "하나뿐인 editText 작성");
+                    writePostUploading.dismiss();
+                    finish();
                 }
             }
             @Override
