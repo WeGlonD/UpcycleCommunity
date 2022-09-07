@@ -40,6 +40,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private ArrayList<Uri> mItems;
     private ArrayList<ImageView> mPages;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
