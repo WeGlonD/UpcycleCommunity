@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                                 holder.mTitle.setText(value);
                             }
                             else if(key.equals("2")){
+                                holder.progressBar.setVisibility(View.INVISIBLE);
                                 String value = data.getValue(String.class);
                                 hasImage = true;
                                 Uri uri = Uri.parse(value);
@@ -90,10 +92,12 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                             }
                         }
                         if (!(hasImage)){
+                            holder.progressBar.setVisibility(View.INVISIBLE);
                             holder.postFirstImage_iv.setImageResource(R.drawable.transparent);
                         }
                     }
                     else{
+                        holder.progressBar.setVisibility(View.INVISIBLE);
                         holder.mTitle.setText("error");
                         holder.postFirstImage_iv.setImageResource(R.drawable.search);
                         holder.mComment.setText("?");
@@ -115,6 +119,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
         public TextView commentCnt_tv;
         public TextView mComment;
         public ImageView postFirstImage_iv;
+        public ProgressBar progressBar;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -125,6 +130,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
             commentCnt_tv = view.findViewById(R.id.community1_item_clickCnt_textView);
             mComment = view.findViewById(R.id.tv_comment1);
             postFirstImage_iv = view.findViewById(R.id.post_iv);
+            progressBar = view.findViewById(R.id.community1_item_progress_circular);
 
             view.setOnClickListener(viw -> {
                     String postNumber = String.valueOf(listData.get(getAdapterPosition()));

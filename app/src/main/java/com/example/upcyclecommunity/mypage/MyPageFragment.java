@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MyPageFragment#newInstance} factory method to
@@ -51,6 +54,7 @@ public class MyPageFragment extends Fragment {
     private String mParam2;
 
     private ImageView profile_iv;
+    private ProgressBar profile_progressbar;
     private TextView userName_tv;
     private TextView userData1_tv;
     private TextView userData2_tv;
@@ -63,6 +67,7 @@ public class MyPageFragment extends Fragment {
 
     private ViewPager viewPager;
     private PostPageAdapter postPageAdapter;
+    private ArrayList<Fragment> fragments;
 
     private RequestManager mGlideRequestManager;
 
@@ -111,6 +116,7 @@ public class MyPageFragment extends Fragment {
 //        }
 
         profile_iv = view.findViewById(R.id.my_page_profile_imageView);
+        profile_progressbar = view.findViewById(R.id.my_page_progress_circular);
         userName_tv = view.findViewById(R.id.my_page_user_name_textView);
 //        userData1_tv = view.findViewById(R.id.my_page_data1_textView);
 //        userData2_tv = view.findViewById(R.id.my_page_data2_textView);
@@ -156,6 +162,7 @@ public class MyPageFragment extends Fragment {
             }
             else {
                 Database.getAuth().signOut();
+                onResume();
                 Toast.makeText(getContext(), "logout", Toast.LENGTH_SHORT).show();
             }
         });
@@ -180,7 +187,10 @@ public class MyPageFragment extends Fragment {
             }
         });
 
-        postPageAdapter = new PostPageAdapter(getChildFragmentManager(), tabLayout.getTabCount());
+        fragments = new ArrayList<>();
+        fragments.add(new MyPagePost1_Fragment());
+        fragments.add(new MyPagePost2_Fragment());
+        postPageAdapter = new PostPageAdapter(getChildFragmentManager(), fragments, tabLayout.getTabCount());
         viewPager.setAdapter(postPageAdapter);
         viewPager.setCurrentItem(currentTabIndex);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -203,6 +213,7 @@ public class MyPageFragment extends Fragment {
                         @Override
                         public void onSuccess(Uri uri) {
                             if (mGlideRequestManager != null){
+                                profile_progressbar.setVisibility(View.INVISIBLE);
                                 mGlideRequestManager.load(uri).into(profile_iv);
                                 userName_tv.setText(data.getName());
                             }
@@ -212,9 +223,24 @@ public class MyPageFragment extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
+                    profile_progressbar.setVisibility(View.INVISIBLE);
+                    profile_iv.setImageResource(R.drawable.ic_baseline_person_24);
                     Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
                 }
             });
+        }
+        else {
+            profile_iv.setImageResource(R.drawable.ic_baseline_person_24);
+            userName_tv.setText(R.string.my_page_user_name_initialValue);
+            fragments.clear();
+            fragments.add(new MyPagePost1_Fragment());
+            fragments.add(new MyPagePost2_Fragment());
+//            viewPager.setCurrentItem(currentTabIndex);
+            int now = currentTabIndex;
+            for(int i = 0;i < fragments.size();i++){
+                viewPager.setCurrentItem(i);
+            }
+            viewPager.setCurrentItem(now);
         }
     }
 }

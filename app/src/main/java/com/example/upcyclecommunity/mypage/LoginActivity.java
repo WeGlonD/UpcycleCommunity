@@ -1,5 +1,8 @@
 package com.example.upcyclecommunity.mypage;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -26,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button signIn_btn;
     private TextView helpPassword_tv;
 
+    private Context mContext;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Database db = new Database(this);
         User user = new User();
+        mContext = getApplicationContext();
 
         signUp_btn.setOnClickListener(view -> {
             Intent it = new Intent(this, SignUpActivity.class);
@@ -54,22 +60,38 @@ public class LoginActivity extends AppCompatActivity {
             String email = email_et.getText().toString();
             String password = password_et.getText().toString();
 
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setTitle("login...");
+            dialog.show();
             user.login(email, password, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_success), Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
                     finish();
                 }
 
                 @Override
                 public void ifFail(Object task) {
+                    dialog.dismiss();
                     Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_fail), Toast.LENGTH_SHORT).show();
                 }
             });
         });
 
         helpPassword_tv.setOnClickListener(view -> {
-
+            String email = email_et.getText().toString();
+            if (email.isEmpty()){
+                Toast.makeText(mContext, "write your email", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Database.getAuth().sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Toast.makeText(mContext, "email sent", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
     }
 }

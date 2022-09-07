@@ -9,10 +9,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.TitleInfo;
 import com.example.upcyclecommunity.community2.Fragment_CM2;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +27,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import com.example.upcyclecommunity.R;
+import com.google.firebase.storage.UploadTask;
 
 import java.sql.Array;
 import java.sql.Timestamp;
@@ -32,6 +35,9 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.Objects;
 
 public class Database {
@@ -734,12 +740,12 @@ public class Database {
                 get().addOnCompleteListener(task -> {
 
                     if(task.isSuccessful()){
-                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                            if(!(dataSnapshot.getKey().equals("cnt"))){
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                            if (!(dataSnapshot.getKey().equals("cnt"))) {
                                 returnList.add(dataSnapshot.getValue(Long.class));
+                                acts.ifSuccess(task);
                             }
                         }
-                        acts.ifSuccess(task);
                     }
                     else{
                         acts.ifFail(task);
@@ -755,9 +761,9 @@ public class Database {
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
                             if(!(dataSnapshot.getKey().equals("cnt"))){
                                 returnList.add(dataSnapshot.getValue(Long.class));
+                                acts.ifSuccess(task);
                             }
                         }
-                        acts.ifSuccess(task);
                     }
                     else{
                         acts.ifFail(task);

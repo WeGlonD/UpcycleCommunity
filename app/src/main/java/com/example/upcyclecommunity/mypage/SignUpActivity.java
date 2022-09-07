@@ -4,6 +4,8 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -54,6 +56,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password_check_et;
     private Button signUp_btn;
 
+    private Context mContext;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         Database db = new Database();
         User user = new User();
+        mContext = getApplicationContext();
 
         profile_iv.setOnClickListener(view -> {
             doTakeAlbumAction();
@@ -83,6 +88,10 @@ public class SignUpActivity extends AppCompatActivity {
             String password = password_et.getText().toString();
             String password_check = password_check_et.getText().toString();
 
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setTitle("signUp...");
+            dialog.show();
             if(password.equals(password_check)){
                 user.create(email, password, new Acts() {
                     @Override
@@ -96,30 +105,35 @@ public class SignUpActivity extends AppCompatActivity {
                                             public void ifSuccess(Object task) {
                                                 User.Data data = new User.Data(name);
                                                 db.writeUser(data);
+                                                dialog.dismiss();
                                                 finish();
                                             }
 
                                             @Override
                                             public void ifFail(Object task) {
-
+                                                dialog.dismiss();
+                                                Toast.makeText(mContext, "save user profile image fail", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                             }
 
                             @Override
                             public void ifFail(Object task) {
-
+                                dialog.dismiss();
+                                Toast.makeText(mContext, "user login fail", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
 
                     @Override
                     public void ifFail(Object task) {
-
+                        dialog.dismiss();
+                        Toast.makeText(mContext, "user create fail", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
             else{
+                dialog.dismiss();
                 Toast.makeText(this, getString(R.string.activity_signup_password_is_not_same), Toast.LENGTH_SHORT).show();
             }
         });

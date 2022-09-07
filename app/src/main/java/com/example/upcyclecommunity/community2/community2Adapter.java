@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 holder.mTitle.setText(value);
                             }
                             else if(key.equals("2")){
+                                holder.postPic_progressBar.setVisibility(View.INVISIBLE);
                                 String value = data.getValue(String.class);
                                 Uri uri = Uri.parse(value);
                                 Glide.with(holder.itemView).load(uri).into(holder.postFirstImage_iv);
@@ -89,7 +91,8 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                    }
                                 });
                                 Database.getUserProfileImageRoot().child(value).getDownloadUrl().addOnSuccessListener(uri -> {
-                                   Glide.with(mContext).load(uri).into(holder.userPic);
+                                    holder.userPic_progressBar.setVisibility(View.INVISIBLE);
+                                    Glide.with(mContext).load(uri).into(holder.userPic);
                                 });
                             }
                         }
@@ -111,9 +114,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView userPic;
+        public ProgressBar userPic_progressBar;
         public TextView userName;
         public TextView mTitle;
         public ImageView postFirstImage_iv;
+        public ProgressBar postPic_progressBar;
         public TextView tags_tv;
         public TextView timeStamp_tv;
         public TextView clickCnt_tv;
@@ -125,7 +130,9 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             userPic = view.findViewById(R.id.community2_item_userPic_imageView);
             mTitle = view.findViewById(R.id.community2_item_title_textView);
             userName = view.findViewById(R.id.community2_item_userName_textView);
+            userPic_progressBar = view.findViewById(R.id.community2_item_user_image_progress_circular);
             postFirstImage_iv = view.findViewById(R.id.community2_item_firstImage_imageView);
+            postPic_progressBar = view.findViewById(R.id.community2_item_post_image_progress_circular);
             tags_tv = view.findViewById(R.id.community2_item_tags_textView);
             timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
             clickCnt_tv = view.findViewById(R.id.community2_item_clickCnt_textView);

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,16 +64,21 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
                 db.readOnePostLine(postNumber, Long.valueOf(2), CATEGORY, new Acts() {
                     @Override
                     public void ifSuccess(Object task) {
+                        holder.progressBar.setVisibility(View.INVISIBLE);
                         String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
                         if(line != null){
                             Uri downloadUri = Uri.parse(line);
                             if(mGlideRequestManager != null)
                                 mGlideRequestManager.load(downloadUri).into(holder.post_iv);
                         }
+                        else{
+                            holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+                        }
                     }
 
                     @Override
                     public void ifFail(Object task) {
+                        holder.progressBar.setVisibility(View.INVISIBLE);
                         holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
                     }
                 });
@@ -101,12 +107,14 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
 
     class Post2_ViewHolder extends RecyclerView.ViewHolder{
         ImageView post_iv;
+        ProgressBar progressBar;
         TextView post_tv;
 
         public Post2_ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             post_iv = itemView.findViewById(R.id.post2_item_imageView);
+            progressBar = itemView.findViewById(R.id.post2_item_progress_circular);
             post_tv = itemView.findViewById(R.id.post2_item_textView);
 
             itemView.setOnClickListener(view -> {

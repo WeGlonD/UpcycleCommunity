@@ -1,5 +1,7 @@
 package com.example.upcyclecommunity.mypage.adapter;
 
+import android.widget.ArrayAdapter;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -8,35 +10,38 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import com.example.upcyclecommunity.mypage.MyPagePost1_Fragment;
 import com.example.upcyclecommunity.mypage.MyPagePost2_Fragment;
 
+import java.util.ArrayList;
+
 public class PostPageAdapter extends FragmentStatePagerAdapter {
     private int numberOfFragment;
 
     private MyPagePost1_Fragment post1_fragment = null;
     private MyPagePost2_Fragment post2_fragment = null;
+    private ArrayList<Fragment> fragments;
 
-    public PostPageAdapter(FragmentManager fm, int numberOfFragment){
+    public PostPageAdapter(FragmentManager fm, ArrayList<Fragment> fragments, int numberOfFragment){
         super(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        this.fragments = fragments;
         this.numberOfFragment = numberOfFragment;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position){
-            case 0:
-                if (post1_fragment == null)
-                    post1_fragment = new MyPagePost1_Fragment();
-                return post1_fragment;
-            default:
-                if (post2_fragment == null)
-                    post2_fragment = new MyPagePost2_Fragment();
-                return post2_fragment;
-        }
+        return fragments.get(position);
     }
 
     @Override
     public int getCount() {
         return numberOfFragment;
+    }
+
+    public MyPagePost1_Fragment getPost1_fragment() {
+        return (MyPagePost1_Fragment) fragments.get(0);
+    }
+
+    public MyPagePost2_Fragment getPost2_fragment() {
+        return (MyPagePost2_Fragment) fragments.get(1);
     }
 }
 

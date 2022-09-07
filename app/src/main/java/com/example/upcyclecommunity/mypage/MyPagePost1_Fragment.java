@@ -116,15 +116,18 @@ public class MyPagePost1_Fragment extends Fragment {
 
         if(db.getAuth().getCurrentUser() != null){
             listData.clear();
+            recyclerViewAdapter.notifyDataSetChanged();
             db.readAllUserPost1(listData, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
-                    Collections.sort(listData);
-                    recyclerViewAdapter.notifyDataSetChanged();
-                    if(mContext != null){
-                        Toast.makeText(mContext, String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
-                        Log.d(mContext.getString(R.string.Dirtfy_test), "post1 list count "+String.valueOf(listData.size()));
-                    }
+//                    Collections.sort(listData);
+//                    recyclerViewAdapter.notifyDataSetChanged();
+                    int position = listData.size()-1;
+                    recyclerViewAdapter.notifyItemInserted(position);
+//                    if(mContext != null){
+//                        Toast.makeText(mContext, String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
+//                        Log.d(mContext.getString(R.string.Dirtfy_test), "post1 list count "+String.valueOf(listData.size()));
+//                    }
                 }
 
                 @Override
@@ -133,6 +136,10 @@ public class MyPagePost1_Fragment extends Fragment {
                         Toast.makeText(mContext, "user post loading fail", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+        else{
+            listData.clear();
+            recyclerViewAdapter.notifyDataSetChanged();
         }
     }
 }
