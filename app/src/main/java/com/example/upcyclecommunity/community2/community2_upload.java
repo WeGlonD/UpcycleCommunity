@@ -21,6 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class community2_upload extends Activity implements View.OnClickListener {
@@ -35,6 +36,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private ImageView selected_iv;
     private int pos = 0;
     private ArrayList<Uri> mItems;
+    private ArrayList<View> mList;
 
 
     @Override
@@ -49,7 +51,8 @@ public class community2_upload extends Activity implements View.OnClickListener 
 
         viewpager = (ViewPager)findViewById(R.id.view_pager);                  //뷰 페이저
         mItems = new ArrayList<>();
-        mViewAdapter = new ViewAdapter(mItems,getApplicationContext());
+        mList = new ArrayList<>();
+        mViewAdapter = new ViewAdapter(mItems,mList,getApplicationContext());
         viewpager.setAdapter(mViewAdapter);
         //PagerAdapter로 설정
         viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {   //아이템이 변경되면, gallery나 listview의 onItemSelectedListener와 비슷
@@ -83,9 +86,11 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private class ViewAdapter extends PagerAdapter {
         private Context mContext;
         private ArrayList<Uri> mItems;         //아이템 뷰의 타입. 아이템 갯수 만큼
-        public ViewAdapter(ArrayList<Uri> mItems, Context con) {
+        private ArrayList<View> mList;
+        public ViewAdapter(ArrayList<Uri> mItems, ArrayList<View> mList,Context con) {
             super(); mContext = con;
             this.mItems = mItems;     //아답터 생성시 리스트 생성
+            this.mList = mList;
         }
         //뷰 페이저의 아이템 갯수는 리스트의 갯수
         //나중에 뷰 페이저에 아이템을 추가하면 리스트에 아이템의 타입을 추가 후 새로 고침하게 되면
@@ -97,6 +102,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
         {
             View v = getView(mItems.get(position), mContext);   //해당 포지션의 아이템 뷰를 생성한다
             ((ViewPager)pager).addView(v);
+            mList.add(position,v);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
