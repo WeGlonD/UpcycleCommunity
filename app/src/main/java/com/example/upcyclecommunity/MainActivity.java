@@ -1,18 +1,29 @@
 package com.example.upcyclecommunity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -28,6 +39,7 @@ import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -43,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     public final int Tagsearch = 2;
     int currentTab = 0;
     RecyclerView CommunityRecycler;
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +115,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bottom_brandlist:
                 if(currentTab==3) break;
-                FragmentBrand BrandListTab = new FragmentBrand();
-                fragmentTransaction.replace(R.id.main_frame,BrandListTab).commit();
-                currentTab = 3;
-                //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
+                mRequestPermission();
+                if(checkPermission()) {
+                    if(!checkLocationServicesStatus()){
+                        showDialogForLocationServiceSetting();
+                    }
+                    FragmentBrand BrandListTab = new FragmentBrand();
+                    fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
+                    currentTab = 3;
+                    //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.bottom_mypage:
                 if(currentTab==4) break;
@@ -115,7 +136,125 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void mRequestPermission(){
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
+        if(hasFineLocationPermission == PackageManager.PERMISSION_GRANTED && hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED){
+            //startLocationUpdates();
+        }else{
+            //퍼미션 거부한 적 있는 경우
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,REQUIRED_PERMISSIONS[0])){
+                Snackbar.make(findViewById(R.id.main_frame), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Snackbar.LENGTH_INDEFINITE).setAction("확인", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ActivityCompat.requestPermissions(MainActivity.this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+                    }
+                }).show();
+            }
+            else{
+                //퍼미션 거부 한적 없으면 퍼미션 요청 바로 함
+                //요청결과는 onRequestPermissionResult에 수신
+                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+            }
+        }
+    }
+
+    private boolean checkPermission(){
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
+        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if(hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
+    }
+
+    //ActivityCompat.requestPermissions 퍼미션 요청의 결과를 리턴받는 메소드
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults.length == REQUIRED_PERMISSIONS.length) {
+            boolean check_result = true;
+
+            //모든 퍼미션 허용했는지 체크
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    check_result = false;
+                    break;
+                }
+            }
+            if (check_result) {
+                //퍼미션 허용했으니 위치업데이트 시작
+                //startLocationUpdates();
+            } else {
+                //퍼미션 거부된거 있으면 종료
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0]) ||
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[1])) {
+                    //유저가 거부만 선택한 경우 앱 재실행시 퍼미션 허용 가능
+                    Snackbar.make(findViewById(R.id.main_frame), "권한이 거부되었습니다. 앱을 다시 실행하여 권한을 허용해주세요.", Snackbar.LENGTH_INDEFINITE).setAction("확인", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finish();
+                        }
+                    }).show();
+                } else {
+                    //다시묻지않음 체크시 설정에서 퍼미션 허용해야함
+                    Snackbar.make(findViewById(R.id.main_frame), "권한이 거부되었습니다. 설정(앱 정보)에서 권한을 허용해야 합니다.", Snackbar.LENGTH_INDEFINITE).setAction("확인", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finish();
+                        }
+                    }).show();
+                }
+            }
+        }
+    }
+
+    public boolean checkLocationServicesStatus(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void showDialogForLocationServiceSetting() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("위치 서비스 비활성화");
+        builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n" + "위치 설정을 수정하실래요?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Intent callGPSSettingIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE);
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case GPS_ENABLE_REQUEST_CODE:
+                //gps활성 체크
+                if(checkLocationServicesStatus()){
+                    if(checkLocationServicesStatus()){
+                        Log.d("WeGlonD", "onActivityResult : GPS 활성화 돼있음");
+                        return;
+                    }
+                }
+                break;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {

@@ -2,7 +2,9 @@ package com.example.upcyclecommunity.community2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.mypage.LoginActivity;
+import com.google.type.LatLng;
 
 import java.util.ArrayList;
 
@@ -34,7 +37,8 @@ public class Fragment_CM2 extends Fragment {
     community2Adapter Cadapter;
     LinearLayoutManager layoutManager;
     ArrayList<Long> listData;
-
+    Location location1;
+    Location location2;
     Context mContext;
 
     public static boolean isUpdating = false;
@@ -50,6 +54,16 @@ public class Fragment_CM2 extends Fragment {
 
         upload_btn = root.findViewById(R.id.btn_upload2);
         CommunityRecycler = root.findViewById(R.id.title_community2);
+
+//        location1 = new Location("");
+//        location1.setLatitude(37.56553);
+//        location1.setLongitude(126.97801);
+//
+//        location2 = new Location("");
+//        location2.setLatitude(37.66166);
+//        location2.setLongitude(127.27801);
+//
+//        Log.d("WeGlonD", "distance "+location1.distanceTo(location2));
 
         listData = new ArrayList<>();
         Cadapter = new community2Adapter(listData, getContext());
