@@ -94,6 +94,7 @@ public class Fragment_CM2 extends Fragment {
         upload_btn.setOnClickListener(view -> {
             if(Database.getAuth().getCurrentUser()!=null) {
                 Intent intent = new Intent(getContext(), community2_upload.class);
+                intent.putExtra("postn", Long.MAX_VALUE + "");
                 startActivity(intent);
             }
             else{

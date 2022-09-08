@@ -15,7 +15,7 @@
                 android:id="@+id/community2_upload_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="제목 : "/>
+                android:hint="제목 : "/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,25 +37,53 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="500dp" />
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/test"
-                android:src="@drawable/search"/>
 
-            <EditText
-                android:id="@+id/community2_upload_tag"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="내용을 입력하세요"
-                android:text="태그 : "/>
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/et_tagInput2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:ems="10"
+                    android:hint="태그"
+                    android:inputType="textPersonName" />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="입력"
+                    android:id="@+id/btn_tagInput2"/>
+            </LinearLayout>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/tagLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
 
             <EditText
                 android:id="@+id/community2_upload_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="내용을 입력하세요"
-                android:text="내용 : \n\n\n\n\n\n"/>
+                android:hint="내용 : "
+                android:text="\n\n\n\n\n\n"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/btn_community2_upload"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="올리기">
+                </Button>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

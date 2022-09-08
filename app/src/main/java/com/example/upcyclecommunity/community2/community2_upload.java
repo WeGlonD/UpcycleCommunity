@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -11,8 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +25,15 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.database.Acts;
+import com.example.upcyclecommunity.database.Database;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.storage.StorageReference;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +49,14 @@ public class community2_upload extends Activity implements View.OnClickListener 
     private ImageView selected_iv;
     private int pos = 0;
     private ArrayList<Uri> mItems;
+    private ImageView imagecontainer;
     private ArrayList<ImageView> mPages;
+    Button upload_content;
+    Long msgFromIntent;
+    boolean editing;
+    public static final String CATEGORY = "2";
+    Button write_tag;
+    ArrayList<String> tags;
 
 
     @Override
@@ -48,8 +66,19 @@ public class community2_upload extends Activity implements View.OnClickListener 
 
         btn_addimage = (Button)findViewById(R.id.btn_addimage);      //추가 버튼
         btn_addimage.setOnClickListener(this);                  //클릭 리스너 등록
-        mPageMark = (LinearLayout)findViewById(R.id.page_mark);         //상단의 현재 페이지 나타내는 뷰
 
+        Intent it = getIntent();
+        msgFromIntent = Long.parseLong(it.getStringExtra("postn"));
+        editing = msgFromIntent != Long.MAX_VALUE;
+        write_tag = findViewById(R.id.btn_tagInput2);
+        write_tag.setOnClickListener(this);
+        tags = new ArrayList<>();
+        imagecontainer = new ImageView(this);
+
+        upload_content = findViewById(R.id.btn_community2_upload);
+        upload_content.setOnClickListener(this);
+
+        mPageMark = (LinearLayout)findViewById(R.id.page_mark);         //상단의 현재 페이지 나타내는 뷰
         viewpager = (ViewPager)findViewById(R.id.view_pager);                  //뷰 페이저
         mItems = new ArrayList<>();
         mPages = new ArrayList<>();
@@ -68,6 +97,9 @@ public class community2_upload extends Activity implements View.OnClickListener 
             @Override public void onPageScrollStateChanged(int state){}
         });
         mPrePosition = 0;   //이전 포지션 값 초기화
+        if (editing){
+            //loadExistingPost(msgFromIntent);
+        }
     }
 
     //상단의 현재 페이지 표시하는 뷰 추가.
@@ -191,6 +223,40 @@ public class community2_upload extends Activity implements View.OnClickListener 
             else
                 Toast.makeText(getApplicationContext(), "최대 10개의 아이템만 등록 가능합니다. 소스를 수정하세요.", Toast.LENGTH_SHORT).show();
         }
+        else if(v==upload_content){
+            Upload_post();
+        }
+        else if(v==write_tag){
+            EditText et_tag = findViewById(R.id.et_tagInput2);
+            String newTag = et_tag.getText().toString();
+            et_tag.setText("");
+            if(!newTag.equals("") && !tags.contains(newTag)){
+                LinearLayout tags_field = findViewById(R.id.tagLayout2);
+                TextView newTagTv = new TextView(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(5,5,5,5);
+                newTagTv.setLayoutParams(layoutParams);
+                newTagTv.setTextSize(15);
+                newTagTv.setText(newTag);
+                tags.add(newTag);
+                newTagTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextView now = (TextView) view;
+                        //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
+                        for(String tmp : tags){
+                            if(tmp.equals(now.getText())){
+                                tags.remove(tmp);
+                                break;
+                            }
+                        }
+                        ((ViewGroup)now.getParent()).removeView(now);
+                        Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+                tags_field.addView(newTagTv);
+            }
+        }
     }
 
 
@@ -230,6 +296,62 @@ public class community2_upload extends Activity implements View.OnClickListener 
         ImageView iv = new ImageView(con);
         Glide.with(con).load(uri).centerCrop().override(1000).into(iv);
         return iv;
+    }
+
+    public void Upload_post(){
+        Database db = new Database();
+        String title = ((EditText)findViewById(R.id.community2_upload_title)).getText().toString();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        String time = sdf.format(new Timestamp(System.currentTimeMillis()));
+
+        if(editing){
+            //db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, CATEGORY);
+            //Uploading(msgFromIntent,db,title,time+" (수정됨)");
+        }
+        else {
+            db.setNewPostNumber(CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    Long postnum = ((Task<DataSnapshot>) task).getResult().getValue(Long.class);
+                    Uploading(postnum, db, title, time);
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                }
+            });
+        }
+    }
+
+    public void Uploading(Long postnum, Database db, String title, String time){
+        String content = ((EditText)findViewById(R.id.community2_upload_content)).getText().toString();
+        db.writePostByLine(postnum, 1l, content, title, time, tags, CATEGORY);
+        for(int i = 0;i<mItems.size();i++){
+            int fi = i;
+            Glide.with(this).load(mItems.get(i)).centerCrop().override(1000).into(imagecontainer);
+            Log.d("minseok", "uri : " + mItems.get(i).toString());
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) imagecontainer.getDrawable();
+            Log.d("minseok", "drawable : " + bitmapDrawable);
+            db.writeImage(bitmapDrawable, Database.getPostpictureRoot(), CATEGORY + "-" + postnum + "-" + title + "-" + (i + 2), new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    db.readImage(Database.getPostpictureRoot(), CATEGORY + "-" + postnum + "-" + title + "-" + (fi + 2)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            db.writePostByLine(postnum,fi+2l, url, title, time, tags,CATEGORY);
+                            Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void ifFail(Object task) {
+
+                }
+            });
+        }
     }
 }
 
