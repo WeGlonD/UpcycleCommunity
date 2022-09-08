@@ -57,6 +57,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                     if (task.isSuccessful()){
                         Iterable<DataSnapshot> postData = task.getResult().getChildren();
                         holder.mUriItems = new ArrayList<>();
+                        holder.postPic_progressBar.setVisibility(View.VISIBLE);
                         for(DataSnapshot data : postData){
                             String key = data.getKey();
                             if(key.equals("0")){
