@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public int mode = 1;
     public final int Namesearch = 1;
     public final int Tagsearch = 2;
-    int currentTab;
+    int currentTab = 0;
     RecyclerView CommunityRecycler;
 
     @Override
@@ -85,24 +85,28 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (n) {
             case R.id.bottom_community1:
+                if(currentTab==1) break;
                 Fragment_CM1 Community1 = new Fragment_CM1();
                 fragmentTransaction.replace(R.id.main_frame,Community1).commit();
                 currentTab = 1;
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_community2:
+                if(currentTab==2) break;
                 Fragment_CM2 Community2 = new Fragment_CM2();
                 fragmentTransaction.replace(R.id.main_frame, Community2).commit();
                 currentTab = 2;
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_brandlist:
+                if(currentTab==3) break;
                 FragmentBrand BrandListTab = new FragmentBrand();
                 fragmentTransaction.replace(R.id.main_frame,BrandListTab).commit();
                 currentTab = 3;
                 //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
+                if(currentTab==4) break;
                 MyPageFragment MyPageTab = new MyPageFragment();
                 fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
                 currentTab = 4;
