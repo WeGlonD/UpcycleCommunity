@@ -109,25 +109,43 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:text="0000"/>
-        <LinearLayout
-            android:id="@+id/community2_item_clickCnt_linearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="right">
 
-            <ImageView
-                android:id="@+id/community2_item_watchImage_imageView"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/community2_item_likeCnt_linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="left">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/community2_item_likeImage_likeButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_baseline_remove_red_eye_24"/>
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/like_selector"/>
             <TextView
-                android:id="@+id/community2_item_clickCnt_textView"
+                android:id="@+id/community2_item_likeCnt_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
                 android:text="000"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/community2_item_clickCnt_linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="right">
 
             <ImageView
                 android:id="@+id/community2_item_commentImage_imageView"
@@ -143,6 +161,6 @@
                 android:text="000"/>
         </LinearLayout>
     </LinearLayout>
-
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

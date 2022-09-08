@@ -432,7 +432,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
             switch ((int)i%2){
                 case 0:
                     Log.d("WeGlonD", "Uploading for - " + i);
-                    StorageReference picRoot = Database.getPostpictureRoot();
+                    StorageReference picRoot = Database.getPostpictureRoot().child("Post"+CATEGORY);
                     Long finalI = (Long)i;
                     db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot,CATEGORY+ "-" + postnum+ "-" + title+ "-" + i, new Acts() {
                         @Override

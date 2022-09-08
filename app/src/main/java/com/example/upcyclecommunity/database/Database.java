@@ -303,14 +303,26 @@ public class Database {
                     }
                 }
             });
-            currentPosting.child("clickcnt").get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()) {
-                    Long clickCnt = task.getResult().getValue(Long.class);
-                    if(clickCnt==null){
-                        currentPosting.child("clickcnt").setValue(Long.parseLong("0"));
+            if(category.equals("1")) {
+                currentPosting.child("clickcnt").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Long clickCnt = task.getResult().getValue(Long.class);
+                        if (clickCnt == null) {
+                            currentPosting.child("clickcnt").setValue(Long.parseLong("0"));
+                        }
                     }
-                }
-            });
+                });
+            }
+            else{
+                currentPosting.child("likeuser").child("cnt").get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Long likeKeyMax = task.getResult().getValue(Long.class);
+                        if(likeKeyMax==null){
+                            currentPosting.child("likeuser").child("cnt").setValue(Long.parseLong("0"));
+                        }
+                    }
+                });
+            }
             currentPosting.child("writer").setValue(mAuth.getCurrentUser().getUid());
             currentPosting.child("timestamp").setValue(timestamp);
             userRoot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("post"+category).child("cnt").get().addOnCompleteListener(task -> {

@@ -333,10 +333,10 @@ public class community2_upload extends Activity implements View.OnClickListener 
             Log.d("minseok", "uri : " + mItems.get(i).toString());
             BitmapDrawable bitmapDrawable = (BitmapDrawable) imagecontainer.getDrawable();
             Log.d("minseok", "drawable : " + bitmapDrawable);
-            db.writeImage(bitmapDrawable, Database.getPostpictureRoot(), CATEGORY + "-" + postnum + "-" + title + "-" + (i + 2), new Acts() {
+            db.writeImage(bitmapDrawable, Database.getPostpictureRoot().child("Post"+CATEGORY), CATEGORY + "-" + postnum + "-" + title + "-" + (i + 2), new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
-                    db.readImage(Database.getPostpictureRoot(), CATEGORY + "-" + postnum + "-" + title + "-" + (fi + 2)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    db.readImage(Database.getPostpictureRoot().child("Post"+CATEGORY), CATEGORY + "-" + postnum + "-" + title + "-" + (fi + 2)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             String url = uri.toString();

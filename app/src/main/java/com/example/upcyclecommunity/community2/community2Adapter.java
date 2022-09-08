@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 public class community2Adapter extends RecyclerView.Adapter<community2Adapter.MyViewHolder>{
     private ArrayList<Long> listData;
     private Context mContext;
+    public static final String CATEGORY = "2";
 
     public community2Adapter(ArrayList<Long> listData, Context mContext) {
         this.listData = listData;
@@ -45,7 +47,9 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         Long postNumber = listData.get(i);
-        Database.getDBRoot().child("Post").
+        holder.postnum = postNumber;
+        String nowuser = Database.getAuth().getCurrentUser().getUid();
+        Database.getDBRoot().child("Post"+CATEGORY).
                 child("posting").child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
 
@@ -67,9 +71,14 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 Long value = Long.valueOf(data.getChildrenCount()-1);
                                 holder.mComment.setText(String.valueOf(value));
                             }
-                            else if (key.equals("clickcnt")){
-                                Long value = Long.valueOf(data.getValue(Long.class));
-                                holder.clickCnt_tv.setText(String.valueOf(value));
+                            else if (key.equals("likeuser")){
+                                Long value = Long.valueOf(data.getChildrenCount()-1);
+                                holder.likeCnt_tv.setText(String.valueOf(value));
+                                for(DataSnapshot dataSnapshot : data.getChildren()){
+                                    if(!dataSnapshot.getKey().equals("cnt")&&dataSnapshot.getValue(String.class).equals(nowuser)){
+                                        holder.like_btn.setSelected(true);
+                                    }
+                                }
                             }
                             else if (key.equals("timestamp")){
                                 String value = data.getValue(String.class).substring(0, 10).replace("-", ".");
@@ -121,8 +130,10 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public ProgressBar postPic_progressBar;
         public TextView tags_tv;
         public TextView timeStamp_tv;
-        public TextView clickCnt_tv;
+        public TextView likeCnt_tv;
+        public Button like_btn;
         public TextView mComment;
+        public Long postnum;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -135,18 +146,73 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             postPic_progressBar = view.findViewById(R.id.community2_item_post_image_progress_circular);
             tags_tv = view.findViewById(R.id.community2_item_tags_textView);
             timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
-            clickCnt_tv = view.findViewById(R.id.community2_item_clickCnt_textView);
+            likeCnt_tv = view.findViewById(R.id.community2_item_likeCnt_textView);
+            like_btn = view.findViewById(R.id.community2_item_likeImage_likeButton);
             mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
 
-            view.setOnClickListener(viw -> {
-                String postNumber = String.valueOf(listData.get(getAdapterPosition()));
-                Log.d("Dirtfy_test", postNumber);
-
-                Intent it = new Intent(mContext, Personal_Post.class);
-                it.putExtra("postn", postNumber);
-
-                mContext.startActivity(it);
+            like_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Button like = (Button) view;
+                    String nowUser = Database.getAuth().getCurrentUser().getUid();
+                    if(like.isSelected()){
+                        like.setSelected(false);
+                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child("likeuser").get().addOnCompleteListener(task -> {
+                            if(task.isSuccessful()){
+                                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                    if(nowUser.equals(dataSnapshot.getValue(String.class))&&!dataSnapshot.getKey().equals("cnt")){
+                                        String removeKey = dataSnapshot.getKey();
+                                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child("likeuser").child(removeKey).removeValue();
+                                    }
+                                }
+                            }
+                        });
+                        Database.getUserRoot().child(nowUser).child("likepost").get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()){
+                                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                    if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
+                                        String removeKey = dataSnapshot.getKey();
+                                        Database.getUserRoot().child(nowUser).child("likepost").child(removeKey).removeValue();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        like.setSelected(true);
+                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postnum+"").child("likeuser").child("cnt").get().addOnCompleteListener(task -> {
+                            if(task.isSuccessful()){
+                                Long likecnt = task.getResult().getValue(Long.class);
+                                if(likecnt==null)
+                                    likecnt = 0l;
+                                likecnt++;
+                                Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postnum+"").child("likeuser").child("cnt").setValue(likecnt);
+                                Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postnum+"").child("likeuser").child(likecnt+"").setValue(nowUser);
+                            }
+                        });
+                        Database.getUserRoot().child(nowUser).child("likepost").child("cnt").get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()){
+                                Long likepostcnt = task.getResult().getValue(Long.class);
+                                if(likepostcnt == null)
+                                    likepostcnt = 0l;
+                                likepostcnt++;
+                                Database.getUserRoot().child(nowUser).child("likepost").child("cnt").setValue(likepostcnt);
+                                Database.getUserRoot().child(nowUser).child("likepost").child(likepostcnt+"").setValue(postnum);
+                            }
+                        });
+                    }
+                }
             });
+
+//            view.setOnClickListener(viw -> {
+//                String postNumber = String.valueOf(listData.get(getAdapterPosition()));
+//                Log.d("Dirtfy_test", postNumber);
+//
+//                Intent it = new Intent(mContext, Personal_Post.class);
+//                it.putExtra("postn", postNumber);
+//
+//                mContext.startActivity(it);
+//            });
         }
     }
 }
