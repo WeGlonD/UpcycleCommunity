@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
@@ -55,17 +56,12 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
 
                     if (task.isSuccessful()){
                         Iterable<DataSnapshot> postData = task.getResult().getChildren();
+                        holder.mUriItems = new ArrayList<>();
                         for(DataSnapshot data : postData){
                             String key = data.getKey();
                             if(key.equals("0")){
                                 String value = data.getValue(String.class);
                                 holder.mTitle.setText(value);
-                            }
-                            else if(key.equals("2")){
-                                holder.postPic_progressBar.setVisibility(View.INVISIBLE);
-                                String value = data.getValue(String.class);
-                                Uri uri = Uri.parse(value);
-                                Glide.with(holder.itemView).load(uri).into(holder.postFirstImage_iv);
                             }
                             else if(key.equals("comment")){
                                 Long value = Long.valueOf(data.getChildrenCount()-1);
@@ -91,24 +87,43 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                             else if (key.equals("writer")){
                                 String value = data.getValue(String.class);
                                 Database.getUserRoot().child(value).child("name").get().addOnCompleteListener(task1 -> {
-                                   if (task1.isSuccessful()){
-                                       String name = task1.getResult().getValue(String.class);
-                                       holder.userName.setText(name);
-                                   }
-                                   else{
-                                       holder.userName.setText("error");
-                                   }
+                                    if (task1.isSuccessful()){
+                                        String name = task1.getResult().getValue(String.class);
+                                        holder.userName.setText(name);
+                                    }
+                                    else{
+                                        holder.userName.setText("error");
+                                    }
                                 });
                                 Database.getUserProfileImageRoot().child(value).getDownloadUrl().addOnSuccessListener(uri -> {
                                     holder.userPic_progressBar.setVisibility(View.INVISIBLE);
                                     Glide.with(mContext).load(uri).into(holder.userPic);
                                 });
                             }
+                            else if(key.equals("1")){
+                                String value = data.getValue(String.class);
+                                holder.content_tv.setText(value);
+                            }
+                            else {
+                                String value = data.getValue(String.class);
+                                Uri uri = Uri.parse(value);
+                                holder.mUriItems.add(uri);
+                                Log.d("minseok",key+uri+"");
+                            }
                         }
+                        holder.mViewAdapter = new ViewAdapter(holder.mUriItems, mContext, new ViewAdapter.clickListener() {
+                            @Override
+                            public void mclickListener_Dialog(View view, int position) {
+                                Toast.makeText(mContext, "hi hi", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        holder.postviewPager.setAdapter(holder.mViewAdapter);
+                        holder.mViewAdapter.notifyDataSetChanged();
+                        holder.postPic_progressBar.setVisibility(View.INVISIBLE);
                     }
-                    else{
+                    else {
                         holder.mTitle.setText("error");
-                        holder.postFirstImage_iv.setImageResource(R.drawable.search);
+                        /*holder.postFirstImage_iv.setImageResource(R.drawable.search);*/
                         holder.mComment.setText("?");
                     }
                 });
@@ -126,7 +141,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public ProgressBar userPic_progressBar;
         public TextView userName;
         public TextView mTitle;
-        public ImageView postFirstImage_iv;
+        public ViewPager postviewPager;
         public ProgressBar postPic_progressBar;
         public TextView tags_tv;
         public TextView timeStamp_tv;
@@ -134,21 +149,31 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public Button like_btn;
         public TextView mComment;
         public Long postnum;
+        public ArrayList<Uri> mUriItems;
+        public TextView content_tv;
+        public ViewAdapter mViewAdapter;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
-
+            mUriItems = new ArrayList<>();
             userPic = view.findViewById(R.id.community2_item_userPic_imageView);
             mTitle = view.findViewById(R.id.community2_item_title_textView);
             userName = view.findViewById(R.id.community2_item_userName_textView);
             userPic_progressBar = view.findViewById(R.id.community2_item_user_image_progress_circular);
-            postFirstImage_iv = view.findViewById(R.id.community2_item_firstImage_imageView);
+            postviewPager = view.findViewById(R.id.community2_item_firstImage_imageView);
             postPic_progressBar = view.findViewById(R.id.community2_item_post_image_progress_circular);
             tags_tv = view.findViewById(R.id.community2_item_tags_textView);
             timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
             likeCnt_tv = view.findViewById(R.id.community2_item_likeCnt_textView);
             like_btn = view.findViewById(R.id.community2_item_likeImage_likeButton);
             mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
+            content_tv = view.findViewById(R.id.community2_item_content_textView);
+            mViewAdapter = new ViewAdapter(mUriItems, mContext, new ViewAdapter.clickListener() {
+                @Override
+                public void mclickListener_Dialog(View view, int position) {
+                    Toast.makeText(mContext, "hi hi", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             like_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -216,4 +241,3 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         }
     }
 }
-
