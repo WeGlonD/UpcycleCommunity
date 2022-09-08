@@ -33,6 +33,7 @@ public class Fragment_CM1 extends Fragment {
     public static final String CATEGORY = "1";
 
     View root;
+//    Button load_more_btn;
     Button upload_btn;
 
     RecyclerView CommunityRecycler;
@@ -52,18 +53,19 @@ public class Fragment_CM1 extends Fragment {
 
         Database db = new Database();
 
+//        load_more_btn = root.findViewById(R.id.fragment_cm1_load_more_button);
         upload_btn = root.findViewById(R.id.btn_upload);
         CommunityRecycler = root.findViewById(R.id.title_community1);
 
         listData = new ArrayList<>();
-        Cadapter = new communityAdapter(listData, getContext());
+        Cadapter = new communityAdapter(listData, getContext(), (str, end) -> getListDataWith(str, end));
         CommunityRecycler.setAdapter(Cadapter);
         CommunityRecycler.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(mContext);
         CommunityRecycler.setLayoutManager(layoutManager);
 
         isUpdating = true;
-        //getFirstListData(10);
+        resetListData(10);
 
         CommunityRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -79,19 +81,26 @@ public class Fragment_CM1 extends Fragment {
                             isUpdating = true;
                             resetListData(10);
                         }
-                        else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1){
-                            int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
-                            Long lastPostNumber = listData.get(position);
-//                            Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
-//                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
-//                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
-                            isUpdating = true;
-                            getListDataWith(lastPostNumber+1, lastPostNumber+5);
-                        }
+//                        else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1){
+//                            int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
+//                            Long lastPostNumber = listData.get(position);
+////                            Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
+////                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+////                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
+//                            isUpdating = true;
+//                            getListDataWith(lastPostNumber+1, lastPostNumber+5);
+//                        }
                     }
                 }
             }
         });
+
+//        load_more_btn.setOnClickListener(view -> {
+//            int position = layoutManager.findLastCompletelyVisibleItemPosition();
+//            Long lastPostNumber = listData.get(position);
+//            isUpdating = true;
+//            getListDataWith(lastPostNumber+1, lastPostNumber+5);
+//        });
 
         upload_btn.setOnClickListener(view -> {
             if(Database.getAuth().getCurrentUser()!=null) {
@@ -110,8 +119,11 @@ public class Fragment_CM1 extends Fragment {
 
     public void resetListData(int count){
         Database db = new Database();
-        listData.clear();
-        Cadapter.notifyDataSetChanged();
+        int size = listData.size();
+        for(int i = size-1;i >= 0;i--){
+            listData.remove(listData.size()-1);
+            Cadapter.notifyItemRemoved(i);
+        }
         db.readPostsFirst(listData, count, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
@@ -142,12 +154,13 @@ public class Fragment_CM1 extends Fragment {
                 return;
             }
         });
-
-
-
     }
+
     public void getListDataWith(Long str, Long end){
         Database db = new Database();
+        int lastPosition = listData.size()-1;
+        listData.remove(lastPosition);
+        Cadapter.notifyItemRemoved(lastPosition);
         db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
@@ -170,6 +183,6 @@ public class Fragment_CM1 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        resetListData(10);
+        //resetListData(10);
     }
 }

@@ -560,9 +560,13 @@ public class Database {
                             }
                         }
                         if (category.equals("1")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
                             Fragment_CM1.isUpdating = false;
                         }
                         if (category.equals("2")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
                     }
@@ -604,9 +608,13 @@ public class Database {
                             }
                         }
                         if (category.equals("1")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
                             Fragment_CM1.isUpdating = false;
                         }
                         if (category.equals("2")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
                     }
