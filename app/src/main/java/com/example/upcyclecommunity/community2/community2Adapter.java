@@ -157,12 +157,12 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                     String nowUser = Database.getAuth().getCurrentUser().getUid();
                     if(like.isSelected()){
                         like.setSelected(false);
-                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child("likeuser").get().addOnCompleteListener(task -> {
+                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postnum+"").child("likeuser").get().addOnCompleteListener(task -> {
                             if(task.isSuccessful()){
                                 for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                                    if(nowUser.equals(dataSnapshot.getValue(String.class))&&!dataSnapshot.getKey().equals("cnt")){
+                                    if(!dataSnapshot.getKey().equals("cnt")&&nowUser.equals(dataSnapshot.getValue(String.class))){
                                         String removeKey = dataSnapshot.getKey();
-                                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child("likeuser").child(removeKey).removeValue();
+                                        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postnum+"").child("likeuser").child(removeKey).removeValue();
                                     }
                                 }
                             }
