@@ -60,10 +60,16 @@ public class Fragment_CM1 extends Fragment {
         cur_pos_condition_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cur_pos_condition_btn.isSelected())
+                if(cur_pos_condition_btn.isSelected()) {
                     cur_pos_condition_btn.setSelected(false);
-                else
+                    isUpdating = true;
+                    resetListData(5);
+                }
+                else {
                     cur_pos_condition_btn.setSelected(true);
+                    isUpdating = true;
+                    resetListData(5);
+                }
             }
         });
         CommunityRecycler = root.findViewById(R.id.title_community1);
@@ -210,7 +216,7 @@ public class Fragment_CM1 extends Fragment {
             });
         }
         else{
-            db.readNearPostsWith(listData, str, (int)(end - str + 1), (double)10, CATEGORY, new Acts() {
+            db.readNearPostsWith(listData, str, end, (double)10, CATEGORY, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;

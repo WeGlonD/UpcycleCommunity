@@ -90,14 +90,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        findViewById(R.id.position).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                Toast.makeText(MainActivity.this, "위도: "+latitude+"\n경도: "+longitude, Toast.LENGTH_LONG).show();
-            }
-        });
+//        findViewById(R.id.position).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                double latitude = location.getLatitude();
+//                double longitude = location.getLongitude();
+//                Toast.makeText(MainActivity.this, "위도: "+latitude+"\n경도: "+longitude, Toast.LENGTH_LONG).show();
+//            }
+//        });
 
         //첫번째 프래그먼트 띄우도록 할 것.
         setFragment(R.id.bottom_community1);

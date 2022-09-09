@@ -633,6 +633,8 @@ public class Database {
                                     acts.ifSuccess(snapshot);
                                 }
                             }
+                            if(returnList.size() == count)
+                                break;
                         }
                         if (category.equals("1")){
                             returnList.add((long) -1);
@@ -640,7 +642,7 @@ public class Database {
                             Fragment_CM1.isUpdating = false;
                         }
                         if (category.equals("2")){
-                            returnList.add((long) -1);
+                            //returnList.add((long) -1);
                             acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
@@ -721,23 +723,31 @@ public class Database {
                 });
     }
 
-    public void readNearPostsWith(ArrayList<Long> returnList, Long str, int count, Double MaxDistanceKm, String category, Acts acts){
+    public void readNearPostsWith(ArrayList<Long> returnList, Long str, Long end, Double MaxDistanceKm, String category, Acts acts){
 
         String path = "firebase.Database.readNearPostsWith - ";
 
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
 
-        int maxcnt = returnList.size() + count;
-
         Location nowPosition = new Location("");
         nowPosition.setLatitude(MainActivity.location.getLatitude());
         nowPosition.setLongitude(MainActivity.location.getLongitude());
+        Log.d("WeGlonD", "str : " + str + " end : " + end);
 
         if (str < 0){
             str = Long.valueOf(0);
         }
+        if (end < 0){
+            end = FIRST_POSTNUM;
+        }
 
         String from = String.valueOf(str);
+        String to = String.valueOf(end);
+
+        Log.d("WeGlonD", "from : " + from + " to : " + to);
+
+        int count = (int)(end - str + 1);
+        int maxcnt = returnList.size() + count;
 
 //        Toast.makeText(context, from+" "+to, Toast.LENGTH_LONG).show();
 
@@ -768,8 +778,8 @@ public class Database {
                             Fragment_CM1.isUpdating = false;
                         }
                         if (category.equals("2")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
+                            //returnList.add((long) -1);
+                            //acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
                     }
