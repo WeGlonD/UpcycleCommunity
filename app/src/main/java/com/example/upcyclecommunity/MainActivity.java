@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public final int Namesearch = 1;
     public final int Tagsearch = 2;
     int currentTab = 0;
+    MyLocation location;
     RecyclerView CommunityRecycler;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
@@ -87,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
                 showDialogForLocationServiceSetting();
             }
         }
-
-        MyLocation location = new MyLocation(this);
 
         findViewById(R.id.position).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(hasFineLocationPermission == PackageManager.PERMISSION_GRANTED && hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED){
             //startLocationUpdates();
+            location = new MyLocation(this);
         }else{
             //퍼미션 거부한 적 있는 경우
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,REQUIRED_PERMISSIONS[0])){
@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
             if (check_result) {
                 //퍼미션 허용했으니 위치업데이트 시작
                 //startLocationUpdates();
+                location = new MyLocation(this);
             } else {
                 //퍼미션 거부된거 있으면 종료
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0]) ||
@@ -262,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 if(checkLocationServicesStatus()){
                     if(checkLocationServicesStatus()){
                         Log.d("WeGlonD", "onActivityResult : GPS 활성화 돼있음");
+                        location = new MyLocation(this);
                         return;
                     }
                 }

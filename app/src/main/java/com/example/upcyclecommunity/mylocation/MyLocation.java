@@ -76,6 +76,7 @@ public class MyLocation {
     };
 
     private void startLocationUpdates(){
+        Log.d("WeGlonD", "startLocationUpdates called");
         if(!checkLocationServicesStatus()){
             Log.d("WeGlonD", "startLocationUpdates : call showDialogForLocationServiceSetting");
             //showDialogForLocationServiceSetting();
