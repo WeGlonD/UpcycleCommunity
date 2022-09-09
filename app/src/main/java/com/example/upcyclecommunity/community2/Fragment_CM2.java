@@ -26,6 +26,8 @@ import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.mypage.LoginActivity;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.type.LatLng;
 
 import java.util.ArrayList;
@@ -73,7 +75,17 @@ public class Fragment_CM2 extends Fragment {
         Cadapter = new community2Adapter(listData, getContext(), new community2Adapter.clickListener() {
             @Override
             public void mclickListener_Dialog(String postNumber) {
-                Dialog(postNumber);
+                if (Database.getAuth().getCurrentUser() != null){
+                    Database.getDBRoot().child("Post2").child("posting").
+                            child(postNumber).child("writer").get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()){
+                            String user_uid = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+                            if(user_uid.equals(Database.getAuth().getCurrentUser().getUid()))
+                                Dialog(postNumber);
+                        }
+                    });
+                }
+
             }
         });
         CommunityRecycler.setAdapter(Cadapter);
@@ -81,8 +93,8 @@ public class Fragment_CM2 extends Fragment {
         layoutManager = new LinearLayoutManager(mContext);
         CommunityRecycler.setLayoutManager(layoutManager);
 
-        isUpdating = true;
-        //getFirstListData(5);
+//        isUpdating = true;
+//        resetListData(5);
 
         CommunityRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -92,21 +104,23 @@ public class Fragment_CM2 extends Fragment {
                 LinearLayoutManager nowLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
                 if (newState == RecyclerView.SCROLL_STATE_SETTLING){
-                    if (isUpdating == false && nowLayoutManager.findFirstCompletelyVisibleItemPosition() > -1){
-                        if (nowLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
-//                            Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
-                            isUpdating = true;
-                            resetListData(5);
-                        }
-                        else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1) {
-                            int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
-                            if (position >= 0){
-                                Long lastPostNumber = listData.get(position);
-    //                            Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
-    //                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
-    //                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
+                    if (nowLayoutManager != null){
+                        if (isUpdating == false && nowLayoutManager.findFirstCompletelyVisibleItemPosition() > -1){
+                            if (nowLayoutManager.findFirstVisibleItemPosition() == 0){
+                                Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
                                 isUpdating = true;
-                                getListDataWith(lastPostNumber + 1, lastPostNumber + 5);
+                                resetListData(5);
+                            }
+                            else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1) {
+                                int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
+                                if (position >= 0){
+                                    Long lastPostNumber = listData.get(position);
+                                    Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
+                                    //                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+                                    //                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
+                                    isUpdating = true;
+                                    getListDataWith(lastPostNumber + 1, lastPostNumber + 5);
+                                }
                             }
                         }
                     }
@@ -132,8 +146,11 @@ public class Fragment_CM2 extends Fragment {
 
     public void resetListData(int count){
         Database db = new Database();
-        listData.clear();
-        Cadapter.notifyDataSetChanged();
+        int size = listData.size();
+        for(int i = size-1;i >= 0;i--){
+            listData.remove(listData.size()-1);
+            Cadapter.notifyItemRemoved(i);
+        }
         db.readPostsFirst(listData, count, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
@@ -155,8 +172,6 @@ public class Fragment_CM2 extends Fragment {
         db.readPostsFirst(listData, count, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
-//                int position = listData.size();
-//                Cadapter.notifyItemInserted(position);
                 Cadapter.notifyDataSetChanged();
             }
 
@@ -192,6 +207,7 @@ public class Fragment_CM2 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        isUpdating = true;
         resetListData(5);
     }
 

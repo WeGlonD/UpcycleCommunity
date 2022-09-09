@@ -36,6 +36,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
@@ -582,7 +585,7 @@ public class Database {
                             Fragment_CM1.isUpdating = false;
                         }
                         if (category.equals("2")){
-                            returnList.add((long) -1);
+                            //returnList.add((long) -1);
                             acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
@@ -630,8 +633,8 @@ public class Database {
                             Fragment_CM1.isUpdating = false;
                         }
                         if (category.equals("2")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
+                            //returnList.add((long) -1);
+                            //acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
                     }
@@ -779,12 +782,28 @@ public class Database {
                 get().addOnCompleteListener(task -> {
 
                     if(task.isSuccessful()){
+                        ArrayList<Long> postNumbs = new ArrayList<>();
+
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
                             if (!(dataSnapshot.getKey().equals("cnt"))) {
-                                returnList.add(dataSnapshot.getValue(Long.class));
-                                acts.ifSuccess(task);
+                                postNumbs.add(dataSnapshot.getValue(Long.class));
                             }
                         }
+
+                        Collections.sort(postNumbs, (t1, t2) -> {
+                            if (t1 > t2)
+                                return +1;
+                            else if (t1 < t2)
+                                return -1;
+                            else
+                                return 0;
+                        });
+
+                        for(Long postNum : postNumbs) {
+                            returnList.add(postNum);
+                            acts.ifSuccess(task);
+                        }
+
                     }
                     else{
                         acts.ifFail(task);
@@ -797,12 +816,28 @@ public class Database {
                 get().addOnCompleteListener(task -> {
 
                     if(task.isSuccessful()){
-                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                            if(!(dataSnapshot.getKey().equals("cnt"))){
-                                returnList.add(dataSnapshot.getValue(Long.class));
-                                acts.ifSuccess(task);
+                        ArrayList<Long> postNumbs = new ArrayList<>();
+
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                            if (!(dataSnapshot.getKey().equals("cnt"))) {
+                                postNumbs.add(dataSnapshot.getValue(Long.class));
                             }
                         }
+
+                        Collections.sort(postNumbs, (t1, t2) -> {
+                            if (t1 > t2)
+                                return +1;
+                            else if (t1 < t2)
+                                return -1;
+                            else
+                                return 0;
+                        });
+
+                        for(Long postNum : postNumbs) {
+                            returnList.add(postNum);
+                            acts.ifSuccess(task);
+                        }
+
                     }
                     else{
                         acts.ifFail(task);

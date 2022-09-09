@@ -17,7 +17,7 @@
             android:layout_height="@dimen/signup_profile_image_size"
             android:adjustViewBounds="true"
             android:layout_marginBottom="@dimen/signup_profile_bottomMargin"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/ic_baseline_person_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

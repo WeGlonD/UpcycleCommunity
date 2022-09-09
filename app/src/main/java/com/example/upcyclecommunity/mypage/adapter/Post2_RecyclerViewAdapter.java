@@ -120,11 +120,12 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
             itemView.setOnClickListener(view -> {
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
                 Log.d("Dirtfy_test", postNumber);
+                Toast.makeText(context, postNumber, Toast.LENGTH_SHORT).show();
 
-                Intent it = new Intent(context, Personal_Post.class);
-                it.putExtra("postn", postNumber);
+//                Intent it = new Intent(context, Personal_Post.class);
+//                it.putExtra("postn", postNumber);
 
-                context.startActivity(it);
+//                context.startActivity(it);
             });
         }
     }

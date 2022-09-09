@@ -64,8 +64,8 @@ public class Fragment_CM1 extends Fragment {
         layoutManager = new LinearLayoutManager(mContext);
         CommunityRecycler.setLayoutManager(layoutManager);
 
-        isUpdating = true;
-        resetListData(10);
+//        isUpdating = true;
+//        resetListData(10);
 
         CommunityRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -79,7 +79,7 @@ public class Fragment_CM1 extends Fragment {
                         if (nowLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
 //                            Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
                             isUpdating = true;
-                            resetListData(10);
+                            resetListData(15);
                         }
 //                        else if (nowLayoutManager.findLastCompletelyVisibleItemPosition() == listData.size() -1){
 //                            int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
@@ -183,6 +183,7 @@ public class Fragment_CM1 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //resetListData(10);
+        isUpdating = true;
+        resetListData(15);
     }
 }

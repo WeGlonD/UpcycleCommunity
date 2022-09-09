@@ -3,6 +3,7 @@ package com.example.upcyclecommunity.community2;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -29,9 +31,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import java.util.ArrayList;
 
 public class community2Adapter extends RecyclerView.Adapter<community2Adapter.MyViewHolder>{
+    public static final String CATEGORY = "2";
     private ArrayList<Long> listData;
     private Context mContext;
-    public static final String CATEGORY = "2";
     private community2Adapter.clickListener mclickListener;
 
     interface clickListener{
@@ -166,6 +168,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public TextView content_tv;
         public ViewAdapter mViewAdapter;
 
+        @RequiresApi(api = Build.VERSION_CODES.Q)
         public MyViewHolder(@NonNull View view) {
             super(view);
             mUriItems = new ArrayList<>();
@@ -181,6 +184,12 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             like_btn = view.findViewById(R.id.community2_item_likeImage_likeButton);
             mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
             content_tv = view.findViewById(R.id.community2_item_content_textView);
+            content_tv.setOnClickListener(viw -> {
+                if(content_tv.isSingleLine())
+                    content_tv.setSingleLine(false);
+                else
+                    content_tv.setSingleLine(true);
+            });
             mViewAdapter = new ViewAdapter(mUriItems, mContext, new ViewAdapter.clickListener() {
                 @Override
                 public void mclickListener_Dialog(View view, int position) {

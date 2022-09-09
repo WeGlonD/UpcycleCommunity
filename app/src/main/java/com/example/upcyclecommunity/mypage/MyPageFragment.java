@@ -230,6 +230,7 @@ public class MyPageFragment extends Fragment {
             });
         }
         else {
+            profile_progressbar.setVisibility(View.INVISIBLE);
             profile_iv.setImageResource(R.drawable.ic_baseline_person_24);
             userName_tv.setText(R.string.my_page_user_name_initialValue);
             fragments.clear();
