@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
+import com.example.upcyclecommunity.database.Post;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class community2_upload extends Activity implements View.OnClickListener {
@@ -57,6 +61,12 @@ public class community2_upload extends Activity implements View.OnClickListener 
     public static final String CATEGORY = "2";
     Button write_tag;
     ArrayList<String> tags;
+    private Context context;
+    String preTitle;
+    String preTagStr;
+    int preImageCnt;
+    public static String community2_change_content = "";
+
 
 
     @Override
@@ -69,6 +79,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
 
         Intent it = getIntent();
         msgFromIntent = Long.parseLong(it.getStringExtra("postn"));
+        context = this;
         editing = msgFromIntent != Long.MAX_VALUE;
         write_tag = findViewById(R.id.btn_tagInput2);
         write_tag.setOnClickListener(this);
@@ -103,7 +114,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
         });
         mPrePosition = 0;   //이전 포지션 값 초기화
         if (editing){
-            //loadExistingPost(msgFromIntent);
+            loadExistingPost(msgFromIntent);
         }
     }
 
@@ -222,8 +233,8 @@ public class community2_upload extends Activity implements View.OnClickListener 
         String time = sdf.format(new Timestamp(System.currentTimeMillis()));
 
         if(editing){
-            //db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, CATEGORY);
-            //Uploading(msgFromIntent,db,title,time+" (수정됨)");
+            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, CATEGORY);
+            Uploading(msgFromIntent,db,title,time+" (수정됨)");
         }
         else {
             db.setNewPostNumber(CATEGORY, new Acts() {
@@ -303,6 +314,118 @@ public class community2_upload extends Activity implements View.OnClickListener 
                 .setNegativeButton("취소",cancel)
                 .setNeutralButton("사진 삭제", deleteimage)
                 .show();
+    }
+
+
+    public void loadExistingPost(Long postnum){
+        Database db = new Database(this);
+        ArrayList<Post> posts = new ArrayList<>();
+        db.readOnePost(posts, postnum, CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                Post post = posts.get(0);
+                //제목
+                ((EditText)findViewById(R.id.community2_upload_title)).setText(post.getTitle());
+                preTitle = post.getTitle();
+
+                //태그
+                preTagStr = post.getTags();
+                ArrayList<String> tagStrings = new ArrayList<>(Arrays.asList(post.getTags().split("#")));
+                tagStrings.remove(0);
+                LinearLayout tagLayout = ((LinearLayout)findViewById(R.id.tagLayout2));
+                while(tagStrings.size() > 0){
+                    String tmp = tagStrings.get(0).trim();
+                    Log.d("WeGlonD", tmp);
+                    tags.add(tmp);
+                    TextView newTagTv = new TextView(context);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(5,5,5,5);
+                    newTagTv.setLayoutParams(layoutParams);
+                    newTagTv.setTextSize(15);
+                    newTagTv.setText(tmp);
+                    newTagTv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            TextView now = (TextView) view;
+                            //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
+                            for(String tmp1 : tags){
+                                if(tmp1.equals(now.getText())){
+                                    tags.remove(tmp1);
+                                    break;
+                                }
+                            }
+                            ((ViewGroup)now.getParent()).removeView(now);
+                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    tagLayout.addView(newTagTv);
+                    tagStrings.remove(0);
+                }
+
+                //컨텐츠
+                ArrayList<String> contents = post.getContents();
+                ((EditText)findViewById(R.id.community2_upload_content)).setText(community2_change_content);
+
+                for(int i = 0;i<contents.size();i++){
+                    Log.d("minseok",contents.get(i)+"url");
+                    Log.d("minseok",Uri.parse(contents.get(i))+"uri");
+                    mItems.add(Uri.parse(contents.get(i)));
+                    addPageMark();
+                }
+                mViewAdapter.notifyDataSetChanged();
+
+//                parent = findViewById(R.id.contentsLayout);
+//                LinearLayout linear=null;
+//                for(int i = 0; i < contents.size(); i++){
+//                    switch(i%2){
+//                        case 1:
+//                            linear = new LinearLayout(context);
+//                            linear.setLayoutParams(layparms);
+//                            linear.setOrientation(LinearLayout.VERTICAL);
+//                            parent.addView(linear);
+//
+//                            ImageView iv = new ImageView(context);
+//                            iv.setLayoutParams(layparms);
+//                            iv.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    if(relative.getVisibility()==View.GONE)
+//                                        relative.setVisibility(View.VISIBLE);
+//                                    else
+//                                        relative.setVisibility(View.GONE);
+//                                    selectediv = (ImageView)view;
+//                                }
+//                            });
+//                            Glide.with(getApplicationContext()).load(contents.get(i)).centerCrop().override(1000).into(iv);
+//                            linear.addView(iv);
+//                            imageViews.add(iv);
+//                            break;
+//                        case 0:
+//                            if(i==0){
+//                                ((EditText)findViewById(R.id.et_detail)).setText(contents.get(i));
+//                            }
+//                            else{
+//                                EditText et = new EditText(WritePostActivity.this);
+//                                et.setLayoutParams(layparms);
+//                                et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+//                                et.setHint("내용");
+//                                et.setText(contents.get(i));
+//                                linear.addView(et);
+//                                editTexts.add(et);
+//                            }
+//                            break;
+//                    }
+//                }
+                preImageCnt = contents.size();
+                Log.d("WeGlonD", "기존 게시물 불러오기 완료");
+                //Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
+            }
+
+            @Override
+            public void ifFail(Object task) {
+
+            }
+        });
     }
 }
 

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.TitleInfo;
 import com.example.upcyclecommunity.community2.Fragment_CM2;
+import com.example.upcyclecommunity.community2.community2_upload;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -725,9 +726,11 @@ public class Database {
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt"))) {
+                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt")||dataSnapshot.getKey().equals("likeuser"))) {
                                 String key = dataSnapshot.getKey();
+                                Log.d("minseok","key"+key);
                                 String value = dataSnapshot.getValue(String.class);
+                                Log.d("minseok","value"+value);
                                 if (key.equals("0")) {
                                     Title = value;
                                 } else if (key.equals("tags")) {
@@ -737,7 +740,12 @@ public class Database {
                                 } else if (key.equals("timestamp")){
                                     timeStamp = value;
                                 } else {
-                                    Content.add(value);
+                                    if(category.equals("2") && key.equals("1")){
+                                        community2_upload.community2_change_content = value;
+                                    }
+                                    else{
+                                        Content.add(value);
+                                    }
                                 }
                             } else if (dataSnapshot.getKey().equals("clickcnt")){
                                 clickCnt = dataSnapshot.getValue(Long.class) + 1;

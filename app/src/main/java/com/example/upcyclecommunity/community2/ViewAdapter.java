@@ -86,6 +86,4 @@ public class ViewAdapter extends PagerAdapter {
         Glide.with(con).load(uri).centerCrop().override(1000).into(iv);
         return iv;
     }
-
-
 }

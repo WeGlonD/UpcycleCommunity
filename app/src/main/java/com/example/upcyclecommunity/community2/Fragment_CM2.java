@@ -216,7 +216,7 @@ public class Fragment_CM2 extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //수정
-                change_posting(postNumber,0);
+                change_posting(postNumber,1);
                 dialog.dismiss();
             }
         };
