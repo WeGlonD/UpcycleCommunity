@@ -470,56 +470,61 @@ public class Database {
                 if(title!=null) {
                     String fTitle = title;
                     ArrayList<String> fTags = tags;
-                    titleRoot.child(title).get().addOnCompleteListener(task1 -> {
-                        for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
-                            if(postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")){
-                                titleRoot.child(fTitle).child(dataSnapshot.getKey()).removeValue();
-                                break;
+                    if(!title.equals("")){
+                        Log.d("minseok","deletepost2"+title);
+                        titleRoot.child(title).get().addOnCompleteListener(task1 -> {
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                Log.d("minseok","datasnapshotpostnum"+dataSnapshot.getValue(Long.class));
+                                Log.d("minseok","postnum"+postnum);
+                                if(postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")){
+                                    titleRoot.child(fTitle).child(dataSnapshot.getKey()).removeValue();
+                                    break;
+                                }
                             }
-                        }
 
-                        if(fTags!=null) {
-                            for (String tag : fTags) {
-                                Log.d("WeGlonD", "tag : " + tag);
-                                tagRoot.child(tag).get().addOnCompleteListener(task2 -> {
-                                    if (task2.isSuccessful()) {
-                                        for (DataSnapshot dataSnapshot : task2.getResult().getChildren()) {
-                                            Log.d("WeGlonD", dataSnapshot.toString() + "asdf");
-                                            if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
-                                                String removeKey = dataSnapshot.getKey();
-                                                tagRoot.child(tag).child(removeKey).removeValue();
-                                                break;
+                            if(fTags!=null) {
+                                for (String tag : fTags) {
+                                    Log.d("minseok", "tag : " + tag);
+                                    tagRoot.child(tag).get().addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            for (DataSnapshot dataSnapshot : task2.getResult().getChildren()) {
+                                                Log.d("WeGlonD", dataSnapshot.toString() + "asdf");
+                                                if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
+                                                    String removeKey = dataSnapshot.getKey();
+                                                    tagRoot.child(tag).child(removeKey).removeValue();
+                                                    break;
+                                                }
                                             }
+
+                                            userRoot.child(writerUid).child("post"+category).get().addOnCompleteListener(task3 -> {
+                                                if(task3.isSuccessful()){
+                                                    for(DataSnapshot dataSnapshot : task3.getResult().getChildren()){
+                                                        if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
+                                                            String removeKey = dataSnapshot.getKey();
+                                                            userRoot.child(writerUid).child("post"+category).child(removeKey).removeValue();
+                                                            Log.d("WeGlonD", "user post del - " + removeKey + " " + dataSnapshot.getValue(Long.class));
+                                                        }
+                                                    }
+
+                                                    for(int i = 1; i <= contentsCnt; i++){
+                                                        if(i%2==0){
+                                                            postpictureRoot.child(category + "-" + postnum + "-" + fTitle + "-" +i).delete();
+                                                            Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
+                                                        }
+                                                    }
+                                                    postingRoot.child(postnum+"").removeValue();
+                                                    Log.d("WeGlonD", "Database - deletePost - 삭제완료");
+                                                    acts.ifSuccess(task);
+                                                }
+                                            });
+
                                         }
-
-                                        userRoot.child(writerUid).child("post"+category).get().addOnCompleteListener(task3 -> {
-                                            if(task3.isSuccessful()){
-                                                for(DataSnapshot dataSnapshot : task3.getResult().getChildren()){
-                                                    if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
-                                                        String removeKey = dataSnapshot.getKey();
-                                                        userRoot.child(writerUid).child("post"+category).child(removeKey).removeValue();
-                                                        Log.d("WeGlonD", "user post del - " + removeKey + " " + dataSnapshot.getValue(Long.class));
-                                                    }
-                                                }
-
-                                                for(int i = 1; i <= contentsCnt; i++){
-                                                    if(i%2==0){
-                                                        postpictureRoot.child(category + "-" + postnum + "-" + fTitle + "-" +i).delete();
-                                                        Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
-                                                    }
-                                                }
-                                                postingRoot.child(postnum+"").removeValue();
-                                                Log.d("WeGlonD", "Database - deletePost - 삭제완료");
-                                                acts.ifSuccess(task);
-                                            }
-                                        });
-
-                                    }
-                                });
+                                    });
+                                }
                             }
-                        }
 
-                    });
+                        });
+                    }
                 }
 
             }

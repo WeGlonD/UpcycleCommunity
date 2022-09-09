@@ -32,10 +32,16 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
     private ArrayList<Long> listData;
     private Context mContext;
     public static final String CATEGORY = "2";
+    private community2Adapter.clickListener mclickListener;
 
-    public community2Adapter(ArrayList<Long> listData, Context mContext) {
+    interface clickListener{
+        public void mclickListener_Dialog(String postNumber);
+    }
+
+    public community2Adapter(ArrayList<Long> listData, Context mContext,clickListener mclickListener) {
         this.listData = listData;
         this.mContext = mContext;
+        this.mclickListener = mclickListener;
     }
 
     @NonNull
@@ -121,7 +127,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                         holder.mViewAdapter = new ViewAdapter(holder.mUriItems, mContext, new ViewAdapter.clickListener() {
                             @Override
                             public void mclickListener_Dialog(View view, int position) {
-                                Toast.makeText(mContext, "hi hi", Toast.LENGTH_SHORT).show();
+                                mclickListener.mclickListener_Dialog(postNumber.toString());
                             }
                         });
                         holder.postviewPager.setAdapter(holder.mViewAdapter);
@@ -239,15 +245,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                 }
             });
 
-//            view.setOnClickListener(viw -> {
-//                String postNumber = String.valueOf(listData.get(getAdapterPosition()));
-//                Log.d("Dirtfy_test", postNumber);
-//
-//                Intent it = new Intent(mContext, Personal_Post.class);
-//                it.putExtra("postn", postNumber);
-//
-//                mContext.startActivity(it);
-//            });
+            view.setOnClickListener(viw -> {
+                String postNumber = String.valueOf(listData.get(getAdapterPosition()));
+                mclickListener.mclickListener_Dialog(postNumber);
+                Log.d("Dirtfy_test", postNumber);
+            });
         }
     }
 }
