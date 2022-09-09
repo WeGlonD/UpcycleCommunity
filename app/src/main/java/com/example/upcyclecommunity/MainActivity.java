@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public final int Namesearch = 1;
     public final int Tagsearch = 2;
     int currentTab = 0;
-    MyLocation location;
+    public static MyLocation location;
     RecyclerView CommunityRecycler;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.icu.text.CaseMap;
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.upcyclecommunity.MainActivity;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.TitleInfo;
 import com.example.upcyclecommunity.community2.Fragment_CM2;
@@ -307,6 +309,11 @@ public class Database {
                     }
                 }
             });
+            double latitude = MainActivity.location.getLatitude();
+            double longitude = MainActivity.location.getLongitude();
+            currentPosting.child("latitude").setValue(latitude);
+            currentPosting.child("longitude").setValue(longitude);
+            Log.d("WeGlonD", "setValue - latitude, longitude = " + latitude + ", " + longitude);
             if(category.equals("1")) {
                 currentPosting.child("clickcnt").get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -599,6 +606,73 @@ public class Database {
                 });
     }
 
+    public void readNearPostsFirst(ArrayList<Long> returnList, int count, double MaxDistanceKm, String category, Acts acts){
+        String path = "firebase.Database.readNearPostsFirst - ";
+        DatabaseReference postRoot = mDBRoot.child("Post"+category);
+        DatabaseReference postingRoot = postRoot.child("posting");
+
+        Location nowPosition = new Location("");
+        nowPosition.setLatitude(MainActivity.location.getLatitude());
+        nowPosition.setLongitude(MainActivity.location.getLongitude());
+
+        postingRoot.
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                                double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                                double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                                Location postLocation = new Location("");
+                                postLocation.setLatitude(latitude);
+                                postLocation.setLongitude(longitude);
+                                if(nowPosition.distanceTo(postLocation) <= MaxDistanceKm*1000) {
+                                    Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                    Log.d("WeGlonD", postNumber + "");
+                                    returnList.add(postNumber);
+                                    acts.ifSuccess(snapshot);
+                                }
+                            }
+                        }
+                        if (category.equals("1")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
+                            Fragment_CM1.isUpdating = false;
+                        }
+                        if (category.equals("2")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
+                            Fragment_CM2.isUpdating = false;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+//        postingRoot.get().addOnCompleteListener(task -> {
+//            if(task.isSuccessful()) {
+//                for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+//                    if(!dataSnapshot.getKey().equals("totalnumber")){
+//                        double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+//                        double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+//                        Location postlocation = new Location("");
+//                        postlocation.setLongitude(longitude);
+//                        postlocation.setLatitude(latitude);
+//                        if(nowPosition.distanceTo(postlocation) < MaxDistanceKm*1000){
+//                            returnList.add(Long.parseLong(dataSnapshot.getKey()));
+//                        }
+//                    }
+//                    if(returnList.size() == count)
+//                        break;
+//                }
+//                acts.ifSuccess(task);
+//            }
+//        });
+    }
+
     public void readPostsWith(ArrayList<Long> returnList, Long str, Long end, String category, Acts acts){
         String path = "firebase.Database.readAllPost - ";
 
@@ -645,6 +719,67 @@ public class Database {
 
                     }
                 });
+    }
+
+    public void readNearPostsWith(ArrayList<Long> returnList, Long str, int count, Double MaxDistanceKm, String category, Acts acts){
+
+        String path = "firebase.Database.readNearPostsWith - ";
+
+        DatabaseReference postRoot = mDBRoot.child("Post"+category);
+
+        int maxcnt = returnList.size() + count;
+
+        Location nowPosition = new Location("");
+        nowPosition.setLatitude(MainActivity.location.getLatitude());
+        nowPosition.setLongitude(MainActivity.location.getLongitude());
+
+        if (str < 0){
+            str = Long.valueOf(0);
+        }
+
+        String from = String.valueOf(str);
+
+//        Toast.makeText(context, from+" "+to, Toast.LENGTH_LONG).show();
+
+        postRoot.child("posting").orderByKey().startAt(from).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                                double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                                Location postLocation = new Location("");
+                                postLocation.setLatitude(latitude);
+                                postLocation.setLongitude(longitude);
+                                if(nowPosition.distanceTo(postLocation) <= MaxDistanceKm*1000) {
+                                    Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                    Log.d("WeGlonD", postNumber + "");
+                                    returnList.add(postNumber);
+                                    acts.ifSuccess(snapshot);
+                                }
+                            }
+                            if(returnList.size() == maxcnt)
+                                break;
+                        }
+                        if (category.equals("1")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
+                            Fragment_CM1.isUpdating = false;
+                        }
+                        if (category.equals("2")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
+                            Fragment_CM2.isUpdating = false;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
     }
 
     public void readName(ArrayList<Long> returnList, String keyword, String category, Acts acts){
@@ -726,7 +861,8 @@ public class Database {
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt")||dataSnapshot.getKey().equals("likeuser"))) {
+                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") ||
+                                    dataSnapshot.getKey().equals("latitude") || dataSnapshot.getKey().equals("longitude")||dataSnapshot.getKey().equals("likeuser"))) {
                                 String key = dataSnapshot.getKey();
                                 Log.d("minseok","key"+key);
                                 String value = dataSnapshot.getValue(String.class);

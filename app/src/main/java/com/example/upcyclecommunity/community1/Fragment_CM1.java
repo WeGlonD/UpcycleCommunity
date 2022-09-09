@@ -35,6 +35,7 @@ public class Fragment_CM1 extends Fragment {
     View root;
 //    Button load_more_btn;
     Button upload_btn;
+    Button cur_pos_condition_btn;
 
     RecyclerView CommunityRecycler;
     communityAdapter Cadapter;
@@ -55,6 +56,16 @@ public class Fragment_CM1 extends Fragment {
 
 //        load_more_btn = root.findViewById(R.id.fragment_cm1_load_more_button);
         upload_btn = root.findViewById(R.id.btn_upload);
+        cur_pos_condition_btn = root.findViewById(R.id.currPosCondition);
+        cur_pos_condition_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(cur_pos_condition_btn.isSelected())
+                    cur_pos_condition_btn.setSelected(false);
+                else
+                    cur_pos_condition_btn.setSelected(true);
+            }
+        });
         CommunityRecycler = root.findViewById(R.id.title_community1);
 
         listData = new ArrayList<>();
@@ -124,20 +135,38 @@ public class Fragment_CM1 extends Fragment {
             listData.remove(listData.size()-1);
             Cadapter.notifyItemRemoved(i);
         }
-        db.readPostsFirst(listData, count, CATEGORY, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                int position = listData.size()-1;
-                Cadapter.notifyItemInserted(position);
+        if(!cur_pos_condition_btn.isSelected()) {
+            db.readPostsFirst(listData, count, CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Cadapter.notifyItemInserted(position);
 //                Cadapter.notifyDataSetChanged();
-            }
+                }
 
-            @Override
-            public void ifFail(Object task) {
-                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
+        else{
+            db.readNearPostsFirst(listData, count, 10, CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Cadapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
     }
 
     public void getFirstListData(int count){
@@ -161,23 +190,44 @@ public class Fragment_CM1 extends Fragment {
         int lastPosition = listData.size()-1;
         listData.remove(lastPosition);
         Cadapter.notifyItemRemoved(lastPosition);
-        db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                int position = listData.size()-1;
-                Cadapter.notifyItemInserted(position);
+        if(!cur_pos_condition_btn.isSelected()) {
+            db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Cadapter.notifyItemInserted(position);
 //                Cadapter.notifyDataSetChanged();
 //                int position = layoutManager.findLastCompletelyVisibleItemPosition();
 //                Long lastPostNumber = listData.get(position);
 //                Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
-            }
+                }
 
-            @Override
-            public void ifFail(Object task) {
-                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
+        else{
+            db.readNearPostsWith(listData, str, (int)(end - str + 1), (double)10, CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Cadapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+//                int position = layoutManager.findLastCompletelyVisibleItemPosition();
+//                Long lastPostNumber = listData.get(position);
+//                Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
     }
 
     @Override

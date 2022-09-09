@@ -116,4 +116,8 @@ public class MyLocation {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
+
+    public void stopUpdatingLocation(){
+        mFusedLocationClient.removeLocationUpdates(locationCallback);
+    }
 }
