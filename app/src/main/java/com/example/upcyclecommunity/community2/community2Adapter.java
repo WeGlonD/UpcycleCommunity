@@ -127,6 +127,10 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                                 iv.setBackgroundResource(R.drawable.page_not);
                                 //LinearLayout에 추가
+
+                                holder.postviewPager.setVisibility(View.VISIBLE);
+                                holder.mPageMark.setVisibility(View.VISIBLE);
+
                                 holder.mPageMark.addView(iv);
                                 Log.d("minseok", key + uri + "");
                             }
@@ -139,6 +143,12 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                         });
                         holder.postviewPager.setAdapter(holder.mViewAdapter);
                         holder.mViewAdapter.notifyDataSetChanged();
+
+                        if(holder.mUriItems.size()==0){
+                            Log.d("minseok",holder.mUriItems.size()+"0");
+                            holder.postviewPager.setVisibility(View.GONE);
+                            holder.mPageMark.setVisibility(View.GONE);
+                        }
 
                         holder.postPic_progressBar.setVisibility(View.INVISIBLE);
                     } else {
