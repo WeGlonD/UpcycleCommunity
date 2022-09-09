@@ -62,6 +62,17 @@ public class Comments_RecyclerViewAdapter extends RecyclerView.Adapter<Comments_
                     String text = task.getResult().child("text").getValue(String.class);
                     String user_uid = task.getResult().child("writer").getValue(String.class);
                     holder.comment_tv.setText(text);
+                    Database.getUserRoot().child(user_uid).
+                            child("name").get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()){
+                            String userName = task1.getResult().getValue(String.class);
+                            holder.userName_tv.setText(userName);
+                        }
+                        else{
+                            Toast.makeText(context, "load user name error", Toast.LENGTH_SHORT).show();
+                            holder.userName_tv.setText("???");
+                        }
+                    });
                     Database.getUserProfileImageRoot().child(user_uid).getDownloadUrl().addOnSuccessListener(uri -> {
                        if (uri != null){
                            holder.progressBar.setVisibility(View.INVISIBLE);
@@ -95,6 +106,7 @@ public class Comments_RecyclerViewAdapter extends RecyclerView.Adapter<Comments_
 
     class Comments_ViewHolder extends RecyclerView.ViewHolder{
         ImageView profile_iv;
+        TextView userName_tv;
         ProgressBar progressBar;
         TextView comment_tv;
 
@@ -103,6 +115,7 @@ public class Comments_RecyclerViewAdapter extends RecyclerView.Adapter<Comments_
             super(itemView);
 
             profile_iv = itemView.findViewById(R.id.activity_comments_recyclerview_item_profile_imageView);
+            userName_tv = itemView.findViewById(R.id.activity_comments_recyclerview_item_userName_textView);
             progressBar = itemView.findViewById(R.id.activity_comments_recyclerview_item_progressBar);
             comment_tv = itemView.findViewById(R.id.activity_comments_recyclerview_item_comment_textView);
 
