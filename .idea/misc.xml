@@ -21,6 +21,8 @@
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/drawable/shape_filter_unclicked.xml" value="0.114" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/drawable/transparent.xml" value="0.109" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/drawable/uploading_bg.xml" value="0.1365" />
+        <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/activity_comments.xml" value="0.536" />
+        <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/activity_comments_recyclerview_item.xml" value="0.4" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.2210144927536232" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/activity_setting.xml" value="0.22282608695652173" />
@@ -48,7 +50,6 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/brand_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/fragment_brandlist.xml" value="0.264" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/fragment_cm1.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/fragment_my_page.xml" value="0.1125" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/menu/main_bottom_navigation.xml" value="0.25364583333333335" />
       </map>

@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_RecyclerViewAdapter.Post1_ViewHolder>{
-    public static final String CATEGORY = "1";
+    public static final String CATEGORY = "2";
     private ArrayList<Long> listData;
 //    private HashMap<Long, Long> listData;
     private Context context;
@@ -110,13 +110,10 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
             progressBar = itemView.findViewById(R.id.post1_item_progress_circular);
 
             itemView.setOnClickListener(view -> {
+
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
                 Log.d("Dirtfy_test", postNumber);
-
-                Intent it = new Intent(context, Personal_Post.class);
-                it.putExtra("postn", postNumber);
-
-                context.startActivity(it);
+                Toast.makeText(context, postNumber, Toast.LENGTH_SHORT).show();
             });
         }
     }

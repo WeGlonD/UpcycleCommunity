@@ -47,6 +47,7 @@
         <activity android:name=".mypage.LoginActivity"/>
         <activity android:name=".mypage.SignUpActivity"/>
         <activity android:name=".mypage.SettingActivity"/>
+        <activity android:name=".community2.CommentsActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

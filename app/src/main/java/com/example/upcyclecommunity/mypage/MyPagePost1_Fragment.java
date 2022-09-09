@@ -117,7 +117,7 @@ public class MyPagePost1_Fragment extends Fragment {
         if(db.getAuth().getCurrentUser() != null){
             listData.clear();
             recyclerViewAdapter.notifyDataSetChanged();
-            db.readAllUserPost1(listData, new Acts() {
+            db.readAllUserPost2(listData, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
 //                    Collections.sort(listData);

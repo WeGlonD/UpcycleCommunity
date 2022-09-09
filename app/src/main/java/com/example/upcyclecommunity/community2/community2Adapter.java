@@ -179,7 +179,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public TextView timeStamp_tv;
         public TextView likeCnt_tv;
         public Button like_btn;
+
+        public LinearLayout comment_linearLayout;
+        public ImageView comment_iv;
         public TextView mComment;
+
         public Long postnum;
         public ArrayList<Uri> mUriItems;
         public TextView content_tv;
@@ -199,10 +203,49 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             postPic_progressBar = view.findViewById(R.id.community2_item_post_image_progress_circular);
             tags_tv = view.findViewById(R.id.community2_item_tags_textView);
             timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
+
+            comment_linearLayout = view.findViewById(R.id.community2_item_clickCnt_linearLayout);
+            comment_linearLayout.setOnClickListener(viw -> {
+                Long postNumber = listData.get(getAdapterPosition());
+                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                String stringPostNumber = String.valueOf(postNumber);
+                Log.d("Dirtfy_test", stringPostNumber);
+
+                Intent it = new Intent(mContext, CommentsActivity.class);
+                it.putExtra("postNumber", stringPostNumber);
+
+                mContext.startActivity(it);
+            });
+            comment_iv = view.findViewById(R.id.community2_item_commentImage_imageView);
+            comment_iv.setOnClickListener(viw -> {
+                Long postNumber = listData.get(getAdapterPosition());
+                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                String stringPostNumber = String.valueOf(postNumber);
+                Log.d("Dirtfy_test", stringPostNumber);
+
+                Intent it = new Intent(mContext, CommentsActivity.class);
+                it.putExtra("postNumber", stringPostNumber);
+
+                mContext.startActivity(it);
+            });
+            mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
+            mComment.setOnClickListener(viw -> {
+                Long postNumber = listData.get(getAdapterPosition());
+                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                String stringPostNumber = String.valueOf(postNumber);
+                Log.d("Dirtfy_test", stringPostNumber);
+
+                Intent it = new Intent(mContext, CommentsActivity.class);
+                it.putExtra("postNumber", stringPostNumber);
+
+                mContext.startActivity(it);
+            });
+
             likeCnt_tv = view.findViewById(R.id.community2_item_likeCnt_textView);
             like_btn = view.findViewById(R.id.community2_item_likeImage_likeButton);
-            mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
+
             mPageMark = view.findViewById(R.id.community2_item_pagemark);
+
             content_tv = view.findViewById(R.id.community2_item_content_textView);
             content_tv.setOnClickListener(viw -> {
                 if(content_tv.isSingleLine())

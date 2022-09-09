@@ -29,7 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_RecyclerViewAdapter.Post2_ViewHolder>{
-    public static final String CATEGORY = "2";
+    public static final String CATEGORY = "1";
 
     private ArrayList<Long> listData;
     private Context context;
@@ -120,8 +120,11 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
             itemView.setOnClickListener(view -> {
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
                 Log.d("Dirtfy_test", postNumber);
-                Toast.makeText(context, postNumber, Toast.LENGTH_SHORT).show();
 
+                Intent it = new Intent(context, Personal_Post.class);
+                it.putExtra("postn", postNumber);
+
+                context.startActivity(it);
 //                Intent it = new Intent(context, Personal_Post.class);
 //                it.putExtra("postn", postNumber);
 

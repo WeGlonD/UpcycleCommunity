@@ -1010,6 +1010,33 @@ public class Database {
             currentComment.child("text").setValue(text);
         });
     }
+    public void writeComment(Long postnumber, String text, String category, ArrayList<Long> addingList,Acts acts){
+        DatabaseReference postRoot = mDBRoot.child("Post"+category);
+        DatabaseReference postingRoot = postRoot.child("posting");
+
+        DatabaseReference currPosting = postingRoot.child(postnumber+"");
+        currPosting.child("comment").child("cnt").get().addOnCompleteListener(task -> {
+            Long commentNum;
+            if(task.isSuccessful()){
+                commentNum = task.getResult().getValue(Long.class);
+
+            }
+            else{
+                commentNum = Long.parseLong("0");
+            }
+            commentNum++;
+            Long finalCommentNum = commentNum;
+            currPosting.child("comment").child("cnt").setValue(commentNum).addOnCompleteListener(t1 -> {
+                DatabaseReference currentComment = currPosting.child("comment").child(finalCommentNum +"");
+                currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid()).addOnCompleteListener(t2 -> {
+                    currentComment.child("text").setValue(text).addOnCompleteListener(t3 -> {
+                        addingList.add(finalCommentNum);
+                        acts.ifSuccess(t3);
+                    });
+                });
+            });
+        });
+    }
 
     public void readComment(ArrayList<Comment> data, Long postnum, String category, Acts acts){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
