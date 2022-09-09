@@ -37,6 +37,7 @@ import com.example.upcyclecommunity.community2.Fragment_CM2;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
+import com.example.upcyclecommunity.mylocation.MyLocation;
 import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -80,6 +81,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mRequestPermission();
+        if(checkPermission()) {
+            if (!checkLocationServicesStatus()) {
+                showDialogForLocationServiceSetting();
+            }
+        }
+
+        MyLocation location = new MyLocation(this);
+
+        findViewById(R.id.position).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                Toast.makeText(MainActivity.this, "위도: "+latitude+"\n경도: "+longitude, Toast.LENGTH_LONG).show();
+            }
+        });
+
         //첫번째 프래그먼트 띄우도록 할 것.
         setFragment(R.id.bottom_community1);
     }
@@ -115,16 +134,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bottom_brandlist:
                 if(currentTab==3) break;
-                mRequestPermission();
-                if(checkPermission()) {
-                    if(!checkLocationServicesStatus()){
-                        showDialogForLocationServiceSetting();
-                    }
-                    FragmentBrand BrandListTab = new FragmentBrand();
-                    fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
-                    currentTab = 3;
-                    //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
-                }
+                FragmentBrand BrandListTab = new FragmentBrand();
+                fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
+                currentTab = 3;
+                //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
                 if(currentTab==4) break;
