@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,19 +29,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.sql.Array;
 import java.util.ArrayList;
 
-public class community2Adapter extends RecyclerView.Adapter<community2Adapter.MyViewHolder>{
+public class community2Adapter extends RecyclerView.Adapter<community2Adapter.MyViewHolder> {
     public static final String CATEGORY = "2";
     private ArrayList<Long> listData;
     private Context mContext;
     private community2Adapter.clickListener mclickListener;
 
-    interface clickListener{
+    interface clickListener {
         public void mclickListener_Dialog(String postNumber);
     }
 
-    public community2Adapter(ArrayList<Long> listData, Context mContext,clickListener mclickListener) {
+    public community2Adapter(ArrayList<Long> listData, Context mContext, clickListener mclickListener) {
         this.listData = listData;
         this.mContext = mContext;
         this.mclickListener = mclickListener;
@@ -60,53 +62,50 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         holder.postnum = postNumber;
         FirebaseUser firebaseUser = Database.getAuth().getCurrentUser();
         String nowuser = "";
-        if(firebaseUser!=null) {
+        if (firebaseUser != null) {
             nowuser = firebaseUser.getUid();
         }
         String fUser = nowuser;
-        Database.getDBRoot().child("Post"+CATEGORY).
+        Database.getDBRoot().child("Post" + CATEGORY).
                 child("posting").child(String.valueOf(postNumber)).
                 get().addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Iterable<DataSnapshot> postData = task.getResult().getChildren();
                         holder.mUriItems = new ArrayList<>();
                         holder.postPic_progressBar.setVisibility(View.VISIBLE);
-                        for(DataSnapshot data : postData){
+                        int count = holder.mPageMark.getChildCount();
+                        for(int ii = 0;ii<count;ii++){
+                            holder.mPageMark.removeView(holder.mPageMark.getChildAt(0));
+                        }
+                        for (DataSnapshot data : postData) {
                             String key = data.getKey();
-                            if(key.equals("0")){
+                            if (key.equals("0")) {
                                 String value = data.getValue(String.class);
                                 holder.mTitle.setText(value);
-                            }
-                            else if(key.equals("comment")){
-                                Long value = Long.valueOf(data.getChildrenCount()-1);
+                            } else if (key.equals("comment")) {
+                                Long value = Long.valueOf(data.getChildrenCount() - 1);
                                 holder.mComment.setText(String.valueOf(value));
-                            }
-                            else if (key.equals("likeuser")){
-                                Long value = Long.valueOf(data.getChildrenCount()-1);
+                            } else if (key.equals("likeuser")) {
+                                Long value = Long.valueOf(data.getChildrenCount() - 1);
                                 holder.likeCnt_tv.setText(String.valueOf(value));
-                                for(DataSnapshot dataSnapshot : data.getChildren()){
-                                    if(!dataSnapshot.getKey().equals("cnt")&&dataSnapshot.getValue(String.class).equals(fUser)){
+                                for (DataSnapshot dataSnapshot : data.getChildren()) {
+                                    if (!dataSnapshot.getKey().equals("cnt") && dataSnapshot.getValue(String.class).equals(fUser)) {
                                         holder.like_btn.setSelected(true);
                                     }
                                 }
-                            }
-                            else if (key.equals("timestamp")){
+                            } else if (key.equals("timestamp")) {
                                 String value = data.getValue(String.class).substring(0, 10).replace("-", ".");
                                 holder.timeStamp_tv.setText(value);
-                            }
-                            else if (key.equals("tags")){
+                            } else if (key.equals("tags")) {
                                 String value = data.getValue(String.class);
                                 holder.tags_tv.setText(value);
-                            }
-                            else if (key.equals("writer")){
+                            } else if (key.equals("writer")) {
                                 String value = data.getValue(String.class);
                                 Database.getUserRoot().child(value).child("name").get().addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()){
+                                    if (task1.isSuccessful()) {
                                         String name = task1.getResult().getValue(String.class);
                                         holder.userName.setText(name);
-                                    }
-                                    else{
+                                    } else {
                                         holder.userName.setText("error");
                                     }
                                 });
@@ -114,19 +113,22 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                     holder.userPic_progressBar.setVisibility(View.INVISIBLE);
                                     Glide.with(mContext).load(uri).into(holder.userPic);
                                 });
-                            }
-                            else if(key.equals("1")){
+                            } else if (key.equals("1")) {
                                 String value = data.getValue(String.class);
                                 holder.content_tv.setText(value);
                             }
                             else if(key.equals("latitude")||key.equals("longitude")){
                                 //위도경도 정보처리
-                            }
-                            else {
+                            } else {
                                 String value = data.getValue(String.class);
                                 Uri uri = Uri.parse(value);
                                 holder.mUriItems.add(uri);
-                                Log.d("minseok",key+uri+"");
+                                ImageView iv = new ImageView(mContext);   //페이지 표시 이미지 뷰 생성
+                                iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                iv.setBackgroundResource(R.drawable.page_not);
+                                //LinearLayout에 추가
+                                holder.mPageMark.addView(iv);
+                                Log.d("minseok", key + uri + "");
                             }
                         }
                         holder.mViewAdapter = new ViewAdapter(holder.mUriItems, mContext, new ViewAdapter.clickListener() {
@@ -137,14 +139,26 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                         });
                         holder.postviewPager.setAdapter(holder.mViewAdapter);
                         holder.mViewAdapter.notifyDataSetChanged();
+
                         holder.postPic_progressBar.setVisibility(View.INVISIBLE);
-                    }
-                    else {
+                    } else {
                         holder.mTitle.setText("error");
                         /*holder.postFirstImage_iv.setImageResource(R.drawable.search);*/
                         holder.mComment.setText("?");
                     }
                 });
+        holder.postviewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {   //아이템이 변경되면, gallery나 listview의 onItemSelectedListener와 비슷
+            //아이템이 선택이 되었으면
+            @Override public void onPageSelected(int position) {
+                Log.d("minseok","onPageSelected called"+position);
+                holder.mPageMark.getChildAt(holder.mPrePosition).setBackgroundResource(R.drawable.page_not);   //이전 페이지에 해당하는 페이지 표시 이미지 변경
+                holder.mPageMark.getChildAt(position).setBackgroundResource(R.drawable.page_select);      //현재 페이지에 해당하는 페이지 표시 이미지 변경
+                holder.mPrePosition = position;            //이전 포지션 값을 현재로 변경
+            }
+            @Override public void onPageScrolled(int position, float positionOffest, int positionOffsetPixels) {}
+            @Override public void onPageScrollStateChanged(int state){}
+        });
+        holder.mPrePosition = 0;
     }
 
     @Override
@@ -170,6 +184,8 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public ArrayList<Uri> mUriItems;
         public TextView content_tv;
         public ViewAdapter mViewAdapter;
+        public LinearLayout mPageMark;
+        public int mPrePosition = 0;
 
         @RequiresApi(api = Build.VERSION_CODES.Q)
         public MyViewHolder(@NonNull View view) {
@@ -186,6 +202,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             likeCnt_tv = view.findViewById(R.id.community2_item_likeCnt_textView);
             like_btn = view.findViewById(R.id.community2_item_likeImage_likeButton);
             mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
+            mPageMark = view.findViewById(R.id.community2_item_pagemark);
             content_tv = view.findViewById(R.id.community2_item_content_textView);
             content_tv.setOnClickListener(viw -> {
                 if(content_tv.isSingleLine())

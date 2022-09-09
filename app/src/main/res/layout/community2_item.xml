@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/community2_item_firstImage_imageView">
+        app:layout_constraintBottom_toTopOf="@id/community2_item_pagemark">
 
 <!--        <ImageView-->
 <!--            android:id="@+id/community2_item_userPic_imageView"-->
@@ -70,6 +70,14 @@
             app:layout_constraintLeft_toRightOf="@id/community2_item_userPic_imageView"
             app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/community2_item_pagemark"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/community2_item_metaData_constraintLayout"
+        app:layout_constraintBottom_toTopOf="@id/community2_item_firstImage_imageView"
+        android:gravity="center" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/community2_item_firstImage_imageView"
@@ -77,7 +85,7 @@
         android:layout_height="350dp"
         android:minHeight="350dp"
         android:adjustViewBounds="true"
-        app:layout_constraintTop_toBottomOf="@id/community2_item_metaData_constraintLayout"
+        app:layout_constraintTop_toBottomOf="@id/community2_item_pagemark"
         app:layout_constraintBottom_toTopOf="@id/community2_item_metaData_linearLayout"/>
 
     <ProgressBar
@@ -85,7 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/community2_item_metaData_constraintLayout"
+        app:layout_constraintTop_toBottomOf="@id/community2_item_pagemark"
         app:layout_constraintBottom_toTopOf="@id/community2_item_metaData_linearLayout"/>
 
     <LinearLayout

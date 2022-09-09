@@ -34,6 +34,7 @@ public class ViewAdapter extends PagerAdapter {
         this.mItems = mItems;//아답터 생성시 리스트 생성
         this.mclickListener = mclickListener;
     }
+
     //뷰 페이저의 아이템 갯수는 리스트의 갯수
     //나중에 뷰 페이저에 아이템을 추가하면 리스트에 아이템의 타입을 추가 후 새로 고침하게 되면
     //자동으로 뷰 페이저의 갯수도 늘어난다.
