@@ -10,4 +10,12 @@
     <color name="transparentColor">#00FFFFFF</color>
     <color name="blue">#FF2F98F3</color>
     <color name="red">#FF0000</color>
+
+    <color name="UpCycle_Green">#50C074</color>
+    <color name="UpCycle_Green_Variation">#FF30BC71</color>
+
+    <color name="UpCycle_Green_Night">#21A54B</color>
+    <color name="UpCycle_Green_Variation_Night">#1B6A40</color>
+
+    <color name="border">#d7d7d7</color>
 </resources>
