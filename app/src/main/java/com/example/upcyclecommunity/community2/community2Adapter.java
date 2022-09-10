@@ -73,6 +73,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                         Iterable<DataSnapshot> postData = task.getResult().getChildren();
                         holder.mUriItems = new ArrayList<>();
                         holder.postPic_progressBar.setVisibility(View.VISIBLE);
+                        holder.like_btn.setSelected(false);
                         int count = holder.mPageMark.getChildCount();
                         for(int ii = 0;ii<count;ii++){
                             holder.mPageMark.removeView(holder.mPageMark.getChildAt(0));
@@ -253,6 +254,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
 
             likeCnt_tv = view.findViewById(R.id.community2_item_likeCnt_textView);
             like_btn = view.findViewById(R.id.community2_item_likeImage_likeButton);
+            like_btn.setSelected(false);
 
             mPageMark = view.findViewById(R.id.community2_item_pagemark);
 
