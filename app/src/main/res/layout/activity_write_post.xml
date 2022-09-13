@@ -61,6 +61,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recruitFor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
                 <EditText
                     android:id="@+id/et_detail"
                     android:layout_width="match_parent"

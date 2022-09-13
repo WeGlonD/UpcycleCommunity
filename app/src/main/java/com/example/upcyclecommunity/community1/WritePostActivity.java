@@ -12,11 +12,13 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -26,12 +28,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community2.ViewAdapter;
+import com.example.upcyclecommunity.community2.community2Adapter;
+import com.example.upcyclecommunity.community2.community2Adapter.MyViewHolder;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post;
@@ -65,11 +74,13 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private WritePostUploading writePostUploading;
     private Context context;
     boolean editing;
+    boolean recruiting;
     String preTitle;
     String preTagStr;
     int preImageCnt;
     Long msgFromIntent;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,12 +115,37 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         if (editing){
             loadExistingPost(msgFromIntent);
         }
+        String recruitNum = it.getStringExtra("recruitPostnum");
+        recruiting = false;
+        if(recruitNum!=null){
+            recruiting = true;
+            Log.d("WeGlonD", "recruiting! "+recruitNum);
+            recruitPost(recruitNum);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void recruitPost(String recruitNum) {
+        //매개변수로 받은 Post2의 postnum으로 db에서 들고와서 뷰 띄우기
+        ArrayList<Long> arr = new ArrayList<>();
+        arr.add(Long.parseLong(recruitNum));
+
+        community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
+            @Override
+            public void mclickListener_Dialog(String postNumber) {}
+        });
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        ((RecyclerView)findViewById(R.id.recruitFor)).setLayoutManager(layoutManager);
+        ((RecyclerView)findViewById(R.id.recruitFor)).setAdapter(adapter);
     }
 
     public void loadExistingPost(Long postnum){
         Database db = new Database(this);
         ArrayList<Post> posts = new ArrayList<>();
-        db.readOnePost(posts, postnum, CATEGORY, new Acts() {
+        String category = CATEGORY;
+        if(recruiting) category = "3";
+        db.readOnePost(posts, postnum, category, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 Post post = posts.get(0);
@@ -251,6 +287,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
@@ -283,6 +320,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                 selectediv = (ImageView)view;
                         }
                     });
+
 
                     /*
                     with() : View, Fragment 혹은 Activity로부터 Context를 가져온다.
@@ -400,6 +438,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         Database db = new Database();
         ArrayList<String> contents = new ArrayList<>();
         String title = ((EditText)findViewById(R.id.et_name)).getText().toString();
+        String category = CATEGORY;
+        if(recruiting) category = "3";
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String time = sdf.format(new Timestamp(System.currentTimeMillis()));
@@ -407,15 +447,16 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         Log.d("WeGlonD", "postnum " + msgFromIntent);
 
         if(editing){
-            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, CATEGORY);
-            Uploading(msgFromIntent,db,title,time+" (수정됨)");
+            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, category);
+            Uploading(msgFromIntent,db,title,time+" (수정됨)", category);
         }
         else {
-            db.setNewPostNumber(CATEGORY, new Acts() {
+            String finalCategory = category;
+            db.setNewPostNumber(category, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     Long postnum = ((Task<DataSnapshot>) task).getResult().getValue(Long.class);
-                    Uploading(postnum, db, title, time);
+                    Uploading(postnum, db, title, time, finalCategory);
                 }
 
                 @Override
@@ -426,26 +467,26 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    public void Uploading(Long postnum, Database db, String title, String time){
+    public void Uploading(Long postnum, Database db, String title, String time, String category){
         Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
         for(long i = 1;i <= editTexts.size()+imageViews.size()-1;i++){
             switch ((int)i%2){
                 case 0:
                     Log.d("WeGlonD", "Uploading for - " + i);
-                    StorageReference picRoot = Database.getPostpictureRoot().child("Post"+CATEGORY);
+                    StorageReference picRoot = Database.getPostpictureRoot().child("Post"+category);
                     Long finalI = (Long)i;
-                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot,CATEGORY+ "-" + postnum+ "-" + title+ "-" + i, new Acts() {
+                    db.writeImage((BitmapDrawable) imageViews.get((int)((i-1)/2)).getDrawable(), picRoot,category+ "-" + postnum+ "-" + title+ "-" + i, new Acts() {
                         @Override
                         public void ifSuccess(Object task1) {
                             Log.d("WeGlonD", "after writeImage " + finalI);
-                            db.readImage(picRoot,CATEGORY+ "-" + postnum+ "-" + title+ "-" + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            db.readImage(picRoot,category+ "-" + postnum+ "-" + title+ "-" + finalI).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String url = uri.toString();
-                                    db.writePostByLine(postnum,finalI, url, title, time, tags,CATEGORY);
+                                    db.writePostByLine(postnum,finalI, url, title, time, tags,category);
                                     Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                     if((int)((finalI-1)/2) == imageViews.size()-1){
-                                        db.writePostByLine(postnum, finalI+1, editTexts.get((int)(finalI/2)).getText().toString(), title, time, tags,CATEGORY);
+                                        db.writePostByLine(postnum, finalI+1, editTexts.get((int)(finalI/2)).getText().toString(), title, time, tags,category);
                                         writePostUploading.dismiss();
                                         finish();
                                     }
@@ -458,13 +499,13 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     });
                     break;
                 case 1:
-                    db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), title, time, tags,CATEGORY);
+                    db.writePostByLine(postnum,i, editTexts.get((int)((i-1)/2)).getText().toString(), title, time, tags,category);
                     Log.d("WeGlonD", "editText 작성" + i);
                     break;
             }
         }
         if(editTexts.size()==1){
-            db.writePostByLine(postnum,1l, editTexts.get(0).getText().toString(), title, time, tags,CATEGORY);
+            db.writePostByLine(postnum,1l, editTexts.get(0).getText().toString(), title, time, tags,category);
             Log.d("WeGlonD", "하나뿐인 editText 작성 1");
             writePostUploading.dismiss();
             finish();

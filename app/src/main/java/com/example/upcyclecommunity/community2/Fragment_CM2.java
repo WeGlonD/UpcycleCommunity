@@ -99,6 +99,8 @@ public class Fragment_CM2 extends Fragment {
                             String user_uid = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
                             if(user_uid.equals(Database.getAuth().getCurrentUser().getUid()))
                                 Dialog(postNumber);
+                            else
+                                recruitDialog(postNumber);
                         }
                     });
                 }
@@ -274,12 +276,6 @@ public class Fragment_CM2 extends Fragment {
                 dialog.dismiss();
             }
         };
-        DialogInterface.OnClickListener cancel = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        };
         DialogInterface.OnClickListener deleteimage = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -288,11 +284,45 @@ public class Fragment_CM2 extends Fragment {
                 dialog.dismiss();
             }
         };
+        DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent it = new Intent(mContext, WritePostActivity.class);
+                it.putExtra("postn",Long.MAX_VALUE+"");
+                it.putExtra("recruitPostnum", postNumber);
+                startActivity(it);
+                dialog.dismiss();
+            }
+        };
         new AlertDialog.Builder(getActivity())
                 .setTitle("게시물 변경(본인 게시물만 가능)")
                 .setPositiveButton("게시물 수정", ammendimage)
+                .setNeutralButton("모임 조회",recruitPosting)
+                .setNegativeButton("게시물 삭제", deleteimage)
+                .show();
+    }
+
+    public void recruitDialog(String postNumber){
+        DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent it = new Intent(mContext, WritePostActivity.class);
+                it.putExtra("postn",Long.MAX_VALUE+"");
+                it.putExtra("recruitPostnum", postNumber);
+                startActivity(it);
+                dialog.dismiss();
+            }
+        };
+        DialogInterface.OnClickListener cancel = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        };
+        new AlertDialog.Builder(getActivity())
+                .setTitle("")
+                .setPositiveButton("모집글 게시", recruitPosting)
                 .setNegativeButton("취소",cancel)
-                .setNeutralButton("게시물 삭제", deleteimage)
                 .show();
     }
 

@@ -38,7 +38,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
     private Context mContext;
     private community2Adapter.clickListener mclickListener;
 
-    interface clickListener {
+    public interface clickListener {
         public void mclickListener_Dialog(String postNumber);
     }
 

@@ -120,15 +120,15 @@ public class MainActivity extends AppCompatActivity {
         switch (n) {
             case R.id.bottom_community1:
                 if(currentTab==1) break;
-                Fragment_CM1 Community1 = new Fragment_CM1();
-                fragmentTransaction.replace(R.id.main_frame,Community1).commit();
+                Fragment_CM2 Community2 = new Fragment_CM2();
+                fragmentTransaction.replace(R.id.main_frame, Community2).commit();
                 currentTab = 1;
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_community2:
                 if(currentTab==2) break;
-                Fragment_CM2 Community2 = new Fragment_CM2();
-                fragmentTransaction.replace(R.id.main_frame, Community2).commit();
+                Fragment_CM1 Community1 = new Fragment_CM1();
+                fragmentTransaction.replace(R.id.main_frame,Community1).commit();
                 currentTab = 2;
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
