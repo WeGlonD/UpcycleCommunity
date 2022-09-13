@@ -9,14 +9,13 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.upcyclecommunity.mypage.MyPagePost1_Fragment;
 import com.example.upcyclecommunity.mypage.MyPagePost2_Fragment;
+import com.example.upcyclecommunity.mypage.MyPagePost3_Fragment;
 
 import java.util.ArrayList;
 
 public class PostPageAdapter extends FragmentStatePagerAdapter {
     private int numberOfFragment;
 
-    private MyPagePost1_Fragment post1_fragment = null;
-    private MyPagePost2_Fragment post2_fragment = null;
     private ArrayList<Fragment> fragments;
 
     public PostPageAdapter(FragmentManager fm, ArrayList<Fragment> fragments, int numberOfFragment){
@@ -42,6 +41,10 @@ public class PostPageAdapter extends FragmentStatePagerAdapter {
 
     public MyPagePost2_Fragment getPost2_fragment() {
         return (MyPagePost2_Fragment) fragments.get(1);
+    }
+
+    public MyPagePost3_Fragment getPost3_fragment() {
+        return (MyPagePost3_Fragment) fragments.get(2);
     }
 }
 

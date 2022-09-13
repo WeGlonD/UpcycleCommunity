@@ -998,6 +998,40 @@ public class Database {
                     }
                 });
     }
+    public void readAllUserPost3(ArrayList<Long> returnList, Acts acts){
+        userRoot.child(mAuth.getCurrentUser().getUid()).
+                child(context.getString(R.string.DB_user_posting3)).
+                get().addOnCompleteListener(task -> {
+
+                    if(task.isSuccessful()){
+                        ArrayList<Long> postNumbs = new ArrayList<>();
+
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                            if (!(dataSnapshot.getKey().equals("cnt"))) {
+                                postNumbs.add(dataSnapshot.getValue(Long.class));
+                            }
+                        }
+
+                        Collections.sort(postNumbs, (t1, t2) -> {
+                            if (t1 > t2)
+                                return +1;
+                            else if (t1 < t2)
+                                return -1;
+                            else
+                                return 0;
+                        });
+
+                        for(Long postNum : postNumbs) {
+                            returnList.add(postNum);
+                            acts.ifSuccess(task);
+                        }
+
+                    }
+                    else{
+                        acts.ifFail(task);
+                    }
+                });
+    }
 
     public void writeComment(Long postnumber, String text, String category){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);

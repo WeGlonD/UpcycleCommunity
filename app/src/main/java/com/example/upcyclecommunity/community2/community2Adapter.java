@@ -48,6 +48,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         this.mclickListener = mclickListener;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -2,38 +2,31 @@ package com.example.upcyclecommunity.mypage;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
-import com.example.upcyclecommunity.database.Post1;
-import com.example.upcyclecommunity.database.Post2;
-import com.example.upcyclecommunity.mypage.adapter.Post1_RecyclerViewAdapter;
 import com.example.upcyclecommunity.mypage.adapter.Post2_RecyclerViewAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyPagePost2_Fragment#newInstance} factory method to
+ * Use the {@link MyPagePost3_Fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyPagePost2_Fragment extends Fragment {
+public class MyPagePost3_Fragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,7 +45,7 @@ public class MyPagePost2_Fragment extends Fragment {
     private Post2_RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Long> listData;
 
-    public MyPagePost2_Fragment() {
+    public MyPagePost3_Fragment() {
         // Required empty public constructor
     }
 
@@ -62,11 +55,11 @@ public class MyPagePost2_Fragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyPagePost2_Fragment.
+     * @return A new instance of fragment MyPagePost3_Fragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyPagePost2_Fragment newInstance(String param1, String param2) {
-        MyPagePost2_Fragment fragment = new MyPagePost2_Fragment();
+    public static MyPagePost3_Fragment newInstance(String param1, String param2) {
+        MyPagePost3_Fragment fragment = new MyPagePost3_Fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -96,17 +89,8 @@ public class MyPagePost2_Fragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //커스텀 어댑터 생성
-        recyclerViewAdapter = new Post2_RecyclerViewAdapter(listData, "1", getContext(), mGlideRequestManager);
+        recyclerViewAdapter = new Post2_RecyclerViewAdapter(listData, "3", getContext(), mGlideRequestManager);
         recyclerView.setAdapter(recyclerViewAdapter);
-
-//        for (int i = 0;i < 15;i++){
-//            Post2 data = new Post2();
-//            recyclerViewAdapter.addItem(data);
-//        }
-//        recyclerViewAdapter.notifyDataSetChanged();
-//
-//        Toast.makeText(getContext(), String.valueOf(recyclerViewAdapter.getItemCount()), Toast.LENGTH_SHORT).show();
-
 
         return view;
     }
@@ -118,7 +102,7 @@ public class MyPagePost2_Fragment extends Fragment {
         if(db.getAuth().getCurrentUser() != null){
             listData.clear();
             recyclerViewAdapter.notifyDataSetChanged();
-            db.readAllUserPost1(listData, new Acts() {
+            db.readAllUserPost3(listData, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
 //                    Collections.sort(listData);

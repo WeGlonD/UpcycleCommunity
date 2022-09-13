@@ -29,14 +29,15 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_RecyclerViewAdapter.Post2_ViewHolder>{
-    public static final String CATEGORY = "1";
+    private String CATEGORY;
 
     private ArrayList<Long> listData;
     private Context context;
     private RequestManager mGlideRequestManager;
 
-    public Post2_RecyclerViewAdapter(ArrayList<Long> listData, Context context, RequestManager mGlideRequestManager){
+    public Post2_RecyclerViewAdapter(ArrayList<Long> listData, String CATEGORY, Context context, RequestManager mGlideRequestManager){
         this.listData = listData;
+        this.CATEGORY = CATEGORY;
         this.context = context;
         this.mGlideRequestManager = mGlideRequestManager;
     }
@@ -52,43 +53,87 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
     public void onBindViewHolder(@NonNull Post2_ViewHolder holder, int position) {
 //        holder.post_iv.setImageResource(data.pic);
 //        holder.post_tv.setText(data.title);
-        holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
-        holder.post_tv.setText("test");
+//        holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+//        holder.post_tv.setText("test");
         Database db = new Database();
         Long postNumber = listData.get(position);
-        db.readOnePostLine(postNumber, Long.valueOf(1), CATEGORY, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
-                holder.post_tv.setText(line);
-                db.readOnePostLine(postNumber, Long.valueOf(2), CATEGORY, new Acts() {
-                    @Override
-                    public void ifSuccess(Object task) {
-                        holder.progressBar.setVisibility(View.INVISIBLE);
-                        String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
-                        if(line != null){
-                            Uri downloadUri = Uri.parse(line);
-                            if(mGlideRequestManager != null)
-                                mGlideRequestManager.load(downloadUri).into(holder.post_iv);
+//        db.readOnePostLine(postNumber, Long.valueOf(1), CATEGORY, new Acts() {
+//            @Override
+//            public void ifSuccess(Object task) {
+//                String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+//                holder.post_tv.setText(line);
+//                db.readOnePostLine(postNumber, Long.valueOf(2), CATEGORY, new Acts() {
+//                    @Override
+//                    public void ifSuccess(Object task) {
+//                        holder.progressBar.setVisibility(View.INVISIBLE);
+//                        String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+//                        if(line != null){
+//                            Uri downloadUri = Uri.parse(line);
+//                            if(mGlideRequestManager != null)
+//                                mGlideRequestManager.load(downloadUri).into(holder.post_iv);
+//                        }
+//                        else{
+//                            holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void ifFail(Object task) {
+//                        holder.progressBar.setVisibility(View.INVISIBLE);
+//                        holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void ifFail(Object task) {
+//                holder.post_tv.setText("test");
+//            }
+//        });
+
+        Database.getDBRoot().child("Post"+CATEGORY).
+                child("posting").child(String.valueOf(postNumber)).
+                get().addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful()){
+                        boolean hasImage = false;
+                        Iterable<DataSnapshot> postData = task.getResult().getChildren();
+                        for(DataSnapshot data : postData){
+                            String key = data.getKey();
+                            if(key.equals("0")){
+                                String value = data.getValue(String.class);
+                                holder.post_tv.setText(value);
+                            }
+                            else if(key.equals("2")){
+                                holder.progressBar.setVisibility(View.INVISIBLE);
+                                String value = data.getValue(String.class);
+                                hasImage = true;
+                                Uri uri = Uri.parse(value);
+                                Glide.with(holder.itemView).load(uri).into(holder.post_iv);
+                            }
+                            else if(key.equals("comment")){
+                                Long value = Long.valueOf(data.getChildrenCount()-1);
+                                holder.commentCnt_tv.setText(String.valueOf(value));
+                            }
+                            else if (key.equals("clickcnt")){
+                                String value = String.valueOf(data.getValue(Long.class));
+                                holder.clickCnt_tv.setText(value);
+                            }
                         }
-                        else{
-                            holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+                        if (!(hasImage)){
+                            holder.progressBar.setVisibility(View.INVISIBLE);
+//                            holder.post_iv.setImageResource(R.drawable.ic_baseline_image_not_supported_24);
+                            holder.post_iv.setVisibility(View.GONE);
                         }
                     }
-
-                    @Override
-                    public void ifFail(Object task) {
+                    else{
                         holder.progressBar.setVisibility(View.INVISIBLE);
-                        holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+                        holder.post_tv.setText("error");
+                        holder.post_iv.setImageResource(R.drawable.search);
+                        holder.commentCnt_tv.setText("?");
+                        holder.clickCnt_tv.setText("?");
                     }
                 });
-            }
-
-            @Override
-            public void ifFail(Object task) {
-                holder.post_tv.setText("test");
-            }
-        });
 
     }
 
@@ -109,6 +154,8 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
         ImageView post_iv;
         ProgressBar progressBar;
         TextView post_tv;
+        TextView clickCnt_tv;
+        TextView commentCnt_tv;
 
         public Post2_ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -116,6 +163,8 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
             post_iv = itemView.findViewById(R.id.post2_item_imageView);
             progressBar = itemView.findViewById(R.id.post2_item_progress_circular);
             post_tv = itemView.findViewById(R.id.post2_item_textView);
+            clickCnt_tv = itemView.findViewById(R.id.post2_item_clickCount_textView);
+            commentCnt_tv = itemView.findViewById(R.id.post2_item_commentCount_textView);
 
             itemView.setOnClickListener(view -> {
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
@@ -123,6 +172,7 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
 
                 Intent it = new Intent(context, Personal_Post.class);
                 it.putExtra("postn", postNumber);
+                it.putExtra("category", CATEGORY);
 
                 context.startActivity(it);
 //                Intent it = new Intent(context, Personal_Post.class);

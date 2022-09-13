@@ -169,6 +169,7 @@ public class MyPageFragment extends Fragment {
 
         tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post1_tab_name));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post2_tab_name));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post3_tab_name));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -190,6 +191,7 @@ public class MyPageFragment extends Fragment {
         fragments = new ArrayList<>();
         fragments.add(new MyPagePost1_Fragment());
         fragments.add(new MyPagePost2_Fragment());
+        fragments.add(new MyPagePost3_Fragment());
         postPageAdapter = new PostPageAdapter(getChildFragmentManager(), fragments, tabLayout.getTabCount());
         viewPager.setAdapter(postPageAdapter);
         viewPager.setCurrentItem(currentTabIndex);
@@ -236,6 +238,7 @@ public class MyPageFragment extends Fragment {
             fragments.clear();
             fragments.add(new MyPagePost1_Fragment());
             fragments.add(new MyPagePost2_Fragment());
+            fragments.add(new MyPagePost3_Fragment());
 //            viewPager.setCurrentItem(currentTabIndex);
             int now = currentTabIndex;
             for(int i = 0;i < fragments.size();i++){
