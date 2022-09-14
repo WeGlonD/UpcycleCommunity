@@ -23,8 +23,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/activity_login_password_textView_hint"
+            android:inputType="numberPassword"
             app:layout_constraintTop_toBottomOf="@id/activity_login_email_editText"
             app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageView
+            android:id="@+id/activity_login_password_visibility_imageView"
+            android:layout_width="35dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_baseline_visibility_off_24"
+            android:layout_marginRight="25dp"
+            android:clickable="true"
+            app:layout_constraintTop_toTopOf="@id/activity_login_password_editText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/activity_login_password_editText"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

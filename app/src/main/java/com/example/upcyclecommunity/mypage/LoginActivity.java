@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email_et;
     private EditText password_et;
+    private ImageView visibility_iv;
     private Button signUp_btn;
     private Button signIn_btn;
     private TextView helpPassword_tv;
@@ -43,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
         email_et = findViewById(R.id.activity_login_email_editText);
         password_et = findViewById(R.id.activity_login_password_editText);
+        visibility_iv = findViewById(R.id.activity_login_password_visibility_imageView);
         signUp_btn = findViewById(R.id.activity_login_signUp_button);
         signIn_btn = findViewById(R.id.activity_login_signIn_button);
         helpPassword_tv = findViewById(R.id.activity_login_help_password_textView);
@@ -50,6 +54,18 @@ public class LoginActivity extends AppCompatActivity {
         Database db = new Database(this);
         User user = new User();
         mContext = getApplicationContext();
+
+        visibility_iv.setOnClickListener(view -> {
+            Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
+            if (password_et.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                password_et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+                visibility_iv.setImageResource(R.drawable.ic_baseline_visibility_off_24);
+            } else {
+                password_et.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                visibility_iv.setImageResource(R.drawable.ic_baseline_remove_red_eye_24);
+            }
+            password_et.setSelection(password_et.getText().length());
+        });
 
         signUp_btn.setOnClickListener(view -> {
             Intent it = new Intent(this, SignUpActivity.class);
