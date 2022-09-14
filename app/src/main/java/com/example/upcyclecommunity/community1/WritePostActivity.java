@@ -359,32 +359,49 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
             case R.id.btn_tagInput:
                 EditText et_tag = findViewById(R.id.et_tagInput);
                 String newTag = et_tag.getText().toString();
-                et_tag.setText("");
-                if(!newTag.equals("") && !tags.contains(newTag)){
-                    LinearLayout tags_field = findViewById(R.id.tagLayout);
-                    TextView newTagTv = new TextView(this);
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(5,5,5,5);
-                    newTagTv.setLayoutParams(layoutParams);
-                    newTagTv.setTextSize(15);
-                    newTagTv.setText(newTag);
-                    tags.add(newTag);
-                    newTagTv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            TextView now = (TextView) view;
-                            //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
-                            for(String tmp : tags){
-                                if(tmp.equals(now.getText())){
-                                    tags.remove(tmp);
-                                    break;
+                if(newTag.contains(".")){
+                    Toast.makeText(context, "'.'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+                }
+                else if(newTag.contains("#")){
+                    Toast.makeText(context, "'#'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+                }
+                else if(newTag.contains("$")){
+                    Toast.makeText(context, "'$'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+                }
+                else if(newTag.contains("[")){
+                    Toast.makeText(context, "'['은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+                }
+                else if(newTag.contains("]")){
+                    Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    et_tag.setText("");
+                    if(!newTag.equals("") && !tags.contains(newTag)){
+                        LinearLayout tags_field = findViewById(R.id.tagLayout);
+                        TextView newTagTv = new TextView(this);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        layoutParams.setMargins(5,5,5,5);
+                        newTagTv.setLayoutParams(layoutParams);
+                        newTagTv.setTextSize(15);
+                        newTagTv.setText(newTag);
+                        tags.add(newTag);
+                        newTagTv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                TextView now = (TextView) view;
+                                //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
+                                for(String tmp : tags){
+                                    if(tmp.equals(now.getText())){
+                                        tags.remove(tmp);
+                                        break;
+                                    }
                                 }
+                                ((ViewGroup)now.getParent()).removeView(now);
+                                Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
                             }
-                            ((ViewGroup)now.getParent()).removeView(now);
-                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    tags_field.addView(newTagTv);
+                        });
+                        tags_field.addView(newTagTv);
+                    }
                 }
                 break;
             case R.id.btn_image:
@@ -440,33 +457,55 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         Database db = new Database();
         ArrayList<String> contents = new ArrayList<>();
         String title = ((EditText)findViewById(R.id.et_name)).getText().toString();
-        String category = CATEGORY;
-        if(recruiting) category = "3";
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        String time = sdf.format(new Timestamp(System.currentTimeMillis()));
-
-        Log.d("WeGlonD", "postnum " + msgFromIntent);
-
-        if(editing){
-            db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, category);
-            Uploading(msgFromIntent,db,title,time+" (수정됨)", category);
+        if(title.contains(".")){
+            Toast.makeText(context, "'.'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
-        else {
-            String finalCategory = category;
-            db.setNewPostNumber(category, new Acts() {
-                @Override
-                public void ifSuccess(Object task) {
-                    Long postnum = ((Task<DataSnapshot>) task).getResult().getValue(Long.class);
-                    Uploading(postnum, db, title, time, finalCategory);
-                }
-
-                @Override
-                public void ifFail(Object task) {
-                }
-            });
+        else if(title.contains("#")){
+            Toast.makeText(context, "'#'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
+        else if(title.contains("$")){
+            Toast.makeText(context, "'$'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
+        }
+        else if(title.contains("[")){
+            Toast.makeText(context, "'['은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
+        }
+        else if(title.contains("]")){
+            Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
+        }
+        else{
+            String category = CATEGORY;
+            if(recruiting) category = "3";
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            String time = sdf.format(new Timestamp(System.currentTimeMillis()));
+
+            Log.d("WeGlonD", "postnum " + msgFromIntent);
+
+            if(editing){
+                db.deletePostForUpdate(msgFromIntent, preTitle, preTagStr, Database.getAuth().getCurrentUser().getUid(), preImageCnt, category);
+                Uploading(msgFromIntent,db,title,time+" (수정됨)", category);
+            }
+            else {
+                String finalCategory = category;
+                db.setNewPostNumber(category, new Acts() {
+                    @Override
+                    public void ifSuccess(Object task) {
+                        Long postnum = ((Task<DataSnapshot>) task).getResult().getValue(Long.class);
+                        Uploading(postnum, db, title, time, finalCategory);
+                    }
+
+                    @Override
+                    public void ifFail(Object task) {
+                    }
+                });
+            }
+
+        }
     }
 
     public void Uploading(Long postnum, Database db, String title, String time, String category){

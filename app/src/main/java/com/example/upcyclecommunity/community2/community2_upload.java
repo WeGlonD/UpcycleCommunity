@@ -146,32 +146,49 @@ public class community2_upload extends Activity implements View.OnClickListener 
         else if(v==write_tag){
             EditText et_tag = findViewById(R.id.et_tagInput2);
             String newTag = et_tag.getText().toString();
-            et_tag.setText("");
-            if(!newTag.equals("") && !tags.contains(newTag)){
-                LinearLayout tags_field = findViewById(R.id.tagLayout2);
-                TextView newTagTv = new TextView(this);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(5,5,5,5);
-                newTagTv.setLayoutParams(layoutParams);
-                newTagTv.setTextSize(15);
-                newTagTv.setText(newTag);
-                tags.add(newTag);
-                newTagTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        TextView now = (TextView) view;
-                        //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
-                        for(String tmp : tags){
-                            if(tmp.equals(now.getText())){
-                                tags.remove(tmp);
-                                break;
+            if(newTag.contains(".")){
+                Toast.makeText(context, "'.'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            }
+            else if(newTag.contains("#")){
+                Toast.makeText(context, "'#'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            }
+            else if(newTag.contains("$")){
+                Toast.makeText(context, "'$'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            }
+            else if(newTag.contains("[")){
+                Toast.makeText(context, "'['은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            }
+            else if(newTag.contains("]")){
+                Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                et_tag.setText("");
+                if(!newTag.equals("") && !tags.contains(newTag)){
+                    LinearLayout tags_field = findViewById(R.id.tagLayout2);
+                    TextView newTagTv = new TextView(this);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(5,5,5,5);
+                    newTagTv.setLayoutParams(layoutParams);
+                    newTagTv.setTextSize(15);
+                    newTagTv.setText(newTag);
+                    tags.add(newTag);
+                    newTagTv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            TextView now = (TextView) view;
+                            //Toast.makeText(getApplicationContext(), now.getText(), Toast.LENGTH_SHORT).show();
+                            for(String tmp : tags){
+                                if(tmp.equals(now.getText())){
+                                    tags.remove(tmp);
+                                    break;
+                                }
                             }
+                            ((ViewGroup)now.getParent()).removeView(now);
+                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
                         }
-                        ((ViewGroup)now.getParent()).removeView(now);
-                        Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-                tags_field.addView(newTagTv);
+                    });
+                    tags_field.addView(newTagTv);
+                }
             }
         }
     }
