@@ -551,9 +551,10 @@ public class Database {
                                             Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
                                         }
                                     }
+
                                     postingRoot.child(postnum+"").removeValue();
                                     Log.d("WeGlonD", "Database - deletePost - 삭제완료");
-
+                                    acts.ifSuccess(task);
                                 }
                             });
 
@@ -631,7 +632,7 @@ public class Database {
     }
 
     public void readAllRecruit(ArrayList<Long> returnList, String postnum, int count, Acts acts) {
-        mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").limitToFirst(count)
+        mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -640,14 +641,70 @@ public class Database {
                                 Log.d("minseok",""+dataSnapshot.getValue(Long.class));
                                 returnList.add(dataSnapshot.getValue(Long.class));
                                 acts.ifSuccess(snapshot);
+                                if(returnList.size() >= count)
+                                    break;
                             }
-                            recruit_list.recruit_isUpdating = false;
                         }
+                        returnList.add(-1L);
+                        acts.ifSuccess(snapshot);
+                        recruit_list.recruit_isUpdating = false;
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
+                });
+    }
+
+    public void readNearAllRecruit(ArrayList<Long> returnList, String postnum, int count, double MaxDistanceKm, Acts acts){
+
+        Location nowPosition = new Location("");
+        nowPosition.setLatitude(MainActivity.location.getLatitude());
+        nowPosition.setLongitude(MainActivity.location.getLongitude());
+
+        mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int idx = -1;
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            idx++;
+                            Log.d("weglond", dataSnapshot.getKey());
+                            if (!dataSnapshot.getKey().equals("cnt")) {
+                                int finalIdx = idx;
+                                mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class)+"").child("latitude").get().addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()){
+                                        double latitude = task.getResult().getValue(Double.class);
+                                        Log.d("WeGlonD", "lat "+ latitude);
+                                        mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class)+"").child("longitude").get().addOnCompleteListener(task1 -> {
+                                            if(task1.isSuccessful()){
+                                                double longitude = task1.getResult().getValue(Double.class);
+                                                Log.d("WeGlonD", "lng "+ longitude);
+                                                Location postPosition = new Location("");
+                                                postPosition.setLatitude(latitude);
+                                                postPosition.setLongitude(longitude);
+                                                if(nowPosition.distanceTo(postPosition) <= MaxDistanceKm*1000) {
+                                                    Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                    if(returnList.size() < count) {
+                                                        returnList.add(dataSnapshot.getValue(Long.class));
+                                                        acts.ifSuccess(snapshot);
+                                                    }
+                                                }
+                                                if(finalIdx == snapshot.getChildrenCount()-1) {
+                                                    Log.d("weglond", "마지막 child / -1 add");
+                                                    returnList.add(-1L);
+                                                    acts.ifSuccess(snapshot);
+                                                    recruit_list.recruit_isUpdating = false;
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
 
@@ -663,19 +720,85 @@ public class Database {
         String from = String.valueOf(str);
         String to = String.valueOf(end);
 
-        postRoot.child("posting").child(postnum).child("recruit").orderByKey().startAt(from).endAt(to).
+        postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).endAt(to).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                            if(!(dataSnapshot.getKey().equals("cnt"))) {
                                 Long postNumber = Long.parseLong(dataSnapshot.getKey());
                                 Log.d("WeGlonD", postNumber + "");
                                 returnList.add(postNumber);
                                 acts.ifSuccess(snapshot);
                             }
                         }
+                        returnList.add(-1L);
+                        acts.ifSuccess(snapshot);
                         recruit_list.recruit_isUpdating = false;
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    public void readNearRecruitWith(ArrayList<Long> returnList,String postnum, Long str, Long end, double MaxDistanceKm, Acts acts){
+
+        Location nowPosition = new Location("");
+        nowPosition.setLatitude(MainActivity.location.getLatitude());
+        nowPosition.setLongitude(MainActivity.location.getLongitude());
+
+        DatabaseReference postRoot = mDBRoot.child("Post2");
+        if (str < 0){
+            str = Long.valueOf(0);
+        }
+        if (end < 0){
+            end = FIRST_POSTNUM;
+        }
+        String from = String.valueOf(str);
+
+        int maxcnt = (int)(end - str + 1 + returnList.size());
+
+        postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int idx = -1;
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            idx++;
+                            if(!(dataSnapshot.getKey().equals("cnt"))) {
+                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                int finalIdx = idx;
+                                mDBRoot.child("Post3").child("posting").child(postNumber+"").get().addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()){
+                                        double latitude = task.getResult().child("latitude").getValue(Double.class);
+                                        double longitude = task.getResult().child("longitude").getValue(Double.class);
+                                        Location postPosition = new Location("");
+                                        postPosition.setLatitude(latitude);
+                                        postPosition.setLongitude(longitude);
+                                        if(nowPosition.distanceTo(postPosition) <= MaxDistanceKm*1000){
+                                            if(returnList.size() < maxcnt) {
+                                                Log.d("WeGlonD", postNumber + "");
+                                                returnList.add(postNumber);
+                                                acts.ifSuccess(snapshot);
+                                            }
+                                        }
+                                        if(finalIdx == snapshot.getChildrenCount()-1){
+                                            returnList.add(-1L);
+                                            acts.ifSuccess(snapshot);
+                                            recruit_list.recruit_isUpdating = false;
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        if(idx == -1){
+                            Log.d("weglond", "밑이 없을때");
+                            returnList.add(-1L);
+                            acts.ifSuccess(snapshot);
+                            recruit_list.recruit_isUpdating = false;
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -692,7 +815,6 @@ public class Database {
         Location nowPosition = new Location("");
         nowPosition.setLatitude(MainActivity.location.getLatitude());
         nowPosition.setLongitude(MainActivity.location.getLongitude());
-
         postingRoot.
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

@@ -117,7 +117,7 @@ public class recruit_list extends AppCompatActivity {
             });
         }
         else{
-            db.readNearPostsFirst(listData, count, 10, CATEGORY, new Acts() {
+            db.readNearAllRecruit(listData, comu1postnum, count, 10,new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;
@@ -156,7 +156,7 @@ public class recruit_list extends AppCompatActivity {
             });
         }
         else{
-            db.readNearPostsWith(listData, str, end, (double)10, CATEGORY, new Acts() {
+            db.readNearRecruitWith(listData, comu1postnum, str, end, 10, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;
