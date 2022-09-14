@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -25,25 +26,34 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.BrandList.FragmentBrand;
 import com.example.upcyclecommunity.community1.TitleInfo;
 import com.example.upcyclecommunity.community1.communityAdapter;
+import com.example.upcyclecommunity.community2.community2Adapter;
+import com.example.upcyclecommunity.community2.community2_upload;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.community2.Fragment_CM2;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mylocation.MyLocation;
+import com.example.upcyclecommunity.mypage.LoginActivity;
 import com.example.upcyclecommunity.mypage.MyPageFragment;
+import com.example.upcyclecommunity.recruit.recruit_list;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -56,17 +66,37 @@ public class MainActivity extends AppCompatActivity {
     public final int Namesearch = 1;
     public final int Tagsearch = 2;
     int currentTab = 0;
+    int category = 0;
     public static MyLocation location;
     RecyclerView CommunityRecycler;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
+    community2Adapter.clickListener mclickListener;
+    boolean searching = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainContext = this;
+        mclickListener = new community2Adapter.clickListener() {
+            @Override
+            public void mclickListener_Dialog(String postNumber) {
+                if (Database.getAuth().getCurrentUser() != null){
+                    Database.getDBRoot().child("Post2").child("posting").
+                            child(postNumber).child("writer").get().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()){
+                                    String user_uid = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+                                    if(user_uid.equals(Database.getAuth().getCurrentUser().getUid()))
+                                        Dialog(postNumber);
+                                    else
+                                        recruitDialog(postNumber);
+                                }
+                            });
+                }
+            }
+        };
+
 
         Database db = new Database(this);
         User user = new User(this);
@@ -101,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         //첫번째 프래그먼트 띄우도록 할 것.
         setFragment(R.id.bottom_community1);
+        category = 2;//탭은 1인데 category는 2다!!
     }
 
     @Override
@@ -122,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 if(currentTab==1) break;
                 Fragment_CM2 Community2 = new Fragment_CM2();
                 fragmentTransaction.replace(R.id.main_frame, Community2).commit();
+                category = 2;
                 currentTab = 1;
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
@@ -129,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 if(currentTab==2) break;
                 Fragment_CM1 Community1 = new Fragment_CM1();
                 fragmentTransaction.replace(R.id.main_frame,Community1).commit();
+                category = 1;
                 currentTab = 2;
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
@@ -136,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 if(currentTab==3) break;
                 FragmentBrand BrandListTab = new FragmentBrand();
                 fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
+                category = 3;
                 currentTab = 3;
                 //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
@@ -143,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 if(currentTab==4) break;
                 MyPageFragment MyPageTab = new MyPageFragment();
                 fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
+                category = 4;
                 currentTab = 4;
                 //Toast.makeText(this, "마이페이지", Toast.LENGTH_SHORT).show();
                 break;
@@ -295,11 +330,11 @@ public class MainActivity extends AppCompatActivity {
                 //다 검색완료후
                 if(mode == Namesearch){
                     Log.d("minseok", "onQueryTextSubmit - call searchName");
-                    searchName(query);
+                    if(searching)searchName(query);
                 }
                 else if(mode == Tagsearch){
                     Log.d("minseok", "onQueryTextSubmit - call searchTag");
-                    searchTag(query);
+                    if(searching)searchTag(query);
                 }
                 return false;
             }
@@ -309,11 +344,11 @@ public class MainActivity extends AppCompatActivity {
                 //칠 때마다 텍스트 하나하나 입력
                 if(mode == Namesearch){
                     Log.d("minseok", "onQueryTextChange - call searchName");
-                    searchName(newText);
+                    if(searching)searchName(newText);
                 }
                 else if(mode == Tagsearch){
                     Log.d("minseok", "onQueryTextChange - call searchTag");
-                    searchTag(newText);
+                    if(searching)searchTag(newText);
                 }
                 return false;
             }
@@ -322,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                searching = true;
                 Log.d("minseok","onMenuItemActionExpand called");
                 if(mode == Namesearch){
                     Log.d("minseok",mode+"");
@@ -340,13 +376,15 @@ public class MainActivity extends AppCompatActivity {
             //검색이 종료되었을 때
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                searching = false;
                 Log.d("minseok","onMenuItemActionCollapse called");
                 Database db = new Database(mainContext);
                 ArrayList<Long> listData = new ArrayList<>();
-                db.readAllPost(listData, currentTab+"", new Acts() {
+                db.readAllPost(listData, category+"", new Acts() {
                     @Override
                     public void ifSuccess(Object task) {
-                        CommunityRecycler.setAdapter(new communityAdapter(listData, mainContext));
+                        if(currentTab == 1)CommunityRecycler.setAdapter(new community2Adapter(listData,mainContext,mclickListener));
+                        else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(listData, mainContext));
                     }
 
                     @Override
@@ -381,16 +419,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchName(String keyword){
         ArrayList<Long> searched = new ArrayList<>();
-        CommunityRecycler = findViewById(R.id.title_community1);
+        if(currentTab == 1)CommunityRecycler = findViewById(R.id.title_community2);
+        else if(currentTab == 2)CommunityRecycler = findViewById(R.id.title_community1);
+
 //        registerForContextMenu(CommunityRecycler);
         Database db = new Database(getApplicationContext());
-        db.readName(searched, keyword, currentTab+"", new Acts() {
+        ArrayList<Long> empty = new ArrayList<>();
+        db.readName(searched, keyword, category+"", new Acts() {
             @Override
             public void ifSuccess(Object task) {
-
                 if (searched != null) {
                     Log.d("minseok", "searchName - ifSuccess - searched is NOT null");
-                    CommunityRecycler.setAdapter(new communityAdapter(searched, mainContext));
+                    if(keyword.equals("")||searched.size()==0){
+                        searched.clear();
+                        CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                    }
+                    else{
+                        if(currentTab == 1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
+                        else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched, mainContext));
+                    }
                 }
                 else{
                     Log.d("minseok", "searchName - ifSuccess - searched is null");
@@ -407,19 +454,121 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchTag(String keyword){
         ArrayList<Long> searched = new ArrayList<>();
-        CommunityRecycler = findViewById(R.id.title_community1);
+        if(currentTab == 1)CommunityRecycler = findViewById(R.id.title_community2);
+        else if(currentTab == 2)CommunityRecycler = findViewById(R.id.title_community1);
         //registerForContextMenu(CommunityRecycler);
         Database db = new Database(getApplicationContext());
-        db.readTag(searched, keyword, currentTab+"", new Acts() {
+        db.readTag(searched, keyword, category+"", new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 if (searched != null) {
-                    CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                    if(currentTab==1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
+                    else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
                 }
             }
             @Override
             public void ifFail(Object task) {
 
+            }
+        });
+    }
+
+    public void Dialog(String postNumber){
+        DialogInterface.OnClickListener ammendimage = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //수정
+                change_posting(postNumber,1);
+                dialog.dismiss();
+            }
+        };
+        DialogInterface.OnClickListener deleteimage = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //삭제
+                change_posting(postNumber,2);
+                dialog.dismiss();
+            }
+        };
+        DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent it = new Intent(mainContext, recruit_list.class);
+                it.putExtra("postn",Long.MAX_VALUE+"");
+                it.putExtra("recruitPostnum", postNumber);
+                startActivity(it);
+                dialog.dismiss();
+            }
+        };
+        new AlertDialog.Builder(mainContext)
+                .setTitle("게시물 변경(본인 게시물만 가능)")
+                .setPositiveButton("게시물 수정", ammendimage)
+                .setNeutralButton("모임 조회",recruitPosting)
+                .setNegativeButton("게시물 삭제", deleteimage)
+                .show();
+    }
+
+    public void recruitDialog(String postNumber){
+        DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent it = new Intent(mainContext, recruit_list.class);
+                it.putExtra("postn",Long.MAX_VALUE+"");
+                it.putExtra("recruitPostnum", postNumber);
+                startActivity(it);
+                dialog.dismiss();
+            }
+        };
+        DialogInterface.OnClickListener cancel = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        };
+        new AlertDialog.Builder(mainContext)
+                .setTitle("")
+                .setPositiveButton("모임 조회", recruitPosting)
+                .setNegativeButton("취소",cancel)
+                .show();
+    }
+    public void change_posting(String postNumber, int mode){
+        Database db = new Database();
+        Database.getDBRoot().child("Post"+category).child("posting").child(postNumber).child("writer").get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String writerUid = task.getResult().getValue(String.class);
+                if(Database.getAuth().getCurrentUser()==null){
+                    Toast.makeText(mainContext, "로그인 후 게시물을 수정/삭제할 수 있습니다!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(mainContext, LoginActivity.class);
+                    startActivity(intent);
+                }else {
+                    Log.d("WeGlonD", "get : " + Database.getAuth().getCurrentUser().getUid());
+                    Log.d("WeGlonD", "post writer : " + writerUid);
+                    if (writerUid.equals(Database.getAuth().getCurrentUser().getUid())) {
+                        switch (mode) {
+                            case 1:
+                                //수정 코드
+                                Intent it = new Intent(mainContext, community2_upload.class);
+                                it.putExtra("postn", postNumber);
+                                startActivity(it);
+                                //finish();
+                                break;
+                            case 2:
+                                db.deletePost(Long.parseLong(postNumber), writerUid, category+"", "", new Acts() {
+                                    @Override
+                                    public void ifSuccess(Object task) {
+                                        //finish();
+                                    }
+                                    @Override
+                                    public void ifFail(Object task) {
+                                        Toast.makeText(mainContext, "삭제실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                break;
+                        }
+                    } else {
+                        Toast.makeText(mainContext, "자신의 게시물만 수정/삭제 가능합니다", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
