@@ -34,6 +34,7 @@
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,14 +42,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".community1.WritePostActivity"/>
-        <activity android:name=".community1.Personal_Post"/>
-        <activity android:name=".community2.community2_upload"/>
-        <activity android:name=".mypage.LoginActivity"/>
-        <activity android:name=".mypage.SignUpActivity"/>
-        <activity android:name=".mypage.SettingActivity"/>
-        <activity android:name=".mypage.MyPost1_Activity"/>
-        <activity android:name=".community2.CommentsActivity"/>
+        <activity android:name=".community1.WritePostActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".community1.Personal_Post"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".community2.community2_upload"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mypage.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mypage.SignUpActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mypage.SettingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".community2.CommentsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mypage.MyPost1_Activity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
