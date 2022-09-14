@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.upcyclecommunity.community1.Fragment_CM1;
@@ -74,11 +77,13 @@ public class MainActivity extends AppCompatActivity {
     String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     community2Adapter.clickListener mclickListener;
     boolean searching = false;
+    ConstraintLayout nosearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainContext = this;
+        nosearch = findViewById(R.id.no_search);
         mclickListener = new community2Adapter.clickListener() {
             @Override
             public void mclickListener_Dialog(String postNumber) {
@@ -357,6 +362,11 @@ public class MainActivity extends AppCompatActivity {
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                if(currentTab == 1)CommunityRecycler = findViewById(R.id.title_community2);
+                else if(currentTab == 2)CommunityRecycler = findViewById(R.id.title_community1);
+                CommunityRecycler.setVisibility(View.GONE);
+                nosearch = findViewById(R.id.no_search);
+                nosearch.setVisibility(View.VISIBLE);
                 searching = true;
                 Log.d("minseok","onMenuItemActionExpand called");
                 if(mode == Namesearch){
@@ -376,6 +386,8 @@ public class MainActivity extends AppCompatActivity {
             //검색이 종료되었을 때
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                CommunityRecycler.setVisibility(View.VISIBLE);
+                nosearch.setVisibility(View.GONE);
                 searching = false;
                 Log.d("minseok","onMenuItemActionCollapse called");
                 Database db = new Database(mainContext);
@@ -419,8 +431,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchName(String keyword){
         ArrayList<Long> searched = new ArrayList<>();
-        if(currentTab == 1)CommunityRecycler = findViewById(R.id.title_community2);
-        else if(currentTab == 2)CommunityRecycler = findViewById(R.id.title_community1);
 
 //        registerForContextMenu(CommunityRecycler);
         Database db = new Database(getApplicationContext());
@@ -431,10 +441,14 @@ public class MainActivity extends AppCompatActivity {
                 if (searched != null) {
                     Log.d("minseok", "searchName - ifSuccess - searched is NOT null");
                     if(keyword.equals("")||searched.size()==0){
-                        searched.clear();
-                        CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                        CommunityRecycler.setVisibility(View.GONE);
+                        nosearch = findViewById(R.id.no_search);
+                        nosearch.setVisibility(View.VISIBLE);
+                        //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
                     }
                     else{
+                        CommunityRecycler.setVisibility(View.VISIBLE);
+                        nosearch.setVisibility(View.GONE);
                         if(currentTab == 1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
                         else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched, mainContext));
                     }
@@ -462,8 +476,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void ifSuccess(Object task) {
                 if (searched != null) {
-                    if(currentTab==1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
-                    else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                    if(keyword.equals("")||searched.size()==0){
+                        CommunityRecycler.setVisibility(View.GONE);
+                        nosearch = findViewById(R.id.no_search);
+                        nosearch.setVisibility(View.VISIBLE);
+                        //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                    }
+                    else{
+                        if(currentTab==1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
+                        else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                    }
                 }
             }
             @Override
