@@ -26,6 +26,7 @@ import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.mypage.LoginActivity;
+import com.example.upcyclecommunity.recruit.recruit_list;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.type.LatLng;
@@ -286,7 +287,7 @@ public class Fragment_CM2 extends Fragment {
         DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent it = new Intent(mContext, WritePostActivity.class);
+                Intent it = new Intent(mContext, recruit_list.class);
                 it.putExtra("postn",Long.MAX_VALUE+"");
                 it.putExtra("recruitPostnum", postNumber);
                 startActivity(it);
@@ -305,7 +306,7 @@ public class Fragment_CM2 extends Fragment {
         DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent it = new Intent(mContext, WritePostActivity.class);
+                Intent it = new Intent(mContext, recruit_list.class);
                 it.putExtra("postn",Long.MAX_VALUE+"");
                 it.putExtra("recruitPostnum", postNumber);
                 startActivity(it);
@@ -320,7 +321,7 @@ public class Fragment_CM2 extends Fragment {
         };
         new AlertDialog.Builder(getActivity())
                 .setTitle("")
-                .setPositiveButton("모집글 게시", recruitPosting)
+                .setPositiveButton("모임 조회", recruitPosting)
                 .setNegativeButton("취소",cancel)
                 .show();
     }

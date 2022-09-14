@@ -58,7 +58,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".mypage.MyPost1_Activity"
             android:screenOrientation="portrait"/>
-
+        <activity android:name=".recruit.recruit_list"
+            android:screenOrientation="portrait"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.upcyclecommunity.fileprovider"

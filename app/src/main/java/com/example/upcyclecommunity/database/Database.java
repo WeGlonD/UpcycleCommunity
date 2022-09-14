@@ -18,6 +18,7 @@ import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.TitleInfo;
 import com.example.upcyclecommunity.community2.Fragment_CM2;
 import com.example.upcyclecommunity.community2.community2_upload;
+import com.example.upcyclecommunity.recruit.recruit_list;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -563,6 +564,9 @@ public class Database {
                     if (category.equals("2")){
                         Fragment_CM2.isUpdating = false;
                     }
+                    if (category.equals("3")){
+                        recruit_list.recruit_isUpdating = false;
+                    }
                 }
             }
             else{
@@ -597,6 +601,10 @@ public class Database {
                             //returnList.add((long) -1);
                             acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
+                        }
+                        if (category.equals("3")){
+                            acts.ifSuccess(snapshot);;
+                            recruit_list.recruit_isUpdating = false;
                         }
                     }
 
@@ -714,6 +722,9 @@ public class Database {
                             //returnList.add((long) -1);
                             //acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
+                        }
+                        if (category.equals("3")){
+                            recruit_list.recruit_isUpdating = false;
                         }
                     }
 
@@ -875,7 +886,6 @@ public class Database {
                             if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") || dataSnapshot.getKey().equals("recruitFrom") ||
                                     dataSnapshot.getKey().equals("latitude") || dataSnapshot.getKey().equals("longitude")||dataSnapshot.getKey().equals("likeuser"))) {
                                 String key = dataSnapshot.getKey();
-                                Log.d("minseok","key"+key);
                                 String value = dataSnapshot.getValue(String.class);
                                 Log.d("minseok","value"+value);
                                 if (key.equals("0")) {
@@ -883,6 +893,7 @@ public class Database {
                                 } else if (key.equals("tags")) {
                                     Tag = value;
                                 } else if (key.equals("writer")) {
+                                    Log.d("minseok","writer"+value);
                                     User_Id = value;
                                 } else if (key.equals("timestamp")){
                                     timeStamp = value;

@@ -1,0 +1,143 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/border_line">
+    <!-- 무조건 wrap_content해야한다 그래야 리스트 하나가 가득 안차고 여러개 가능 -->
+
+    <Button
+        android:id="@+id/recruit_item_load_more_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="더보기"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/recruit_post_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars"/>
+    <ProgressBar
+        android:id="@+id/recruit_item_progress_circular"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="6dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/recruit_tv_post_title1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="게시물 제목"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/recruit_post_iv"
+        app:layout_constraintEnd_toStartOf="@+id/recruit_item_linearLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/recruit_item_postData_linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/recruit_tv_post_title1"
+        app:layout_constraintLeft_toLeftOf="@id/recruit_tv_post_title1"
+        app:layout_constraintRight_toRightOf="@id/recruit_tv_post_title1">
+
+        <TextView
+            android:id="@+id/recruit_item_userName_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="6sp"
+            android:text="000"/>
+        <TextView
+            android:id="@+id/recruit_item_date_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="6sp"
+            android:text="000"/>
+        <TextView
+            android:id="@+id/recruit_item_clickCnt_text_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="6sp"
+            android:text="조회수"/>
+        <TextView
+            android:id="@+id/recruit_item_clickCnt_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="6sp"
+            android:text="000"/>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/recruit_item_linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/layout_background">
+
+        <TextView
+            android:id="@+id/recruit_tv_comment1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="댓글수"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/recruit_noid"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/recruit_noid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:text="댓글"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recruit_tv_comment1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
