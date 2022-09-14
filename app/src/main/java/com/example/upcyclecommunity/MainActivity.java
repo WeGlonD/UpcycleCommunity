@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     SearchView searchview;
     FragmentTransaction fragmentTransaction;
     Context mainContext;
+    BottomNavigationView main_bottom;
     public int mode = 1;
     public final int Namesearch = 1;
     public final int Tagsearch = 2;
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
     community2Adapter.clickListener mclickListener;
     boolean searching = false;
     ConstraintLayout nosearch;
+    MenuItem searchItem;
+    MenuItem NameItem;
+    MenuItem TagItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.hide();
 
-        BottomNavigationView main_bottom = findViewById(R.id.main_bottom);
+        main_bottom = findViewById(R.id.main_bottom);
         main_bottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -135,8 +139,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         //첫번째 프래그먼트 띄우도록 할 것.
-        setFragment(R.id.bottom_community1);
-        category = 2;//탭은 1인데 category는 2다!!
+        //setFragment(R.id.bottom_community1);
     }
 
     @Override
@@ -160,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, Community2).commit();
                 category = 2;
                 currentTab = 1;
+                searchItem.setVisible(true);
+                NameItem.setVisible(true);
+                TagItem.setVisible(true);
                 nosearch = findViewById(R.id.no_search);
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
@@ -170,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 category = 1;
                 currentTab = 2;
                 nosearch = findViewById(R.id.no_search2);
+                searchItem.setVisible(true);
+                NameItem.setVisible(true);
+                TagItem.setVisible(true);
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_brandlist:
@@ -178,6 +187,9 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
                 category = 3;
                 currentTab = 3;
+                searchItem.setVisible(false);
+                NameItem.setVisible(false);
+                TagItem.setVisible(false);
                 //Toast.makeText(this, "브랜드", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_mypage:
@@ -186,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
                 category = 4;
                 currentTab = 4;
+                searchItem.setVisible(false);
+                NameItem.setVisible(false);
+                TagItem.setVisible(false);
                 //Toast.makeText(this, "마이페이지", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -317,14 +332,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu,menu);
-        MenuItem searchItem = menu.findItem(R.id.search);
+        searchItem = menu.findItem(R.id.search);
         searchview = (SearchView)searchItem.getActionView();
         searchview.setMaxWidth(Integer.MAX_VALUE);
         searchview.setQueryHint("제목으로 검색합니다");
         mode = Namesearch;
 
-        MenuItem NameItem = menu.findItem(R.id.menu_name);
-        MenuItem TagItem = menu.findItem(R.id.menu_tag);
+        NameItem = menu.findItem(R.id.menu_name);
+        TagItem = menu.findItem(R.id.menu_tag);
 
         NameItem.setOnMenuItemClickListener(modelistener);
         TagItem.setOnMenuItemClickListener(modelistener);
@@ -376,8 +391,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 CommunityRecycler.setVisibility(View.GONE);
 
+                main_bottom.setVisibility(View.INVISIBLE);
 
                 searching = true;
+                TagItem.setVisible(false);
+                NameItem.setVisible(false);
                 Log.d("minseok","onMenuItemActionExpand called");
                 if(mode == Namesearch){
                     Log.d("minseok",mode+"");
@@ -400,6 +418,12 @@ public class MainActivity extends AppCompatActivity {
                 nosearch.setVisibility(View.GONE);
                 searching = false;
                 Log.d("minseok","onMenuItemActionCollapse called");
+                //if(searchItem.isVisible()) Toast.makeText(mainContext, "보이니", Toast.LENGTH_SHORT).show();
+                TagItem.setVisible(true);
+                NameItem.setVisible(true);
+                main_bottom.setVisibility(View.VISIBLE);
+//                searchItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+//                searchItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                 Database db = new Database(mainContext);
                 ArrayList<Long> listData = new ArrayList<>();
                 db.readAllPost(listData, category+"", new Acts() {
@@ -418,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
+        setFragment(R.id.bottom_community1);
         return super.onCreateOptionsMenu(menu);
     }
 
