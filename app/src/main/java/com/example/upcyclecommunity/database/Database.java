@@ -577,9 +577,7 @@ public class Database {
 
     public void readPostsFirst(ArrayList<Long> returnList, int count, String category, Acts acts) {
         String path = "firebase.Database.readAllPost - ";
-
         DatabaseReference postRoot = mDBRoot.child("Post" + category);
-
         postRoot.child("posting").limitToFirst(count).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -602,12 +600,62 @@ public class Database {
                             acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
-                        if (category.equals("3")){
-                            acts.ifSuccess(snapshot);;
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    public void readAllRecruit(ArrayList<Long> returnList, String postnum, int count, Acts acts) {
+        mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").limitToFirst(count)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            if (!dataSnapshot.getKey().equals("cnt")) {
+                                Log.d("minseok",""+dataSnapshot.getValue(Long.class));
+                                returnList.add(dataSnapshot.getValue(Long.class));
+                                acts.ifSuccess(snapshot);
+                            }
                             recruit_list.recruit_isUpdating = false;
                         }
                     }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
+                    }
+                });
+    }
+
+    public void readRecruitPostsWith(ArrayList<Long> returnList,String postnum, Long str, Long end, Acts acts) {
+        String path = "firebase.Database.readAllPost - ";
+        DatabaseReference postRoot = mDBRoot.child("Post2");
+        if (str < 0){
+            str = Long.valueOf(0);
+        }
+        if (end < 0){
+            end = FIRST_POSTNUM;
+        }
+        String from = String.valueOf(str);
+        String to = String.valueOf(end);
+
+        postRoot.child("posting").child(postnum).child("recruit").orderByKey().startAt(from).endAt(to).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                Log.d("WeGlonD", postNumber + "");
+                                returnList.add(postNumber);
+                                acts.ifSuccess(snapshot);
+                            }
+                        }
+                        recruit_list.recruit_isUpdating = false;
+                    }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
@@ -884,7 +932,7 @@ public class Database {
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
                             if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") || dataSnapshot.getKey().equals("recruitFrom") ||
-                                    dataSnapshot.getKey().equals("latitude") || dataSnapshot.getKey().equals("longitude")||dataSnapshot.getKey().equals("likeuser"))) {
+                                    dataSnapshot.getKey().equals("latitude") || dataSnapshot.getKey().equals("longitude")||dataSnapshot.getKey().equals("likeuser") || dataSnapshot.getKey().equals("recruit"))) {
                                 String key = dataSnapshot.getKey();
                                 String value = dataSnapshot.getValue(String.class);
                                 Log.d("minseok","value"+value);

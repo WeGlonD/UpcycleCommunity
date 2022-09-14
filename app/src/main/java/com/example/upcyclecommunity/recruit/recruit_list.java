@@ -83,7 +83,7 @@ public class recruit_list extends AppCompatActivity {
             listData.remove(listData.size()-1);
             Radapter.notifyItemRemoved(i);
         }
-        db.readPostsFirst(listData, count, CATEGORY, new Acts() {
+        db.readAllRecruit(listData, comu1postnum, count, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 int position = listData.size() - 1;
@@ -106,7 +106,7 @@ public class recruit_list extends AppCompatActivity {
         int lastPosition = listData.size() - 1;
         listData.remove(lastPosition);
         Radapter.notifyItemRemoved(lastPosition);
-        db.readPostsWith(listData, str, end, CATEGORY, new Acts() {
+        db.readRecruitPostsWith(listData, comu1postnum, str, end, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 int position = listData.size() - 1;

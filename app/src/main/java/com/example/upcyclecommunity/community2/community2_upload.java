@@ -252,32 +252,52 @@ public class community2_upload extends Activity implements View.OnClickListener 
     }
 
     public void Uploading(Long postnum, Database db, String title, String time){
-        String content = ((EditText)findViewById(R.id.community2_upload_content)).getText().toString();
-        db.writePostByLine(postnum, 1l, content, title, time, tags, CATEGORY);
-        for(int i = 0;i<mItems.size();i++){
-            int fi = i;
-            Glide.with(this).load(mItems.get(i)).centerCrop().override(1000).into(imagecontainer);
-            Log.d("minseok", "uri : " + mItems.get(i).toString());
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) imagecontainer.getDrawable();
-            Log.d("minseok", "drawable : " + bitmapDrawable);
-            db.writeImage(bitmapDrawable, Database.getPostpictureRoot().child("Post"+CATEGORY), CATEGORY + "-" + postnum + "-" + title + "-" + (i + 2), new Acts() {
-                @Override
-                public void ifSuccess(Object task) {
-                    db.readImage(Database.getPostpictureRoot().child("Post"+CATEGORY), CATEGORY + "-" + postnum + "-" + title + "-" + (fi + 2)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String url = uri.toString();
-                            db.writePostByLine(postnum,fi+2l, url, title, time, tags,CATEGORY);
-                            Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+        if(mItems.size()==0){
+            Toast.makeText(context, "이미지를 넣어주세요!!", Toast.LENGTH_SHORT).show();
+        }
+        if(title.contains(".")){
+            Toast.makeText(context, "'.'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+        }
+        if(title.contains("#")){
+            Toast.makeText(context, "'#'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+        }
+        if(title.contains("$")){
+            Toast.makeText(context, "'$'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+        }
+        if(title.contains("[")){
+            Toast.makeText(context, "'['은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+        }
+        if(title.contains("]")){
+            Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            String content = ((EditText)findViewById(R.id.community2_upload_content)).getText().toString();
+            db.writePostByLine(postnum, 1l, content, title, time, tags, CATEGORY);
+            for(int i = 0;i<mItems.size();i++){
+                int fi = i;
+                Glide.with(this).load(mItems.get(i)).centerCrop().override(1000).into(imagecontainer);
+                Log.d("minseok", "uri : " + mItems.get(i).toString());
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) imagecontainer.getDrawable();
+                Log.d("minseok", "drawable : " + bitmapDrawable);
+                db.writeImage(bitmapDrawable, Database.getPostpictureRoot().child("Post"+CATEGORY), CATEGORY + "-" + postnum + "-" + title + "-" + (i + 2), new Acts() {
+                    @Override
+                    public void ifSuccess(Object task) {
+                        db.readImage(Database.getPostpictureRoot().child("Post"+CATEGORY), CATEGORY + "-" + postnum + "-" + title + "-" + (fi + 2)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String url = uri.toString();
+                                db.writePostByLine(postnum,fi+2l, url, title, time, tags,CATEGORY);
+                                Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
 
-                @Override
-                public void ifFail(Object task) {
+                    @Override
+                    public void ifFail(Object task) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 

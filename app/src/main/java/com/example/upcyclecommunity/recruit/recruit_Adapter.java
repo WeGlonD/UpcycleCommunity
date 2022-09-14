@@ -85,7 +85,7 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             holder.linearLayout.setVisibility(View.VISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
-            Log.d("minseok","postnumber"+postNumber);
+            Log.d("minseok","postnumber"+postNumber+"i"+i);
             db.readOnePost(postArray, postNumber, CATEGORY, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
@@ -95,7 +95,6 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
                     //user
                     Database.getUserRoot().child(User_Id).child("name").get().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
-                            //String Name = task1.getResult().getValue(String.class);
                             Database.getUserProfileImageRoot().child(User_Id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
