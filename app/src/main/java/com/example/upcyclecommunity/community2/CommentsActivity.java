@@ -19,6 +19,7 @@ import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community2.adapter.Comments_RecyclerViewAdapter;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
@@ -63,25 +64,31 @@ public class CommentsActivity extends AppCompatActivity {
         submit_btn = findViewById(R.id.activity_comments_submit_button);
 
         submit_btn.setOnClickListener(view -> {
-            String comment = comment_et.getText().toString();
-            comment_et.setText("");
-            submit_btn.setVisibility(View.INVISIBLE);
-            findViewById(R.id.activity_comments_submit_button_progressBar).bringToFront();
-            findViewById(R.id.activity_comments_submit_button_progressBar).setVisibility(View.VISIBLE);
-            db.writeComment(Long.valueOf(postNumber), comment, CATEGORY, listData, new Acts() {
-                @Override
-                public void ifSuccess(Object task) {
-                    int position = listData.size()-1;
-                    recyclerViewAdapter.notifyItemInserted(position);
-                    submit_btn.setVisibility(View.VISIBLE);
-                    findViewById(R.id.activity_comments_submit_button_progressBar).setVisibility(View.GONE);
-                }
+            if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                Toast.makeText(mContext, "로그인을 하세요~", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                String comment = comment_et.getText().toString();
+                comment_et.setText("");
+                submit_btn.setVisibility(View.INVISIBLE);
+                findViewById(R.id.activity_comments_submit_button_progressBar).bringToFront();
+                findViewById(R.id.activity_comments_submit_button_progressBar).setVisibility(View.VISIBLE);
+                db.writeComment(Long.valueOf(postNumber), comment, CATEGORY, listData, new Acts() {
+                    @Override
+                    public void ifSuccess(Object task) {
+                        int position = listData.size()-1;
+                        recyclerViewAdapter.notifyItemInserted(position);
+                        submit_btn.setVisibility(View.VISIBLE);
+                        findViewById(R.id.activity_comments_submit_button_progressBar).setVisibility(View.GONE);
+                    }
 
-                @Override
-                public void ifFail(Object task) {
+                    @Override
+                    public void ifFail(Object task) {
 
-                }
-            });
+                    }
+                });
+            }
+
         });
 
     }

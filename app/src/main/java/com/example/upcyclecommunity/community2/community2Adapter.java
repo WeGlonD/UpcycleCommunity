@@ -113,7 +113,12 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 });
                                 Database.getUserProfileImageRoot().child(value).getDownloadUrl().addOnSuccessListener(uri -> {
                                     holder.userPic_progressBar.setVisibility(View.INVISIBLE);
-                                    Glide.with(mContext).load(uri).into(holder.userPic);
+                                    try{
+                                        Glide.with(mContext).load(uri).into(holder.userPic);
+                                    }
+                                    catch (Exception e){
+
+                                    }
                                 });
                             } else if (key.equals("1")) {
                                 String value = data.getValue(String.class);
@@ -282,6 +287,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                     else {
                         String nowUser = Database.getAuth().getCurrentUser().getUid();
                         if (like.isSelected()) {
+                            likeCnt_tv.setText(String.valueOf(Integer.parseInt(likeCnt_tv.getText().toString())-1));
                             like.setSelected(false);
                             Database.getDBRoot().child("Post" + CATEGORY).child("posting").child(postnum + "").child("likeuser").get().addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
@@ -304,6 +310,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 }
                             });
                         } else {
+                            likeCnt_tv.setText(String.valueOf(Integer.parseInt(likeCnt_tv.getText().toString())+1));
                             like.setSelected(true);
                             Database.getDBRoot().child("Post" + CATEGORY).child("posting").child(postnum + "").child("likeuser").child("cnt").get().addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {

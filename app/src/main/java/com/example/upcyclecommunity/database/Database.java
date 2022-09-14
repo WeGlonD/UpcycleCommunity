@@ -1306,8 +1306,10 @@ public class Database {
             commentNum++;
             currPosting.child("comment").child("cnt").setValue(commentNum);
             DatabaseReference currentComment = currPosting.child("comment").child(commentNum+"");
-            currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid());
-            currentComment.child("text").setValue(text);
+            if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid());
+                currentComment.child("text").setValue(text);
+            }
         });
     }
     public void writeComment(Long postnumber, String text, String category, ArrayList<Long> addingList,Acts acts){
@@ -1328,12 +1330,14 @@ public class Database {
             Long finalCommentNum = commentNum;
             currPosting.child("comment").child("cnt").setValue(commentNum).addOnCompleteListener(t1 -> {
                 DatabaseReference currentComment = currPosting.child("comment").child(finalCommentNum +"");
-                currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid()).addOnCompleteListener(t2 -> {
-                    currentComment.child("text").setValue(text).addOnCompleteListener(t3 -> {
-                        addingList.add(finalCommentNum);
-                        acts.ifSuccess(t3);
+                if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                    currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid()).addOnCompleteListener(t2 -> {
+                        currentComment.child("text").setValue(text).addOnCompleteListener(t3 -> {
+                            addingList.add(finalCommentNum);
+                            acts.ifSuccess(t3);
+                        });
                     });
-                });
+                }
             });
         });
     }

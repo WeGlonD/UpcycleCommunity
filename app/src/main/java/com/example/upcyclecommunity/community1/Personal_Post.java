@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,9 +35,12 @@ import com.example.upcyclecommunity.database.Post;
 import com.example.upcyclecommunity.database.User;
 import com.example.upcyclecommunity.mypage.LoginActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -142,12 +146,29 @@ public class Personal_Post extends AppCompatActivity {
             Database.getDBRoot().child("Post3").child("posting").child(postn+"").child("recruitFrom").get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     recruitPostnum = task.getResult().getValue(Long.class);
-                    arr.add(recruitPostnum);
-                    community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
-                        @Override
-                        public void mclickListener_Dialog(String postNumber) {}
+                    Database.getDBRoot().child("Post2").child("posting").child(recruitPostnum+"").get().addOnCompleteListener(task1 -> {
+                       if (task1.isSuccessful()){
+                           if (task1.getResult().getChildrenCount() == 0){
+                               TextView tv = new TextView(context);
+                               tv.setText("삭제된 게시물입니다.");
+                               tv.setTextSize(30);
+                               tv.setTextColor(getResources().getColor(R.color.black));
+                               LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                               tv.setGravity(Gravity.CENTER);
+                               tv.setLayoutParams(lp);
+                               ((LinearLayout)findViewById(R.id.recruit_linearlayout)).addView(tv);
+                           }
+                           else{
+                               arr.add(recruitPostnum);
+                               community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
+                                   @Override
+                                   public void mclickListener_Dialog(String postNumber) {}
+                               });
+                               recruitRecycler.setAdapter(adapter);
+                           }
+                       }
                     });
-                    recruitRecycler.setAdapter(adapter);
+
                 }
             });
         }
@@ -158,8 +179,13 @@ public class Personal_Post extends AppCompatActivity {
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.writeComment(postn, et_comment.getText().toString(), CATEGORY);
-                et_comment.setText("");
+                if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                    Toast.makeText(context, "로그인을 하세요~", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    db.writeComment(postn, et_comment.getText().toString(), CATEGORY);
+                    et_comment.setText("");
+                }
             }
         });
 
@@ -288,6 +314,7 @@ public class Personal_Post extends AppCompatActivity {
                 Log.d("Minseok",CATEGORY+"");
                 Post personal_p = postArray.get(0);
                 String Ttitle = personal_p.getTitle();
+                Toast.makeText(context, String.valueOf(postn), Toast.LENGTH_SHORT).show();
 
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());

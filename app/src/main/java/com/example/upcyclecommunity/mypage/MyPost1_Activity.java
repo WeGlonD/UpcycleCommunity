@@ -81,4 +81,9 @@ public class MyPost1_Activity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 }
