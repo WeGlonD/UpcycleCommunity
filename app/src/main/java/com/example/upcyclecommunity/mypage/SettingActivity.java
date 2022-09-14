@@ -4,6 +4,8 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -52,12 +54,15 @@ public class SettingActivity extends AppCompatActivity {
     private EditText password_check_et;
     private Button update_btn;
 
+    private Context context;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
         mAuth = FirebaseAuth.getInstance();
+        context = this;
 
         profile_iv = findViewById(R.id.activity_setting_profile_imageView);
         name_et = findViewById(R.id.activity_setting_name_editText);
@@ -67,8 +72,8 @@ public class SettingActivity extends AppCompatActivity {
         update_btn = findViewById(R.id.activity_setting_update_button);
 
         Uri it_uri = Uri.parse(getIntent().getStringExtra("picUri"));
-        String it_name = getIntent().getStringExtra("name");
-        String it_email = getIntent().getStringExtra("email");
+        String it_name = getIntent().getStringExtra("name").replaceAll("\\s", "");
+        String it_email = getIntent().getStringExtra("email").replaceAll("\\s", "");
         Glide.with(this).load(it_uri).into(profile_iv);
         name_et.setText(it_name);
         email_et.setText(it_email);
@@ -82,11 +87,14 @@ public class SettingActivity extends AppCompatActivity {
 
         update_btn.setOnClickListener(view -> {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) profile_iv.getDrawable();
-            String name = name_et.getText().toString();
-            String email = email_et.getText().toString();
+            String name = name_et.getText().toString().replaceAll("\\s", "");
+            String email = email_et.getText().toString().replaceAll("\\s", "");
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+            ProgressDialog dialog = new ProgressDialog(context);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setTitle("loading...");
+            dialog.show();
             db.writeImage(bitmapDrawable, Database.getUserProfileImageRoot(),
                     Database.getAuth().getCurrentUser().getUid(), new Acts() {
                         @Override
@@ -94,6 +102,7 @@ public class SettingActivity extends AppCompatActivity {
                             Database.getUserRoot().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
                                     child("name").setValue(name).addOnCompleteListener(taskName -> {
                                         user.updateEmail(email).addOnCompleteListener(taskEmail -> {
+                                            dialog.dismiss();
                                             if(taskEmail.isSuccessful())
                                                 finish();
                                             else
@@ -104,6 +113,7 @@ public class SettingActivity extends AppCompatActivity {
 
                         @Override
                         public void ifFail(Object task) {
+                            dialog.dismiss();
                             printToast("image update fail");
                         }
                     });

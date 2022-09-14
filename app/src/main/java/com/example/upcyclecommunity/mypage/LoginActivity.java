@@ -83,6 +83,9 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(mContext, "비밀번호를 입력해 주세요", Toast.LENGTH_SHORT).show();
             }
             else{
+                email = email.replaceAll("\\s", "");
+                password = password.replaceAll("\\s", "");
+
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.setTitle("login...");
@@ -106,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         helpPassword_tv.setOnClickListener(view -> {
-            String email = email_et.getText().toString();
+            String email = email_et.getText().toString().replaceAll("\\s", "");
             if (email.isEmpty()){
                 Toast.makeText(mContext, "write your email", Toast.LENGTH_SHORT).show();
             }

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -88,52 +89,72 @@ public class SignUpActivity extends AppCompatActivity {
             String password = password_et.getText().toString();
             String password_check = password_check_et.getText().toString();
 
-            ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setTitle("signUp...");
-            dialog.show();
+
             if(password.equals(password_check)){
-                user.create(email, password, new Acts() {
-                    @Override
-                    public void ifSuccess(Object task) {
-                        user.login(email, password, new Acts() {
-                            @Override
-                            public void ifSuccess(Object task) {
-                                db.writeImage(bitmapDrawable, Database.getUserProfileImageRoot(),
-                                        Database.getAuth().getCurrentUser().getUid(), new Acts() {
-                                            @Override
-                                            public void ifSuccess(Object task) {
-                                                User.Data data = new User.Data(name);
-                                                db.writeUser(data);
-                                                dialog.dismiss();
-                                                finish();
-                                            }
+                if (email.length() == 0){
+                    Toast.makeText(mContext, "이메일을 입력해 주세요", Toast.LENGTH_SHORT).show();
+                }
+                else if (password.length() == 0){
+                    Toast.makeText(mContext, "비밀번호를 입력해 주세요", Toast.LENGTH_SHORT).show();
+                }
+                else if(!password.equals(password.replaceAll("\\s", ""))){
+                    Toast.makeText(mContext, "비밀번호에 공백을 지워주세요", Toast.LENGTH_SHORT).show();
+                }
+                else if(!email.equals(email.replaceAll("\\s", ""))){
+                    Toast.makeText(mContext, "이메일에 공백을 지워주세요", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    ProgressDialog dialog = new ProgressDialog(this);
+                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    dialog.setTitle("signUp...");
+                    dialog.show();
 
-                                            @Override
-                                            public void ifFail(Object task) {
-                                                dialog.dismiss();
-                                                Toast.makeText(mContext, "save user profile image fail", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            }
+                    String trim_email = email.replaceAll("\\s", "");
+                    String trim_password = password.replaceAll("\\s", "");
+                    Log.d("why?", email);
+                    Log.d("why?", password);
 
-                            @Override
-                            public void ifFail(Object task) {
-                                dialog.dismiss();
-                                Toast.makeText(mContext, "user login fail", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+                    user.create(email, password, new Acts() {
+                        @Override
+                        public void ifSuccess(Object task) {
+                            user.login(trim_email, trim_password, new Acts() {
+                                @Override
+                                public void ifSuccess(Object task) {
+                                    db.writeImage(bitmapDrawable, Database.getUserProfileImageRoot(),
+                                            Database.getAuth().getCurrentUser().getUid(), new Acts() {
+                                                @Override
+                                                public void ifSuccess(Object task) {
+                                                    User.Data data = new User.Data(name);
+                                                    db.writeUser(data);
+                                                    dialog.dismiss();
+                                                    finish();
+                                                }
 
-                    @Override
-                    public void ifFail(Object task) {
-                        dialog.dismiss();
-                        Toast.makeText(mContext, "user create fail", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                                                @Override
+                                                public void ifFail(Object task) {
+                                                    dialog.dismiss();
+                                                    Toast.makeText(mContext, "save user profile image fail", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+
+                                @Override
+                                public void ifFail(Object task) {
+                                    dialog.dismiss();
+                                    Toast.makeText(mContext, "user login fail", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void ifFail(Object task) {
+                            dialog.dismiss();
+                            Toast.makeText(mContext, "user create fail", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
             else{
-                dialog.dismiss();
                 Toast.makeText(this, getString(R.string.activity_signup_password_is_not_same), Toast.LENGTH_SHORT).show();
             }
         });

@@ -151,6 +151,9 @@ public class Personal_Post extends AppCompatActivity {
                 }
             });
         }
+        else{
+            CATEGORY = "1";
+        }
 
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,13 +285,14 @@ public class Personal_Post extends AppCompatActivity {
         db.readOnePost(postArray, postn, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
-
+                Log.d("Minseok",CATEGORY+"");
                 Post personal_p = postArray.get(0);
                 String Ttitle = personal_p.getTitle();
 
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());
                 User_Id = personal_p.getUser_id();
+                Log.d("Minseok", User_Id);
                 //user
                 Database.getUserRoot().child(User_Id).child("name").get().addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {

@@ -1,5 +1,7 @@
 package com.example.upcyclecommunity.mypage;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,6 +71,7 @@ public class MyPageFragment extends Fragment {
     private PostPageAdapter postPageAdapter;
     private ArrayList<Fragment> fragments;
 
+    private Context context;
     private RequestManager mGlideRequestManager;
 
     public MyPageFragment() {
@@ -100,6 +103,7 @@ public class MyPageFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        context = getContext();
         mGlideRequestManager = Glide.with(getActivity());
     }
 
@@ -128,6 +132,10 @@ public class MyPageFragment extends Fragment {
         viewPager = view.findViewById(R.id.my_page_viewPager);
 
         setting_iv.setOnClickListener(viw -> {
+            ProgressDialog dialog = new ProgressDialog(context);
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.setTitle("loading...");
+            dialog.show();
             db.readUser(new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
@@ -140,10 +148,11 @@ public class MyPageFragment extends Fragment {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             String email = user.getEmail();
 
-                            Intent it = new Intent(getContext(), SettingActivity.class);
+                            Intent it = new Intent(context, SettingActivity.class);
                             it.putExtra("picUri", String.valueOf(uri));
                             it.putExtra("name", data.getName());
                             it.putExtra("email", email);
+                            dialog.dismiss();
                             startActivity(it);
                         }
                     });
@@ -151,6 +160,7 @@ public class MyPageFragment extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
+                    dialog.dismiss();
                     Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
                 }
             });

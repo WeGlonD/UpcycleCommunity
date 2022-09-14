@@ -97,6 +97,7 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
 
                     if (task.isSuccessful()){
                         boolean hasImage = false;
+                        boolean hasClickCnt = false;
                         Iterable<DataSnapshot> postData = task.getResult().getChildren();
                         for(DataSnapshot data : postData){
                             String key = data.getKey();
@@ -116,6 +117,7 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
                                 holder.commentCnt_tv.setText(String.valueOf(value));
                             }
                             else if (key.equals("clickcnt")){
+                                hasClickCnt = true;
                                 String value = String.valueOf(data.getValue(Long.class));
                                 holder.clickCnt_tv.setText(value);
                             }
@@ -124,6 +126,9 @@ public class Post2_RecyclerViewAdapter extends RecyclerView.Adapter<Post2_Recycl
                             holder.progressBar.setVisibility(View.INVISIBLE);
 //                            holder.post_iv.setImageResource(R.drawable.ic_baseline_image_not_supported_24);
                             holder.post_iv.setVisibility(View.GONE);
+                        }
+                        if (!(hasClickCnt)){
+                            holder.clickCnt_tv.setVisibility(View.GONE);
                         }
                     }
                     else{

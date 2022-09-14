@@ -773,9 +773,12 @@ public class Database {
         String from = String.valueOf(str);
         String to = String.valueOf(end);
 
+        int count = (int)(end - str + 1);
+        int maxcnt = returnList.size() + count;
+
 //        Toast.makeText(context, from+" "+to, Toast.LENGTH_LONG).show();
 
-        postRoot.child("posting").orderByKey().startAt(from).endAt(to).
+        postRoot.child("posting").orderByKey().startAt(from).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -785,6 +788,9 @@ public class Database {
                                 Log.d("WeGlonD", postNumber + "");
                                 returnList.add(postNumber);
                                 acts.ifSuccess(snapshot);
+
+                                if (returnList.size() == maxcnt)
+                                    break;
                             }
                         }
                         if (category.equals("1")){
