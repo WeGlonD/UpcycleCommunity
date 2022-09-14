@@ -21,9 +21,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community2.community2Adapter;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Comment;
 import com.example.upcyclecommunity.database.Database;
@@ -38,7 +41,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Personal_Post extends AppCompatActivity {
-    public static final String CATEGORY = "1";
+    public static String CATEGORY = "1";
     Database db = new Database();
     ArrayList<Post> postArray;
     TextView titleview;
@@ -55,6 +58,7 @@ public class Personal_Post extends AppCompatActivity {
     LinearLayout comment_layout;
     Long postn;
     Context context;
+    RecyclerView recruitRecycler;
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
@@ -126,6 +130,24 @@ public class Personal_Post extends AppCompatActivity {
         parent = findViewById(R.id.personal_contentsLayout);
         et_comment = findViewById(R.id.et_commentInput);
         btn_comment = findViewById(R.id.btn_commentInput);
+        recruitRecycler = findViewById(R.id.recruitPost);
+        recruitRecycler.setLayoutManager(new LinearLayoutManager(context));
+
+        if(getIntent().getStringExtra("category").equals("3")) {
+            CATEGORY = "3";
+            ArrayList<Long> arr = new ArrayList<>();
+            Database.getDBRoot().child("Post3").child("posting").child(postn+"").child("recruitFrom").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Long recruitPostnum = task.getResult().getValue(Long.class);
+                    arr.add(recruitPostnum);
+                    community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
+                        @Override
+                        public void mclickListener_Dialog(String postNumber) {}
+                    });
+                    recruitRecycler.setAdapter(adapter);
+                }
+            });
+        }
 
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override

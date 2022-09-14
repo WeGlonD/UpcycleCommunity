@@ -119,7 +119,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 String value = data.getValue(String.class);
                                 holder.content_tv.setText(value);
                             }
-                            else if(key.equals("latitude")||key.equals("longitude")){
+                            else if(key.equals("latitude")||key.equals("longitude")||key.equals("recruit")){
                                 //위도경도 정보처리
                             } else {
                                 String value = data.getValue(String.class);

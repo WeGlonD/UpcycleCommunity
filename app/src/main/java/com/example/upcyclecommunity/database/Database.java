@@ -324,7 +324,7 @@ public class Database {
                     }
                 });
             }
-            else{
+            else if (category.equals("2")){
                 currentPosting.child("likeuser").child("cnt").get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         Long likeKeyMax = task.getResult().getValue(Long.class);
@@ -871,7 +871,7 @@ public class Database {
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") ||
+                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") || dataSnapshot.getKey().equals("recruit") ||
                                     dataSnapshot.getKey().equals("latitude") || dataSnapshot.getKey().equals("longitude")||dataSnapshot.getKey().equals("likeuser"))) {
                                 String key = dataSnapshot.getKey();
                                 Log.d("minseok","key"+key);

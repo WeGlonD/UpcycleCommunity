@@ -76,6 +76,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     boolean editing;
     boolean recruiting;
     String preTitle;
+    String recruitNum;
     String preTagStr;
     int preImageCnt;
     Long msgFromIntent;
@@ -115,7 +116,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         if (editing){
             loadExistingPost(msgFromIntent);
         }
-        String recruitNum = it.getStringExtra("recruitPostnum");
+        recruitNum = it.getStringExtra("recruitPostnum");
         recruiting = false;
         if(recruitNum!=null){
             recruiting = true;
@@ -469,6 +470,19 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
     public void Uploading(Long postnum, Database db, String title, String time, String category){
         Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
+        if(category.equals("3")){
+            Database.getDBRoot().child("Post3").child("posting").child(postnum+"").child("recruitFrom").setValue(Long.parseLong(recruitNum));
+            Database.getDBRoot().child("Post2").child("posting").child(recruitNum).child("recruit").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Long newKey = task.getResult().getValue(Long.class);
+                    if(newKey==null)
+                        newKey = 0l;
+                    newKey++;
+                    Database.getDBRoot().child("Post2").child("posting").child(recruitNum).child("recruit").child("cnt").setValue(newKey);
+                    Database.getDBRoot().child("Post2").child("posting").child(recruitNum).child("recruit").child(newKey+"").setValue(postnum);
+                }
+            });
+        }
         for(long i = 1;i <= editTexts.size()+imageViews.size()-1;i++){
             switch ((int)i%2){
                 case 0:

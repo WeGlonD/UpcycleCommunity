@@ -207,6 +207,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
                     Intent it = new Intent(mContext, Personal_Post.class);
                     it.putExtra("postn", stringPostNumber);
+                    it.putExtra("category", CATEGORY);
 
                     mContext.startActivity(it);
                 }

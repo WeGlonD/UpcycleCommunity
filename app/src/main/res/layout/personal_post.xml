@@ -92,6 +92,11 @@
                 </HorizontalScrollView>
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recruitPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <LinearLayout
                 android:id="@+id/personal_contentsLayout"
                 android:layout_width="match_parent"
