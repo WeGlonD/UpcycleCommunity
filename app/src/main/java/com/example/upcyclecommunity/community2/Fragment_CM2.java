@@ -348,7 +348,7 @@ public class Fragment_CM2 extends Fragment {
                                 //finish();
                                 break;
                             case 2:
-                                db.deletePost(Long.parseLong(postNumber), writerUid, CATEGORY, new Acts() {
+                                db.deletePost(Long.parseLong(postNumber), writerUid, CATEGORY, "", new Acts() {
                                     @Override
                                     public void ifSuccess(Object task) {
                                         //finish();

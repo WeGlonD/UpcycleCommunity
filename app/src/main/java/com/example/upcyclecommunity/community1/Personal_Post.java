@@ -57,6 +57,7 @@ public class Personal_Post extends AppCompatActivity {
     Button btn_comment;
     LinearLayout comment_layout;
     Long postn;
+    Long recruitPostnum;
     Context context;
     RecyclerView recruitRecycler;
 
@@ -81,7 +82,7 @@ public class Personal_Post extends AppCompatActivity {
                     if (writerUid.equals(Database.getAuth().getCurrentUser().getUid())) {
                         switch (item.getItemId()) {
                             case R.id.menu_deltePost:
-                                db.deletePost(postn, writerUid, CATEGORY, new Acts() {
+                                db.deletePost(postn, writerUid, CATEGORY, recruitPostnum+"", new Acts() {
                                     @Override
                                     public void ifSuccess(Object task) {
                                         finish();
@@ -97,6 +98,8 @@ public class Personal_Post extends AppCompatActivity {
                                 //수정 코드
                                 Intent it = new Intent(this, WritePostActivity.class);
                                 it.putExtra("postn", postn + "");
+                                if(CATEGORY.equals("3"))
+                                    it.putExtra("recruitPostnum", recruitPostnum+"");
                                 startActivity(it);
                                 finish();
                                 break;
@@ -138,7 +141,7 @@ public class Personal_Post extends AppCompatActivity {
             ArrayList<Long> arr = new ArrayList<>();
             Database.getDBRoot().child("Post3").child("posting").child(postn+"").child("recruitFrom").get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
-                    Long recruitPostnum = task.getResult().getValue(Long.class);
+                    recruitPostnum = task.getResult().getValue(Long.class);
                     arr.add(recruitPostnum);
                     community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
                         @Override

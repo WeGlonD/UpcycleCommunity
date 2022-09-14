@@ -396,7 +396,7 @@ public class Database {
         });
     }
 
-    public void deletePostForUpdate(Long postnum, String preTitle, String preTagStr, String userUid, int imageCnt, String category){
+    public void deletePostForUpdate(Long postnum, String preTitle, String preTagStr, String userUid, int imageCnt,String category){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference titleRoot = postRoot.child("Title");
         DatabaseReference tagRoot = postRoot.child("Tag");
@@ -452,21 +452,42 @@ public class Database {
             }
         }
         for(int i = 1; i <= imageCnt; i++) {
-            postpictureRoot.child(category + "-" + postnum + "-" + preTitle + "-" + i*2).delete();
+            postpictureRoot.child("Post"+category).child(category + "-" + postnum + "-" + preTitle + "-" + i*2).delete();
             Log.d("WeGlonD", "deletePostForUpdate - image Found - " + category + "-" + postnum + "-" + preTitle + "-" + i*2);
         }
     }
 
-    public void deletePost(Long postnum, String writerUid, String category, Acts acts){
+    public void deletePost(Long postnum, String writerUid, String category, String recruitNum, Acts acts){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference postingRoot = postRoot.child("posting");
         DatabaseReference titleRoot = postRoot.child("Title");
         DatabaseReference tagRoot = postRoot.child("Tag");
+
+        if(category.equals("3")){
+            mDBRoot.child("Post2").child("posting").child(recruitNum).child("recruit").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                        if(!dataSnapshot.getKey().equals("cnt")&&dataSnapshot.getValue(Long.class).equals(postnum)){
+                            String removeKey = dataSnapshot.getKey();
+                            mDBRoot.child("Post2").child("posting").child(recruitNum).child("recruit").child(removeKey).removeValue();
+                        }
+                    }
+                }
+            });
+        }
+
         postingRoot.child(""+postnum).get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 String title = null;
                 ArrayList<String> tags = null;
-                long contentsCnt = task.getResult().getChildrenCount() - 6;
+                int subtract = 0;
+                if(category.equals("1"))
+                    subtract = 8;
+                else if(category.equals("2"))
+                    subtract = 9;
+                else if(category.equals("3"))
+                    subtract = 8;
+                long contentsCnt = task.getResult().getChildrenCount() - subtract;
                 for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
                     if (dataSnapshot.getKey().equals("0")) {
                         title = dataSnapshot.getValue(String.class);
@@ -486,55 +507,55 @@ public class Database {
                     if(!title.equals("")){
                         Log.d("minseok","deletepost2"+title);
                         titleRoot.child(title).get().addOnCompleteListener(task1 -> {
-                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
-                                Log.d("minseok","datasnapshotpostnum"+dataSnapshot.getValue(Long.class));
-                                Log.d("minseok","postnum"+postnum);
-                                if(postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")){
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()) {
+                                Log.d("minseok", "datasnapshotpostnum" + dataSnapshot.getValue(Long.class));
+                                Log.d("minseok", "postnum" + postnum);
+                                if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
                                     titleRoot.child(fTitle).child(dataSnapshot.getKey()).removeValue();
                                     break;
                                 }
                             }
-
-                            if(fTags!=null) {
-                                for (String tag : fTags) {
-                                    Log.d("minseok", "tag : " + tag);
-                                    tagRoot.child(tag).get().addOnCompleteListener(task2 -> {
-                                        if (task2.isSuccessful()) {
-                                            for (DataSnapshot dataSnapshot : task2.getResult().getChildren()) {
-                                                Log.d("WeGlonD", dataSnapshot.toString() + "asdf");
-                                                if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
-                                                    String removeKey = dataSnapshot.getKey();
-                                                    tagRoot.child(tag).child(removeKey).removeValue();
-                                                    break;
-                                                }
+                            for (String tag : fTags) {
+                                Log.d("minseok", "tag : " + tag);
+                                tagRoot.child(tag).get().addOnCompleteListener(task2 -> {
+                                    if (task2.isSuccessful()) {
+                                        for (DataSnapshot dataSnapshot : task2.getResult().getChildren()) {
+                                            Log.d("WeGlonD", dataSnapshot.toString() + "asdf");
+                                            if (postnum.equals(dataSnapshot.getValue(Long.class)) && !dataSnapshot.getKey().equals("cnt")) {
+                                                String removeKey = dataSnapshot.getKey();
+                                                tagRoot.child(tag).child(removeKey).removeValue();
+                                                break;
                                             }
-
-                                            userRoot.child(writerUid).child("post"+category).get().addOnCompleteListener(task3 -> {
-                                                if(task3.isSuccessful()){
-                                                    for(DataSnapshot dataSnapshot : task3.getResult().getChildren()){
-                                                        if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
-                                                            String removeKey = dataSnapshot.getKey();
-                                                            userRoot.child(writerUid).child("post"+category).child(removeKey).removeValue();
-                                                            Log.d("WeGlonD", "user post del - " + removeKey + " " + dataSnapshot.getValue(Long.class));
-                                                        }
-                                                    }
-
-                                                    for(int i = 1; i <= contentsCnt; i++){
-                                                        if(i%2==0){
-                                                            postpictureRoot.child(category + "-" + postnum + "-" + fTitle + "-" +i).delete();
-                                                            Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
-                                                        }
-                                                    }
-                                                    postingRoot.child(postnum+"").removeValue();
-                                                    Log.d("WeGlonD", "Database - deletePost - 삭제완료");
-                                                    acts.ifSuccess(task);
-                                                }
-                                            });
-
                                         }
-                                    });
-                                }
+
+                                    }
+                                });
                             }
+                            userRoot.child(writerUid).child("post"+category).get().addOnCompleteListener(task3 -> {
+                                if(task3.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task3.getResult().getChildren()){
+                                        if(postnum.equals(dataSnapshot.getValue(Long.class))&&!dataSnapshot.getKey().equals("cnt")){
+                                            String removeKey = dataSnapshot.getKey();
+                                            userRoot.child(writerUid).child("post"+category).child(removeKey).removeValue();
+                                            Log.d("WeGlonD", "user post del - " + removeKey + " " + dataSnapshot.getValue(Long.class));
+                                        }
+                                    }
+
+                                    for(int i = 1; i <= contentsCnt; i++){
+                                        if((category.equals("1")||category.equals("3")) && i%2==0){
+                                            postpictureRoot.child("Post"+category).child(category + "-" + postnum + "-" + fTitle + "-" +i).delete();
+                                            Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
+                                        }
+                                        else if(category.equals("2") && i >= 2){
+                                            postpictureRoot.child("Post"+category).child(category + "-" + postnum + "-" + fTitle + "-" +i).delete();
+                                            Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
+                                        }
+                                    }
+                                    postingRoot.child(postnum+"").removeValue();
+                                    Log.d("WeGlonD", "Database - deletePost - 삭제완료");
+
+                                }
+                            });
 
                         });
                     }
@@ -703,6 +724,11 @@ public class Database {
                             acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
                         }
+                        if (category.equals("3")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
+                            recruit_list.recruit_isUpdating = false;
+                        }
                     }
 
                     @Override
@@ -772,6 +798,7 @@ public class Database {
                             Fragment_CM2.isUpdating = false;
                         }
                         if (category.equals("3")){
+                            returnList.add((long) -1);
                             recruit_list.recruit_isUpdating = false;
                         }
                     }
@@ -841,6 +868,11 @@ public class Database {
                             //returnList.add((long) -1);
                             //acts.ifSuccess(snapshot);
                             Fragment_CM2.isUpdating = false;
+                        }
+                        if (category.equals("3")){
+                            returnList.add((long) -1);
+                            acts.ifSuccess(snapshot);
+                            recruit_list.recruit_isUpdating = false;
                         }
                     }
 

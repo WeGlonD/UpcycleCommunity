@@ -113,15 +113,16 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         writePostUploading = new WritePostUploading(this);
         writePostUploading.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        if (editing){
-            loadExistingPost(msgFromIntent);
-        }
         recruitNum = it.getStringExtra("recruitPostnum");
         recruiting = false;
         if(recruitNum!=null){
             recruiting = true;
             Log.d("WeGlonD", "recruiting! "+recruitNum);
             recruitPost(recruitNum);
+        }
+
+        if (editing){
+            loadExistingPost(msgFromIntent);
         }
     }
 
@@ -470,7 +471,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
     public void Uploading(Long postnum, Database db, String title, String time, String category){
         Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
-        if(category.equals("3")){
+        if(category.equals("3") && !editing){
             Database.getDBRoot().child("Post3").child("posting").child(postnum+"").child("recruitFrom").setValue(Long.parseLong(recruitNum));
             Database.getDBRoot().child("Post2").child("posting").child(recruitNum).child("recruit").child("cnt").get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){

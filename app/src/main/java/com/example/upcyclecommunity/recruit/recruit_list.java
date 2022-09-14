@@ -28,6 +28,7 @@ public class recruit_list extends AppCompatActivity {
     ArrayList<Long> listData = new ArrayList<>();
     Context mContext;
     String CATEGORY = "3";
+    Button CurrPos;
     Button writeRecruit;
     String recruitpostnum;
     String comu1postnum;
@@ -47,6 +48,22 @@ public class recruit_list extends AppCompatActivity {
                 it.putExtra("postn",Long.MAX_VALUE+"");
                 it.putExtra("recruitPostnum", comu1postnum);
                 startActivity(it);
+            }
+        });
+        CurrPos = findViewById(R.id.currPosCondition3);
+        CurrPos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(CurrPos.isSelected()) {
+                    CurrPos.setSelected(false);
+                    recruit_isUpdating = true;
+                    resetListData(5);
+                }
+                else {
+                    CurrPos.setSelected(true);
+                    recruit_isUpdating = true;
+                    resetListData(5);
+                }
             }
         });
         recruit_recyclerview = findViewById(R.id.title_recruit);
@@ -83,21 +100,38 @@ public class recruit_list extends AppCompatActivity {
             listData.remove(listData.size()-1);
             Radapter.notifyItemRemoved(i);
         }
-        db.readAllRecruit(listData, comu1postnum, count, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                int position = listData.size() - 1;
-                Radapter.notifyItemInserted(position);
+        if(!CurrPos.isSelected()) {
+            db.readAllRecruit(listData, comu1postnum, count, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Radapter.notifyItemInserted(position);
 //                Cadapter.notifyDataSetChanged();
-            }
+                }
 
-            @Override
-            public void ifFail(Object task) {
-                Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
+        else{
+            db.readNearPostsFirst(listData, count, 10, CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Radapter.notifyItemInserted(position);
+//                Cadapter.notifyDataSetChanged();
+                }
 
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
     }
 
     public void getListDataWith(Long str, Long end) {
@@ -106,18 +140,35 @@ public class recruit_list extends AppCompatActivity {
         int lastPosition = listData.size() - 1;
         listData.remove(lastPosition);
         Radapter.notifyItemRemoved(lastPosition);
-        db.readRecruitPostsWith(listData, comu1postnum, str, end, new Acts() {
-            @Override
-            public void ifSuccess(Object task) {
-                int position = listData.size() - 1;
-                Radapter.notifyItemInserted(position);
-            }
-            @Override
-            public void ifFail(Object task) {
-                Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
+        if(!CurrPos.isSelected()) {
+            db.readRecruitPostsWith(listData, comu1postnum, str, end, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Radapter.notifyItemInserted(position);
+                }
 
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
+        else{
+            db.readNearPostsWith(listData, str, end, (double)10, CATEGORY, new Acts() {
+                @Override
+                public void ifSuccess(Object task) {
+                    int position = listData.size() - 1;
+                    Radapter.notifyItemInserted(position);
+                }
+
+                @Override
+                public void ifFail(Object task) {
+                    Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
+        }
     }
 }
