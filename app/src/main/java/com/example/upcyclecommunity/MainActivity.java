@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, Community2).commit();
                 category = 2;
                 currentTab = 1;
+                nosearch = findViewById(R.id.no_search);
                 //Toast.makeText(this, "커뮤1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_community2:
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame,Community1).commit();
                 category = 1;
                 currentTab = 2;
+                nosearch = findViewById(R.id.no_search2);
                 //Toast.makeText(this, "커뮤2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_brandlist:
@@ -362,11 +364,19 @@ public class MainActivity extends AppCompatActivity {
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                if(currentTab == 1)CommunityRecycler = findViewById(R.id.title_community2);
-                else if(currentTab == 2)CommunityRecycler = findViewById(R.id.title_community1);
+                if(currentTab == 1){
+                    CommunityRecycler = findViewById(R.id.title_community2);
+                    nosearch = findViewById(R.id.no_search);
+                    nosearch.setVisibility(View.VISIBLE);
+                }
+                else if(currentTab == 2){
+                    CommunityRecycler = findViewById(R.id.title_community1);
+                    nosearch = findViewById(R.id.no_search2);
+                    nosearch.setVisibility(View.VISIBLE);
+                }
                 CommunityRecycler.setVisibility(View.GONE);
-                nosearch = findViewById(R.id.no_search);
-                nosearch.setVisibility(View.VISIBLE);
+
+
                 searching = true;
                 Log.d("minseok","onMenuItemActionExpand called");
                 if(mode == Namesearch){
@@ -442,7 +452,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("minseok", "searchName - ifSuccess - searched is NOT null");
                     if(keyword.equals("")||searched.size()==0){
                         CommunityRecycler.setVisibility(View.GONE);
-                        nosearch = findViewById(R.id.no_search);
                         nosearch.setVisibility(View.VISIBLE);
                         //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
                     }
@@ -478,7 +487,6 @@ public class MainActivity extends AppCompatActivity {
                 if (searched != null) {
                     if(keyword.equals("")||searched.size()==0){
                         CommunityRecycler.setVisibility(View.GONE);
-                        nosearch = findViewById(R.id.no_search);
                         nosearch.setVisibility(View.VISIBLE);
                         //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
                     }
