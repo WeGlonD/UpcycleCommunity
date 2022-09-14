@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.upcyclecommunity.MainActivity;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
@@ -871,7 +872,7 @@ public class Database {
 
                     if (task.isSuccessful()){
                         for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") || dataSnapshot.getKey().equals("recruit") ||
+                            if (!(dataSnapshot.getKey().equals("comment") || dataSnapshot.getKey().equals("clickcnt") || dataSnapshot.getKey().equals("recruitFrom") ||
                                     dataSnapshot.getKey().equals("latitude") || dataSnapshot.getKey().equals("longitude")||dataSnapshot.getKey().equals("likeuser"))) {
                                 String key = dataSnapshot.getKey();
                                 Log.d("minseok","key"+key);
@@ -991,6 +992,42 @@ public class Database {
                             returnList.add(postNum);
                             acts.ifSuccess(task);
                         }
+
+                    }
+                    else{
+                        acts.ifFail(task);
+                    }
+                });
+    }
+    public void readAllUserPost2AndScroll(ArrayList<Long> returnList, int position, RecyclerView recyclerView, Acts acts){
+        userRoot.child(mAuth.getCurrentUser().getUid()).
+                child(context.getString(R.string.DB_user_posting2)).
+                get().addOnCompleteListener(task -> {
+
+                    if(task.isSuccessful()){
+                        ArrayList<Long> postNumbs = new ArrayList<>();
+
+                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                            if (!(dataSnapshot.getKey().equals("cnt"))) {
+                                postNumbs.add(dataSnapshot.getValue(Long.class));
+                            }
+                        }
+
+                        Collections.sort(postNumbs, (t1, t2) -> {
+                            if (t1 > t2)
+                                return +1;
+                            else if (t1 < t2)
+                                return -1;
+                            else
+                                return 0;
+                        });
+
+                        for(Long postNum : postNumbs) {
+                            returnList.add(postNum);
+                            acts.ifSuccess(task);
+                        }
+
+                        recyclerView.smoothScrollToPosition(position);
 
                     }
                     else{

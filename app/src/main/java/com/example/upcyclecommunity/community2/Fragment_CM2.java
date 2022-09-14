@@ -121,11 +121,10 @@ public class Fragment_CM2 extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 LinearLayoutManager nowLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
                 if (newState == RecyclerView.SCROLL_STATE_SETTLING){
                     if (nowLayoutManager != null){
                         if (isUpdating == false && nowLayoutManager.findFirstCompletelyVisibleItemPosition() > -1){
-                            if (nowLayoutManager.findFirstVisibleItemPosition() == 0){
+                            if (nowLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
                                 Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
                                 isUpdating = true;
                                 resetListData(5);

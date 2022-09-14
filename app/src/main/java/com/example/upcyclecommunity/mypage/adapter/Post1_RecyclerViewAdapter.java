@@ -23,6 +23,7 @@ import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post1;
 import com.example.upcyclecommunity.database.Post2;
 import com.example.upcyclecommunity.database.User;
+import com.example.upcyclecommunity.mypage.MyPost1_Activity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -114,6 +115,11 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
                 Log.d("Dirtfy_test", postNumber);
                 Toast.makeText(context, postNumber, Toast.LENGTH_SHORT).show();
+
+                Intent it = new Intent(context, MyPost1_Activity.class);
+                it.putExtra("position", getAdapterPosition());
+
+                context.startActivity(it);
             });
         }
     }

@@ -472,7 +472,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         Log.d("WeGlonD", "editTexts : " + editTexts.size() + " imageViews : "+imageViews.size());
         if(category.equals("3")){
             Database.getDBRoot().child("Post3").child("posting").child(postnum+"").child("recruitFrom").setValue(Long.parseLong(recruitNum));
-            Database.getDBRoot().child("Post2").child("posting").child(recruitNum).child("recruit").get().addOnCompleteListener(task -> {
+            Database.getDBRoot().child("Post2").child("posting").child(recruitNum).child("recruit").child("cnt").get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Long newKey = task.getResult().getValue(Long.class);
                     if(newKey==null)

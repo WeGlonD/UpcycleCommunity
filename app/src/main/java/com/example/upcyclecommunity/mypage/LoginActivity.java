@@ -60,24 +60,33 @@ public class LoginActivity extends AppCompatActivity {
             String email = email_et.getText().toString();
             String password = password_et.getText().toString();
 
-            ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setTitle("login...");
-            dialog.show();
-            user.login(email, password, new Acts() {
-                @Override
-                public void ifSuccess(Object task) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_success), Toast.LENGTH_LONG).show();
-                    dialog.dismiss();
-                    finish();
-                }
+            if (email.length() == 0){
+                Toast.makeText(mContext, "이메일을 입력해 주세요", Toast.LENGTH_SHORT).show();
+            }
+            else if (password.length() == 0){
+                Toast.makeText(mContext, "비밀번호를 입력해 주세요", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                ProgressDialog dialog = new ProgressDialog(this);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setTitle("login...");
+                dialog.show();
 
-                @Override
-                public void ifFail(Object task) {
-                    dialog.dismiss();
-                    Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_fail), Toast.LENGTH_SHORT).show();
-                }
-            });
+                user.login(email, password, new Acts() {
+                    @Override
+                    public void ifSuccess(Object task) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_success), Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                        finish();
+                    }
+
+                    @Override
+                    public void ifFail(Object task) {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.activity_login_login_fail), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
 
         helpPassword_tv.setOnClickListener(view -> {
