@@ -92,6 +92,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
 
         writePostUploading = new WritePostUploading(this);
         writePostUploading.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        writePostUploading.setCancelable(false);
 
         upload_content = findViewById(R.id.btn_community2_upload);
         upload_content.setOnClickListener(this);

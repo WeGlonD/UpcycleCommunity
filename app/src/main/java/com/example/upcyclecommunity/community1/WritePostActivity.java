@@ -112,6 +112,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
         writePostUploading = new WritePostUploading(this);
         writePostUploading.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        writePostUploading.setCancelable(false);
 
         recruitNum = it.getStringExtra("recruitPostnum");
         recruiting = false;
