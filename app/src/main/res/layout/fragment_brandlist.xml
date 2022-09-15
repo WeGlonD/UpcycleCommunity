@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/border"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -11,6 +12,7 @@
         android:background="@drawable/filter_background"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
+        android:padding="2dp"
         android:clipToOutline="true"
         android:animateLayoutChanges="true">
 
@@ -18,14 +20,16 @@
             android:id="@+id/FilterTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="right">
             <TextView
                 android:id="@+id/FilterTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:textStyle="bold"
                 android:text="검색/필터"
-                android:textSize="30dp"/>
+                android:textSize="20dp"/>
         </LinearLayout>
 
 
@@ -35,65 +39,67 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone">
-            <EditText
-                android:id="@+id/search_editText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textSize="30dp"
-                android:hint="검색할 브랜드명"/>
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/search_editText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:inputType="text"
+                    android:textSize="30dp"
+                    android:hint="검색할 브랜드명"/>
+                <Button
+                    android:id="@+id/search_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="검색"/>
+            </LinearLayout>
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="3dp"
                 android:scrollbarSize="0dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <androidx.appcompat.widget.AppCompatButton
+                    <CheckBox
                         android:id="@+id/filter_clothes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/selector_filter"
                         android:text="의류"
                         android:layout_margin="5dp"/>
-                    <androidx.appcompat.widget.AppCompatButton
+                    <CheckBox
                         android:id="@+id/filter_accessary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/selector_filter"
                         android:text="액세서리"
                         android:layout_margin="5dp"/>
-                    <androidx.appcompat.widget.AppCompatButton
+                    <CheckBox
                         android:id="@+id/filter_interior"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/selector_filter"
                         android:text="인테리어"
                         android:layout_margin="5dp"/>
-                    <androidx.appcompat.widget.AppCompatButton
+                    <CheckBox
                         android:id="@+id/filter_fashionStuff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/selector_filter"
                         android:text="패션잡화"
                         android:layout_margin="5dp"/>
-                    <androidx.appcompat.widget.AppCompatButton
+                    <CheckBox
                         android:id="@+id/filter_etc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/selector_filter"
                         android:text="기타"
                         android:layout_margin="5dp"/>
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <Button
-                android:id="@+id/search_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="검색"/>
             </LinearLayout>
     </LinearLayout>
 

@@ -18,6 +18,8 @@ import com.example.upcyclecommunity.database.Brand;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class BrandRecyclerAdapter extends RecyclerView.Adapter<BrandRecyclerAdapter.BrandViewHolder> {
 
     private ArrayList<Brand> BrandArrayList;
@@ -54,7 +56,7 @@ public class BrandRecyclerAdapter extends RecyclerView.Adapter<BrandRecyclerAdap
 
 
     public class BrandViewHolder extends RecyclerView.ViewHolder{
-        ImageView iv_pic;
+        CircleImageView iv_pic;
         TextView tv_name;
         TextView tv_tags;
         TextView tv_url;
