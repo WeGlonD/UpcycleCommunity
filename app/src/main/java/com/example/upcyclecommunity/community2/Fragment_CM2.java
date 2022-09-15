@@ -75,7 +75,7 @@ public class Fragment_CM2 extends Fragment {
 //            }
 //        });
 
-        upload_btn = root.findViewById(R.id.btn_upload2);
+//        upload_btn = root.findViewById(R.id.btn_upload2);
         CommunityRecycler = root.findViewById(R.id.title_community2);
 
 //        location1 = new Location("");

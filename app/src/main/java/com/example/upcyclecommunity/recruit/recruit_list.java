@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
@@ -95,7 +96,7 @@ public class recruit_list extends AppCompatActivity {
         });
         recruit_recyclerview = findViewById(R.id.title_recruit);
         recruit_recyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        Radapter = new recruit_Adapter(listData,mContext,(str, end) -> getListDataWith(str, end));
+        Radapter = new recruit_Adapter(listData,mContext,(str, end) -> getListDataWith(str, end), Glide.with(this));
         recruit_recyclerview.setAdapter(Radapter);
         recruit_isUpdating = true;
         //resetListData(10);

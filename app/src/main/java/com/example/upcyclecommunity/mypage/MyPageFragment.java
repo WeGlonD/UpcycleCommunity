@@ -130,7 +130,7 @@ public class MyPageFragment extends Fragment {
         userData2_tv = view.findViewById(R.id.my_page_data2_textView);
         userData3_tv = view.findViewById(R.id.my_page_data3_textView);
 //        setting_iv = view.findViewById(R.id.my_page_setting_imageView);
-        logout_iv = view.findViewById(R.id.my_page_logout_imageView);
+//        logout_iv = view.findViewById(R.id.my_page_logout_imageView);
         setting_btn = view.findViewById(R.id.my_page_setting_button);
 
         tabLayout = view.findViewById(R.id.my_page_tabLayout);
@@ -204,17 +204,17 @@ public class MyPageFragment extends Fragment {
                 }
             });
         });
-        logout_iv.setOnClickListener(viw -> {
-            if(Database.getAuth().getCurrentUser() == null){
-                Intent it = new Intent(getContext(), LoginActivity.class);
-                startActivity(it);
-            }
-            else {
-                Database.getAuth().signOut();
-                onResume();
-                Toast.makeText(getContext(), "logout", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        logout_iv.setOnClickListener(viw -> {
+//            if(Database.getAuth().getCurrentUser() == null){
+//                Intent it = new Intent(getContext(), LoginActivity.class);
+//                startActivity(it);
+//            }
+//            else {
+//                Database.getAuth().signOut();
+//                onResume();
+//                Toast.makeText(getContext(), "logout", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post1_tab_name));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.my_page_post2_tab_name));

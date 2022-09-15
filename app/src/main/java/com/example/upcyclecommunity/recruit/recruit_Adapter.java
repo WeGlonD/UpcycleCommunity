@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.Personal_Post;
@@ -34,6 +35,8 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
     private Context mContext;
     private ArrayList<Long> listData;
     private viewOnClickListener mOnClickListener = null;
+    private RequestManager GlideWith = null;
+
     Database db = new Database();
     ArrayList<Post> postArray = new ArrayList<>();
 
@@ -46,6 +49,14 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
         this.mContext = mContext;
         this.mOnClickListener = mOnClickListener;
     }
+
+    public recruit_Adapter(ArrayList<Long> listData, Context mContext, viewOnClickListener mOnClickListener, RequestManager GlideWith) {
+        this.listData = listData;
+        this.mContext = mContext;
+        this.mOnClickListener = mOnClickListener;
+        this.GlideWith = GlideWith;
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -71,7 +82,12 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.linearLayout.setVisibility(View.INVISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
 
-            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_line));
+            try{
+                holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_line));
+            }
+            catch (Exception e){
+
+            }
         }
         else {
             holder.load_more_btn.setVisibility(View.GONE);
@@ -85,7 +101,7 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             holder.linearLayout.setVisibility(View.VISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
-            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
+//            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
 
             Log.d("minseok","postnumber"+postNumber+"i"+i);
             db.readOnePost(postArray, postNumber, CATEGORY, new Acts() {
@@ -101,7 +117,7 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String iv_url = uri.toString();
-                                    Glide.with(mContext).load(iv_url).into(holder.userPic);
+                                    GlideWith.load(iv_url).into(holder.userPic);
                                 }
                             });
                         } else {

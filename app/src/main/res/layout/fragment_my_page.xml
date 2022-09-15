@@ -81,13 +81,13 @@
                 <!--                    android:src="@drawable/ic_baseline_person_24"-->
                 <!--                    app:layout_constraintTop_toTopOf="parent"-->
                 <!--                    app:layout_constraintRight_toLeftOf="@id/my_page_logout_imageView"/>-->
-                <ImageView
-                    android:id="@+id/my_page_logout_imageView"
-                    android:layout_width="@dimen/my_page_logout_button_size"
-                    android:layout_height="@dimen/my_page_logout_button_size"
-                    android:src="@drawable/ic_baseline_login_24"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/my_page_logout_imageView"-->
+<!--                    android:layout_width="@dimen/my_page_logout_button_size"-->
+<!--                    android:layout_height="@dimen/my_page_logout_button_size"-->
+<!--                    android:src="@drawable/ic_baseline_login_24"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintRight_toRightOf="parent"/>-->
                 <LinearLayout
                     android:id="@+id/my_page_user_dataLayout"
                     android:layout_width="wrap_content"

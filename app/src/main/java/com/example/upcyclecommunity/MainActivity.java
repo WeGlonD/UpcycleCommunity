@@ -86,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
     MenuItem NameItem;
     MenuItem TagItem;
     FloatingActionButton fab;
+
+    MyPageFragment MyPageTab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +155,20 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(mainContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(mainContext, LoginActivity.class);
                         startActivity(intent);
+                    }
+                }
+                else if (currentTab==3){
+
+                }
+                else if (currentTab==4){
+                    if(Database.getAuth().getCurrentUser() == null){
+                        Intent it = new Intent(mainContext, LoginActivity.class);
+                        startActivity(it);
+                    }
+                    else {
+                        Database.getAuth().signOut();
+                        MyPageTab.onResume();
+                        Toast.makeText(mainContext, "logout", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -232,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bottom_mypage:
                 if(currentTab==4) break;
-                MyPageFragment MyPageTab = new MyPageFragment();
+                MyPageTab = new MyPageFragment();
                 fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
                 category = 4;
                 currentTab = 4;
