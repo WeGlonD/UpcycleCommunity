@@ -5,24 +5,34 @@
     <item
         android:id="@+id/bottom_community1"
         android:enabled="true"
-        android:title="커뮤1" />
+        android:title="커뮤1"
+        android:icon="@drawable/community1"
+        android:checked="true"/>
 
     <item
         android:id="@+id/bottom_community2"
         android:enabled="true"
         android:title="커뮤2"
+        android:icon="@drawable/trade"
         />
+    <item android:id="@+id/blank"
+        android:title=""
+        android:enabled="false"/>
     <item
         android:id="@+id/bottom_brandlist"
         android:enabled="true"
-        android:title="리스트"
+        android:icon="@drawable/brand"
+        android:title="브랜드"
         />
     <item
         android:id="@+id/bottom_mypage"
         android:enabled="true"
         android:title="마이페이지"
+        android:icon="@drawable/ic_baseline_account_circle_24"
         />
-
-
 </menu>
     <!--[출처] 안드로이드 스튜디오 :: 하단바(BottomNavigation) 만들기|작성자 재콩-->
+
+
+
+

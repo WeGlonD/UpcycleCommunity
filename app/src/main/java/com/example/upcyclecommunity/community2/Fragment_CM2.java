@@ -38,7 +38,6 @@ public class Fragment_CM2 extends Fragment {
     public static final String CATEGORY = "2";
 
     View root;
-    Button upload_btn;
 
     RecyclerView CommunityRecycler;
     community2Adapter Cadapter;
@@ -146,20 +145,6 @@ public class Fragment_CM2 extends Fragment {
                 }
             }
         });
-
-        upload_btn.setOnClickListener(view -> {
-            if(Database.getAuth().getCurrentUser()!=null) {
-                Intent intent = new Intent(getContext(), community2_upload.class);
-                intent.putExtra("postn", Long.MAX_VALUE + "");
-                startActivity(intent);
-            }
-            else{
-                Toast.makeText(mContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
         return root;
     }
 

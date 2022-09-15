@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.BrandList.FragmentBrand;
 import com.example.upcyclecommunity.community1.TitleInfo;
+import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.community1.communityAdapter;
 import com.example.upcyclecommunity.community2.community2Adapter;
 import com.example.upcyclecommunity.community2.community2_upload;
@@ -53,6 +55,7 @@ import com.example.upcyclecommunity.mypage.MyPageFragment;
 import com.example.upcyclecommunity.recruit.recruit_list;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem searchItem;
     MenuItem NameItem;
     MenuItem TagItem;
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +123,37 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 setFragment(item.getItemId());
                 return true;
+            }
+        });
+
+        fab = (FloatingActionButton) findViewById(R.id.floating_btn);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(currentTab == 1){
+                    if(Database.getAuth().getCurrentUser()!=null) {
+                        Intent intent = new Intent(mainContext, WritePostActivity.class);
+                        intent.putExtra("postn", Long.MAX_VALUE + "");
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(mainContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(mainContext, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                }
+                else if(currentTab==2){
+                    if(Database.getAuth().getCurrentUser()!=null) {
+                        Intent intent = new Intent(mainContext, community2_upload.class);
+                        intent.putExtra("postn", Long.MAX_VALUE + "");
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(mainContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(mainContext, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                }
             }
         });
 
@@ -163,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, Community2).commit();
                 category = 2;
                 currentTab = 1;
+                fab.setImageResource(R.drawable.upload);
                 searchItem.setVisible(true);
                 NameItem.setVisible(true);
                 TagItem.setVisible(true);
@@ -175,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame,Community1).commit();
                 category = 1;
                 currentTab = 2;
+                fab.setImageResource(R.drawable.upload);
                 nosearch = findViewById(R.id.no_search2);
                 searchItem.setVisible(true);
                 NameItem.setVisible(true);
@@ -187,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
                 category = 3;
                 currentTab = 3;
+                fab.setImageResource(R.drawable.search);
                 searchItem.setVisible(false);
                 NameItem.setVisible(false);
                 TagItem.setVisible(false);
@@ -198,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_frame, MyPageTab).commit();
                 category = 4;
                 currentTab = 4;
+                fab.setImageResource(R.drawable.ic_baseline_login_24);
                 searchItem.setVisible(false);
                 NameItem.setVisible(false);
                 TagItem.setVisible(false);

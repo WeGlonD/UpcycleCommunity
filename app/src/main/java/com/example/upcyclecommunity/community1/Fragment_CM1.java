@@ -36,7 +36,6 @@ public class Fragment_CM1 extends Fragment {
 
     View root;
 //    Button load_more_btn;
-    Button upload_btn;
     Button cur_pos_condition_btn;
 
     RecyclerView CommunityRecycler;
@@ -58,7 +57,7 @@ public class Fragment_CM1 extends Fragment {
         Database db = new Database();
 
 //        load_more_btn = root.findViewById(R.id.fragment_cm1_load_more_button);
-        upload_btn = root.findViewById(R.id.btn_upload);
+
         cur_pos_condition_btn = root.findViewById(R.id.currPosCondition);
         cur_pos_condition_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,18 +145,6 @@ public class Fragment_CM1 extends Fragment {
 //            getListDataWith(lastPostNumber+1, lastPostNumber+5);
 //        });
 
-        upload_btn.setOnClickListener(view -> {
-            if(Database.getAuth().getCurrentUser()!=null) {
-                Intent intent = new Intent(getContext(), WritePostActivity.class);
-                intent.putExtra("postn", Long.MAX_VALUE + "");
-                startActivity(intent);
-            }
-            else{
-                Toast.makeText(mContext, "로그인 후 게시물을 작성할 수 있습니다!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
         return root;
     }
 

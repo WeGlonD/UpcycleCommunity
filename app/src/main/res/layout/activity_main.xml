@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<!--    <Button-->
-<!--        android:id="@+id/position"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="현위치"-->
-<!--        tools:ignore="MissingConstraints" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/position"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="현위치"-->
+    <!--        tools:ignore="MissingConstraints" />-->
 
     <FrameLayout
         android:id="@+id/main_frame"
@@ -20,16 +21,82 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/main_bottom" >
+        app:layout_constraintBottom_toTopOf="@+id/main_bottom_layout" >
+
     </FrameLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            android:backgroundTint="@color/white"
+            android:theme="@style/Theme.MaterialComponents.Light">
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/main_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:itemTextColor="@color/UpCycle_Green"
+                app:itemIconTint="@color/UpCycle_Green"
+                android:background="@drawable/transparent_layout"
+                app:menu="@menu/main_bottom_navigation"/>
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/upload"
+            app:layout_anchor="@id/bottomAppBar"
+            app:layout_anchorGravity="center"
+            android:backgroundTint="@color/UpCycle_Green"
+            android:layout_marginBottom="10dp"
+            />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!--<androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/main_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:fabCradleMargin="5dp"
+            app:fabCradleRoundedCornerRadius="10dp">
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/community1"
+            android:clickable="true"
+            android:backgroundTint="@color/UpCycle_Green"
+            app:layout_anchor="@id/main_bottom"
+            app:fabSize="normal"
+            />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/main_bottom_navigation" />
+        app:menu="@menu/main_bottom_navigation" />-->
     <!--[출처] 안드로이드 스튜디오 :: 하단바(BottomNavigation) 만들기|작성자 재콩-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
