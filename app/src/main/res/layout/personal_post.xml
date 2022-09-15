@@ -112,7 +112,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/comments_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -133,8 +132,13 @@
                         android:layout_weight="1"
                         android:text="작성"/>
                 </LinearLayout>
-
-
+                <LinearLayout
+                    android:id="@+id/comments_layout"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:orientation="vertical"></LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

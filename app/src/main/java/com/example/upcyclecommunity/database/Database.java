@@ -1294,7 +1294,7 @@ public class Database {
                 });
     }
 
-    public void writeComment(Long postnumber, String text, String category){
+    public void writeCommentPersonal(Long postnumber, String text, String category, ArrayList<String> keylist, Acts acts){
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference postingRoot = postRoot.child("posting");
 
@@ -1314,6 +1314,8 @@ public class Database {
             if (FirebaseAuth.getInstance().getCurrentUser() != null){
                 currentComment.child("writer").setValue(mAuth.getCurrentUser().getUid());
                 currentComment.child("text").setValue(text);
+                keylist.add(""+commentNum);
+                acts.ifSuccess(task);
             }
         });
     }

@@ -1,0 +1,115 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/border_and_white">
+    <!-- 무조건 wrap_content해야한다 그래야 리스트 하나가 가득 안차고 여러개 가능 -->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/comment_post_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars"/>
+    <ProgressBar
+        android:id="@+id/comment_item_progress_circular"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="6dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/comment_item_tv_nickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="닉네임"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/comment_item_tv_text"
+        app:layout_constraintStart_toEndOf="@id/comment_post_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/comment_item_tv_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical"
+        android:text="댓글내용"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/comment_item_tv_nickname"
+        app:layout_constraintStart_toEndOf="@id/comment_post_iv"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/recruit_item_postData_linearLayout"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/recruit_tv_post_title1"-->
+<!--        app:layout_constraintLeft_toLeftOf="@id/recruit_tv_post_title1"-->
+<!--        app:layout_constraintRight_toRightOf="@id/recruit_tv_post_title1">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/recruit_item_userName_textView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:maxEms="10"-->
+<!--            android:maxLines="1"-->
+<!--            android:ellipsize="end"-->
+<!--            android:layout_marginRight="6sp"-->
+<!--            android:text="000"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/recruit_item_date_textView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:maxEms="10"-->
+<!--            android:maxLines="1"-->
+<!--            android:ellipsize="end"-->
+<!--            android:layout_marginRight="6sp"-->
+<!--            android:text="000"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/recruit_item_clickCnt_text_textView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:maxEms="10"-->
+<!--            android:maxLines="1"-->
+<!--            android:ellipsize="end"-->
+<!--            android:layout_marginRight="6sp"-->
+<!--            android:text="조회수"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/recruit_item_clickCnt_textView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:maxEms="10"-->
+<!--            android:maxLines="1"-->
+<!--            android:ellipsize="end"-->
+<!--            android:layout_marginRight="6sp"-->
+<!--            android:text="000"/>-->
+<!--    </LinearLayout>-->
+<!--    -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

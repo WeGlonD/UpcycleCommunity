@@ -176,6 +176,8 @@ public class Personal_Post extends AppCompatActivity {
             CATEGORY = "1";
         }
 
+        comment_layout = findViewById(R.id.comments_layout);
+
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,121 +185,52 @@ public class Personal_Post extends AppCompatActivity {
                     Toast.makeText(context, "로그인을 하세요~", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    db.writeComment(postn, et_comment.getText().toString(), CATEGORY);
-                    et_comment.setText("");
+                    ArrayList<String> keylist = new ArrayList<>();
+                    db.writeCommentPersonal(postn, et_comment.getText().toString(), CATEGORY, keylist, new Acts() {
+                        @Override
+                        public void ifSuccess(Object task) {
+                            Comment cmt = new Comment(et_comment.getText().toString(),Database.getAuth().getCurrentUser().getUid(),keylist.get(0));
+                            CommentView newCommentContainer = new CommentView(context,cmt);
+                            newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
+                            newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
+
+                            newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View view) {
+                                    commentLongClickAction(view);
+                                    return true;
+                                }
+                            });
+                            comment_layout.addView(newCommentContainer);
+                            et_comment.setText("");
+                        }
+
+                        @Override
+                        public void ifFail(Object task) {}
+                    });
                 }
             }
         });
 
-        comment_layout = findViewById(R.id.comments_layout);
+
         ArrayList<Comment> commentDatas = new ArrayList<>();
         db.readComment(commentDatas, postn, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
                 for(Comment cmt : commentDatas){
-                    LinearLayout newCommentContainer = new LinearLayout(getApplicationContext());
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 250);
-                    newCommentContainer.setOrientation(LinearLayout.HORIZONTAL);
-                    newCommentContainer.setLayoutParams(layoutParams);
+                    CommentView newCommentContainer = new CommentView(context,cmt);
+                    //tagkey1 : key / tagkey2 : userUid
                     newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                     newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
+
                     newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
-                            DialogInterface.OnClickListener editListener = new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    FirebaseUser currUser = Database.getAuth().getCurrentUser();
-                                    if(currUser==null){
-                                        Toast.makeText(context, "로그인 후 댓글수정이 가능합니다.", Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
-                                    }
-                                    else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
-                                        Toast.makeText(context, "자신의 댓글만 수정 할 수 있습니다.", Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
-                                    }
-                                    else{
-                                        dialog.dismiss();
-                                        EditText et_editComment = new EditText(context);
-                                        DialogInterface.OnClickListener editCommentListener = new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                String editStr = et_editComment.getText().toString();
-                                                db.editComment(postn,(String)view.getTag(R.string.tagKey1),editStr,CATEGORY);
-                                                dialogInterface.dismiss();
-                                            }
-                                        };
-                                        DialogInterface.OnClickListener editCancelListener = new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                            }
-                                        };
-                                        new AlertDialog.Builder(context)
-                                                .setTitle("댓글을 다시 작성해주세요.")
-                                                .setView(et_editComment)
-                                                .setPositiveButton("수정", editCommentListener)
-                                                .setNeutralButton("취소", editCancelListener)
-                                                .show();
-                                    }
-                                }
-                            };
-                            DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    FirebaseUser currUser = Database.getAuth().getCurrentUser();
-                                    if(currUser==null){
-                                        Toast.makeText(context, "로그인 후 댓글삭제가 가능합니다.", Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
-                                    }
-                                    else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
-                                        Toast.makeText(context, "자신의 댓글만 삭제 할 수 있습니다.", Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
-                                    }
-                                    else{
-                                        db.deleteComment(postn, (String)view.getTag(R.string.tagKey1), CATEGORY);
-                                    }
-                                }
-                            };
-                            DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            };
-                            new AlertDialog.Builder(context)
-                                    .setTitle("댓글 작업 선택")
-                                    .setPositiveButton("댓글 삭제", deleteListener)
-                                    .setNeutralButton("취소", cancelListener)
-                                    .setNegativeButton("댓글 수정", editListener)
-                                    .show();
+                            commentLongClickAction(view);
                             return true;
                         }
                     });
-
-
-                    Database.getUserRoot().child(cmt.getWriterUid()).child("name").get().addOnCompleteListener(task1 -> {
-                        String username;
-                        if(task1.isSuccessful()){
-                            username = task1.getResult().getValue(String.class);
-                            LinearLayout.LayoutParams usernameViewlayoutParams = new LinearLayout.LayoutParams(250, ViewGroup.LayoutParams.MATCH_PARENT);
-                            TextView tv_username = new TextView(getApplicationContext());
-                            tv_username.setText(username);
-                            tv_username.setTextSize(15);
-                            tv_username.setLayoutParams(usernameViewlayoutParams);
-                            newCommentContainer.addView(tv_username);
-
-                            TextView tv_text = new TextView(getApplicationContext());
-                            LinearLayout.LayoutParams textViewlayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                            tv_text.setText(cmt.getText());
-                            tv_text.setTextSize(10);
-                            tv_text.setLayoutParams(textViewlayoutParams);
-                            newCommentContainer.addView(tv_text);
-
-                            comment_layout.addView(newCommentContainer);
-                        }
-                    });
-
+                    comment_layout.addView(newCommentContainer);
                 }
             }
 
@@ -327,7 +260,6 @@ public class Personal_Post extends AppCompatActivity {
                         Database.getUserProfileImageRoot().child(User_Id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-
                                 profile_name.setText(Name);
                                 profile_date.setText(personal_p.getTimeStamp());
                                 String iv_url = uri.toString();
@@ -361,5 +293,76 @@ public class Personal_Post extends AppCompatActivity {
 
             }
         });
+    }
+    public void commentLongClickAction(View view){
+        DialogInterface.OnClickListener editListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseUser currUser = Database.getAuth().getCurrentUser();
+                if(currUser==null){
+                    Toast.makeText(context, "로그인 후 댓글수정이 가능합니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+                else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
+                    Toast.makeText(context, "자신의 댓글만 수정 할 수 있습니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+                else{
+                    dialog.dismiss();
+                    EditText et_editComment = new EditText(context);
+                    DialogInterface.OnClickListener editCommentListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String editStr = et_editComment.getText().toString();
+                            db.editComment(postn,(String)view.getTag(R.string.tagKey1),editStr,CATEGORY);
+                            ((CommentView)view).text.setText(editStr);
+                            dialogInterface.dismiss();
+                        }
+                    };
+                    DialogInterface.OnClickListener editCancelListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    };
+                    new AlertDialog.Builder(context)
+                            .setTitle("댓글을 다시 작성해주세요.")
+                            .setView(et_editComment)
+                            .setPositiveButton("수정", editCommentListener)
+                            .setNeutralButton("취소", editCancelListener)
+                            .show();
+                }
+            }
+        };
+        DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseUser currUser = Database.getAuth().getCurrentUser();
+                if(currUser==null){
+                    Toast.makeText(context, "로그인 후 댓글삭제가 가능합니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+                else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
+                    Toast.makeText(context, "자신의 댓글만 삭제 할 수 있습니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+                else{
+                    db.deleteComment(postn, (String)view.getTag(R.string.tagKey1), CATEGORY);
+                    ((LinearLayout)((CommentView)view).getParent()).removeView(view);
+                }
+            }
+        };
+        DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        };
+        new AlertDialog.Builder(context)
+                .setTitle("댓글 작업 선택")
+                .setPositiveButton("댓글 삭제", deleteListener)
+                .setNeutralButton("취소", cancelListener)
+                .setNegativeButton("댓글 수정", editListener)
+                .show();
     }
 }
