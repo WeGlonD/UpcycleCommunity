@@ -375,6 +375,9 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 else if(newTag.contains("]")){
                     Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
                 }
+                else if (newTag.equals("")){
+                    Toast.makeText(context, "태그를 입력해 주세요!!", Toast.LENGTH_SHORT).show();
+                }
                 else{
                     et_tag.setText("");
                     if(!newTag.equals("") && !tags.contains(newTag)){
@@ -476,6 +479,10 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         }
         else if(title.contains("]")){
             Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
+        }
+        else if (title.equals("")){
+            Toast.makeText(context, "제목을 입력해 주세요!!", Toast.LENGTH_SHORT).show();
             writePostUploading.dismiss();
         }
         else{

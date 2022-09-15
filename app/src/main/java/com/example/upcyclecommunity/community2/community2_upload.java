@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class community2_upload extends Activity implements View.OnClickListener {
+public class community2_upload extends AppCompatActivity implements View.OnClickListener {
     private final int MAX = 10;
     private int mPrePosition;                  //이전에 선택되었던 포지션 값
     private Button btn_addimage;               //뷰 페이저에 아이템 추가하는 버튼
@@ -134,6 +135,12 @@ public class community2_upload extends Activity implements View.OnClickListener 
         iv.setBackgroundResource(R.drawable.page_not);
         mPageMark.addView(iv);//LinearLayout에 추가
         mPages.add(iv);
+        if (mPages.size() >= 1){
+            findViewById(R.id.community2_upload_noImage).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.community2_upload_noImage).setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -170,6 +177,9 @@ public class community2_upload extends Activity implements View.OnClickListener 
             else if(newTag.contains("]")){
                 Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
             }
+            else if (newTag.equals("")){
+                Toast.makeText(context, "태그를 입력해 주세요!!", Toast.LENGTH_SHORT).show();
+            }
             else{
                 et_tag.setText("");
                 if(!newTag.equals("") && !tags.contains(newTag)){
@@ -205,6 +215,12 @@ public class community2_upload extends Activity implements View.OnClickListener 
     public void removeView(int position) {
         viewpager.setAdapter(null);
         mItems.remove(position);
+        if (mItems.size() >= 1){
+            findViewById(R.id.community2_upload_noImage).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.community2_upload_noImage).setVisibility(View.VISIBLE);
+        }
         mViewAdapter = new ViewAdapter(mItems, getApplicationContext(), new ViewAdapter.clickListener() {
             @Override
             public void mclickListener_Dialog(View view, int position) {
@@ -280,6 +296,10 @@ public class community2_upload extends Activity implements View.OnClickListener 
         }
         else if(title.contains("]")){
             Toast.makeText(context, "']'은 제목으로 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
+        }
+        else if (title.equals("")){
+            Toast.makeText(context, "제목을 입력해 주세요!", Toast.LENGTH_SHORT).show();
             writePostUploading.dismiss();
         }
         else{

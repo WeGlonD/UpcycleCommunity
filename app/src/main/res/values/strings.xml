@@ -12,31 +12,31 @@
     <string name="ST_userProfile">userProfiles</string>
 
     <string name="Dirtfy_test">Dirtfy_test</string>
-    <string name="my_page_user_name_initialValue">Unknown</string>
-    <string name="my_page_user_data_initialValue">000</string>
-    <string name="my_page_post1_tab_name">post1</string>
-    <string name="my_page_post2_tab_name">post2</string>
-    <string name="my_page_post3_tab_name">post3</string>
+    <string name="my_page_user_name_initialValue">알수없음</string>
+    <string name="my_page_user_data_initialValue">0</string>
+    <string name="my_page_post1_tab_name">공유</string>
+    <string name="my_page_post2_tab_name">나눔</string>
+    <string name="my_page_post3_tab_name">모집</string>
 
     <string name="activity_login_email_textView_hint">email</string>
     <string name="activity_login_password_textView_hint">password</string>
-    <string name="activity_login_signUp_button_text">signUp</string>
-    <string name="activity_login_signIn_button_text">signIn</string>
-    <string name="activity_login_help_password_text">Forgot password?</string>
-    <string name="activity_login_login_success">SignIn success</string>
-    <string name="activity_login_login_fail">SignIn fail</string>
+    <string name="activity_login_signUp_button_text">회원가입</string>
+    <string name="activity_login_signIn_button_text">로그인</string>
+    <string name="activity_login_help_password_text">비밀번호를 잊어 버리셨나요?</string>
+    <string name="activity_login_login_success">로그인 성공!</string>
+    <string name="activity_login_login_fail">로그인 실패...</string>
 
-    <string name="activity_signup_name_textView_hint">name</string>
-    <string name="activity_signup_email_textView_hint">email</string>
-    <string name="activity_signup_password_textView_hint">password</string>
-    <string name="activity_signup_password_check_textView_hint">repeat password</string>
-    <string name="activity_signup_signUp_button_text">signUp</string>
-    <string name="activity_signup_invalid_password">invalid password</string>
-    <string name="activity_signup_password_is_not_same">password is not match</string>
-    <string name="activity_signup_create_account_success">SignUp success</string>
-    <string name="activity_signup_create_account_fail">SignUp fail</string>
+    <string name="activity_signup_name_textView_hint">이름</string>
+    <string name="activity_signup_email_textView_hint">이메일</string>
+    <string name="activity_signup_password_textView_hint">비밀번호(8자리 이상)</string>
+    <string name="activity_signup_password_check_textView_hint">비밀번호 재확인</string>
+    <string name="activity_signup_signUp_button_text">회원가입</string>
+    <string name="activity_signup_invalid_password">잘못된 비밀번호 입니다</string>
+    <string name="activity_signup_password_is_not_same">비밀번호가 맞지 않습니다</string>
+    <string name="activity_signup_create_account_success">회원가입 성공!</string>
+    <string name="activity_signup_create_account_fail">회원가입 실패...</string>
 
-    <string name="activity_setting_update_button_text">update!</string>
+    <string name="activity_setting_update_button_text">업데이트!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

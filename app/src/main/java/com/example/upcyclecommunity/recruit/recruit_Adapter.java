@@ -101,7 +101,13 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             holder.linearLayout.setVisibility(View.VISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
-//            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
+            try {
+                holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
+            }
+            catch (Exception e){
+                
+            }
+
 
             Log.d("minseok","postnumber"+postNumber+"i"+i);
             db.readOnePost(postArray, postNumber, CATEGORY, new Acts() {

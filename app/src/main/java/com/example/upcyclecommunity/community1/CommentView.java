@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Comment;
 import com.example.upcyclecommunity.database.Database;
@@ -20,11 +21,13 @@ public class CommentView extends ConstraintLayout {
     Context context;
     Comment comment;
     TextView text;
+    RequestManager GlideWith;
 
-    public CommentView(Context context, Comment comment) {
+    public CommentView(Context context, Comment comment, RequestManager GlideWith) {
         super(context);
         this.context = context;
         this.comment = comment;
+        this.GlideWith = GlideWith;
         init();
     }
 
@@ -48,7 +51,7 @@ public class CommentView extends ConstraintLayout {
             @Override
             public void onSuccess(Uri uri) {
                 String iv_url = uri.toString();
-                Glide.with(context).load(iv_url).into(userPic);
+                GlideWith.load(iv_url).into(userPic);
                 findViewById(R.id.comment_item_progress_circular).setVisibility(GONE);
             }
         });

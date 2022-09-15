@@ -30,7 +30,8 @@ public class ViewAdapter extends PagerAdapter {
     }
 
     public ViewAdapter(ArrayList<Uri> mItems,Context con, clickListener mclickListener) {
-        super(); mContext = con;
+        super();
+        mContext = con;
         this.mItems = mItems;//아답터 생성시 리스트 생성
         this.mclickListener = mclickListener;
     }

@@ -190,7 +190,7 @@ public class Personal_Post extends AppCompatActivity {
                         @Override
                         public void ifSuccess(Object task) {
                             Comment cmt = new Comment(et_comment.getText().toString(),Database.getAuth().getCurrentUser().getUid(),keylist.get(0));
-                            CommentView newCommentContainer = new CommentView(context,cmt);
+                            CommentView newCommentContainer = new CommentView(context,cmt, Glide.with(getApplicationContext()));
                             newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                             newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
 
@@ -218,7 +218,7 @@ public class Personal_Post extends AppCompatActivity {
             @Override
             public void ifSuccess(Object task) {
                 for(Comment cmt : commentDatas){
-                    CommentView newCommentContainer = new CommentView(context,cmt);
+                    CommentView newCommentContainer = new CommentView(context,cmt,Glide.with(getApplicationContext()));
                     //tagkey1 : key / tagkey2 : userUid
                     newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                     newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());

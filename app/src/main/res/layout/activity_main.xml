@@ -61,7 +61,7 @@
             app:layout_anchorGravity="center"
             android:backgroundTint="@color/UpCycle_Green"
             android:layout_marginBottom="10dp"
-            />
+            app:tint="@null" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!--<androidx.coordinatorlayout.widget.CoordinatorLayout

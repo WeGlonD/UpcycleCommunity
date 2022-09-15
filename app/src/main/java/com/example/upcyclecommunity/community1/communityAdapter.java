@@ -25,7 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyViewHolder>{
-    public static final String CATEGORY = "1";
+    private String CATEGORY = "1";
     private ArrayList<Long> listData;
     private Context mContext;
     private viewOnClickListener mOnClickListener = null;
@@ -37,6 +37,11 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
     public communityAdapter(ArrayList<Long> listData, Context mContext) {
         this.listData = listData;
         this.mContext = mContext;
+    }
+    public communityAdapter(ArrayList<Long> listData, String CATEGORY,Context mContext) {
+        this.listData = listData;
+        this.mContext = mContext;
+        this.CATEGORY = CATEGORY;
     }
     public communityAdapter(ArrayList<Long> listData, Context mContext, viewOnClickListener mOnClickListener) {
         this.listData = listData;
@@ -144,6 +149,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                             }
                             if (!(hasClickCnt)){
                                 holder.clickCnt_text_tv.setVisibility(View.GONE);
+                                holder.clickCnt_tv.setVisibility(View.GONE);
                             }
                         }
                         else{
@@ -174,6 +180,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
         public ProgressBar progressBar;
 
         public TextView clickCnt_text_tv;
+        public TextView clickCnt_tv;
         public ConstraintLayout linearLayout;
         public TextView commentCnt_text_tv;
 
@@ -200,6 +207,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
             progressBar = view.findViewById(R.id.community1_item_progress_circular);
 
             clickCnt_text_tv = view.findViewById(R.id.community1_item_clickCnt_text_textView);
+            clickCnt_tv = view.findViewById(R.id.community1_item_clickCnt_textView);
             linearLayout = view.findViewById(R.id.community1_item_linearLayout);
             commentCnt_text_tv = view.findViewById(R.id.noid);
 

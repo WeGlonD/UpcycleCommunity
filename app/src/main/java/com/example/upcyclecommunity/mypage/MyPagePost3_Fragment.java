@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.upcyclecommunity.R;
+import com.example.upcyclecommunity.community1.communityAdapter;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.mypage.adapter.Post2_RecyclerViewAdapter;
@@ -42,7 +43,8 @@ public class MyPagePost3_Fragment extends Fragment {
     private RequestManager mGlideRequestManager;
 
     private RecyclerView recyclerView;
-    private Post2_RecyclerViewAdapter recyclerViewAdapter;
+//    private Post2_RecyclerViewAdapter recyclerViewAdapter;
+    private communityAdapter recyclerViewAdapter;
     private ArrayList<Long> listData;
 
     public MyPagePost3_Fragment() {
@@ -89,7 +91,8 @@ public class MyPagePost3_Fragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //커스텀 어댑터 생성
-        recyclerViewAdapter = new Post2_RecyclerViewAdapter(listData, "3", getContext(), mGlideRequestManager);
+//        recyclerViewAdapter = new Post2_RecyclerViewAdapter(listData, "3", getContext(), mGlideRequestManager);
+        recyclerViewAdapter = new communityAdapter(listData, "3", mContext);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         return view;
