@@ -43,11 +43,13 @@
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/main_bottom"
                 android:layout_width="match_parent"
+                app:itemTextColor="@drawable/menu_selector_color"
+                app:itemIconTint="@drawable/menu_selector_color"
                 android:layout_height="56dp"
-                app:itemTextColor="@color/UpCycle_Green"
-                app:itemIconTint="@color/UpCycle_Green"
                 android:background="@drawable/transparent_layout"
-                app:menu="@menu/main_bottom_navigation"/>
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/main_bottom_navigation"
+                />
         </com.google.android.material.bottomappbar.BottomAppBar>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

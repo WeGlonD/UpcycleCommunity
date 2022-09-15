@@ -107,7 +107,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.deleteimage).setOnClickListener(this);
         findViewById(R.id.btn_check).setOnClickListener(this);
         findViewById(R.id.btn_image).setOnClickListener(this);
-        findViewById(R.id.btn_video).setOnClickListener(this);
+        findViewById(R.id.btn_cancel).setOnClickListener(this);
         findViewById(R.id.btn_tagInput).setOnClickListener(this);
 
         writePostUploading = new WritePostUploading(this);
@@ -430,8 +430,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                         .setNegativeButton("취소", cancelListener)
                         .show();
                 break;
-            case R.id.btn_video:
-                //doTakeVideoAction();
+            case R.id.btn_cancel:
+                finish();
                 break;
             case R.id.relative:
                 if(relative.getVisibility() == View.GONE){

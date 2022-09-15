@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="10dp">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,11 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/titleBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <EditText
                     android:id="@+id/et_name"
                     android:layout_width="match_parent"
@@ -25,10 +28,12 @@
                     android:ems="10"
                     android:hint="제목"
                     android:inputType="textPersonName" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <EditText
                         android:id="@+id/et_tagInput"
                         android:layout_width="0dp"
@@ -37,17 +42,19 @@
                         android:ems="10"
                         android:hint="태그"
                         android:inputType="textPersonName" />
+
                     <Button
+                        android:id="@+id/btn_tagInput"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="입력"
-                        android:id="@+id/btn_tagInput"/>
+                        android:text="입력" />
                 </LinearLayout>
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:id="@+id/tagLayout"
                         android:layout_width="wrap_content"
@@ -55,6 +62,7 @@
                         android:orientation="horizontal" />
                 </HorizontalScrollView>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/contentsLayout"
                 android:layout_width="match_parent"
@@ -64,7 +72,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recruitFor"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <EditText
                     android:id="@+id/et_detail"
@@ -81,26 +89,32 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageView
                     android:id="@+id/btn_image"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="이미지" />
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_baseline_image_24" />
 
                 <Button
-                    android:id="@+id/btn_video"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="동영상" />
-            </LinearLayout>
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="3"
+                    android:backgroundTint="#CCCCCC"
+                    android:text="취소"
+                    android:textColor="@color/white" />
 
-            <Button
-                android:id="@+id/btn_check"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="확인" />
+                <Button
+                    android:id="@+id/btn_check"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="3"
+                    android:text="등록" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <RelativeLayout
