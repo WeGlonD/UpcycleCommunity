@@ -24,7 +24,7 @@
                 android:gravity="center"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="! 나만의 업사이클링 방법 !"
+                android:text="! 재료를 공유하세요 !"
                 android:textSize="18dp"
                 android:textStyle="bold">
             </TextView>
@@ -54,14 +54,20 @@
             android:layout_above="@id/layout_upload"
             android:layout_below="@id/Title_tab"
             android:visibility="invisible">
-            <TextView
-                android:id="@+id/tv_no_search"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textSize="32sp"
-                android:text="검색 내용이 없습니다!!"
-                android:background="@drawable/search"/>
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/no_search_background"
+                app:layout_constraintTop_toTopOf="parent"/>
+<!--            <TextView-->
+<!--                android:id="@+id/tv_no_search"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:textSize="32sp"-->
+<!--                android:text="검색 내용이 없습니다!!"-->
+<!--                android:background="@drawable/search"/>-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
