@@ -1,10 +1,12 @@
 package com.example.upcyclecommunity.BrandList;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -31,7 +33,7 @@ public class FragmentBrand extends Fragment implements View.OnClickListener {
     LinearLayoutManager layoutManager;
     LinearLayout Filter;
     ArrayList<Brand> BrandArrayList;
-    ArrayList<Button> filterOptions;
+    ArrayList<CheckBox> filterOptions;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,18 +50,20 @@ public class FragmentBrand extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 if(Filter.getVisibility()==View.VISIBLE){
+//                    (root.findViewById(R.id.FilterTitleText)).setVisibility(View.VISIBLE);
                     Filter.setVisibility(View.GONE);
                 }
                 else{
+//                    (root.findViewById(R.id.FilterTitleText)).setVisibility(View.INVISIBLE);
                     Filter.setVisibility(View.VISIBLE);
                 }
             }
         });
 
         for(int i = 0; i < filter_ids.length; i++){
-            Button btn = root.findViewById(filter_ids[i]);
-            btn.setOnClickListener(this);
-            filterOptions.add(btn);
+            CheckBox chkbox = root.findViewById(filter_ids[i]);
+            chkbox.setOnClickListener(this);
+            filterOptions.add(chkbox);
         }
 
         BrandArrayList = new ArrayList<>();
@@ -88,30 +92,7 @@ public class FragmentBrand extends Fragment implements View.OnClickListener {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> filterCondition = new ArrayList<>();
-                String searchName = ((EditText)root.findViewById(R.id.search_editText)).getText().toString().toUpperCase();
-                for(Button btn : filterOptions){
-                    if(btn.isSelected()){
-                        filterCondition.add(btn.getText().toString());
-                    }
-                }
-                ArrayList<Brand> filtered = new ArrayList<>();
-                for(Brand tmp : BrandArrayList){
-                    boolean flag = true;
-                    if(!tmp.getName().contains(searchName))
-                        continue;
-                    for(String cond : filterCondition){
-                        if(!tmp.getTags().contains(cond)){
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if(flag)
-                        filtered.add(tmp);
-                }
-                BrandRecyclerAdapter adt = new BrandRecyclerAdapter(filtered,getContext());
-                BrandListRecycler.setAdapter(adt);
-                adt.notifyDataSetChanged();
+                searching();
             }
         });
 
@@ -120,14 +101,34 @@ public class FragmentBrand extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Button curButton = (Button)view;
-        if(curButton.isSelected()){
-            curButton.setSelected(false);
-            curButton.setTextColor(getResources().getColor(R.color.black));
+        Log.d("WeGlonD", "checkbox clicked");
+        searching();
+    }
+
+    public void searching(){
+        ArrayList<String> filterCondition = new ArrayList<>();
+        String searchName = ((EditText)root.findViewById(R.id.search_editText)).getText().toString().toUpperCase();
+        for(CheckBox btn : filterOptions){
+            if(btn.isChecked()){
+                filterCondition.add(btn.getText().toString());
+            }
         }
-        else{
-            curButton.setSelected(true);
-            curButton.setTextColor(getResources().getColor(R.color.white));
+        ArrayList<Brand> filtered = new ArrayList<>();
+        for(Brand tmp : BrandArrayList){
+            boolean flag = true;
+            if(!tmp.getName().contains(searchName))
+                continue;
+            for(String cond : filterCondition){
+                if(!tmp.getTags().contains(cond)){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag)
+                filtered.add(tmp);
         }
+        BrandRecyclerAdapter adt = new BrandRecyclerAdapter(filtered,getContext());
+        BrandListRecycler.setAdapter(adt);
+        adt.notifyDataSetChanged();
     }
 }
