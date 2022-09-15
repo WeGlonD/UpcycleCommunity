@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,10 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.database.Database;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -74,6 +70,8 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
             holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
             holder.linearLayout.setVisibility(View.INVISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
+
+            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_line));
         }
         else{
             holder.load_more_btn.setVisibility(View.GONE);
@@ -89,6 +87,8 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             holder.linearLayout.setVisibility(View.VISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
+
+            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
 
             Database.getDBRoot().child("Post"+CATEGORY).
                     child("posting").child(String.valueOf(postNumber)).

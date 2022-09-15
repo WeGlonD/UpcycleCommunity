@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_filter"
-                android:text="10키로이내"
+                android:text="주변 글 보기"
                 android:layout_margin="5dp"/>
         </LinearLayout>
 
@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/recruit_layout_upload"
             android:layout_below="@+id/recruit_Title_tab"
+            android:background="@color/border"
             tools:listitem="@layout/recruit_item" />
 
         <LinearLayout

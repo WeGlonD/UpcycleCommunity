@@ -1,6 +1,8 @@
 package com.example.upcyclecommunity.recruit;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +31,7 @@ public class recruit_list extends AppCompatActivity {
     Context mContext;
     String CATEGORY = "3";
     Button CurrPos;
+    int distance = -1;
     Button writeRecruit;
     String recruitpostnum;
     String comu1postnum;
@@ -55,14 +58,38 @@ public class recruit_list extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(CurrPos.isSelected()) {
+                    distance = -1;
                     CurrPos.setSelected(false);
                     recruit_isUpdating = true;
                     resetListData(5);
                 }
                 else {
-                    CurrPos.setSelected(true);
-                    recruit_isUpdating = true;
-                    resetListData(5);
+                    //다이얼로그
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("몇 킬로미터 내의 게시물만 조회할까요?")
+                            .setMultiChoiceItems(new String[]{"3km", "5km", "10km"}, null, new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                    switch (i) {
+                                        case 0:
+                                            distance = 3;
+                                            break;
+                                        case 1:
+                                            distance = 5;
+                                            break;
+                                        case 2:
+                                            distance = 10;
+                                            break;
+                                    }
+                                    dialogInterface.dismiss();
+                                    if(distance > 0) {
+                                        CurrPos.setSelected(true);
+                                        recruit_isUpdating = true;
+                                        resetListData(5);
+                                    }
+                                }
+                            });
+                    builder.show();
                 }
             }
         });
@@ -117,7 +144,7 @@ public class recruit_list extends AppCompatActivity {
             });
         }
         else{
-            db.readNearAllRecruit(listData, comu1postnum, count, 10,new Acts() {
+            db.readNearAllRecruit(listData, comu1postnum, count, distance,new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;
@@ -163,7 +190,7 @@ public class recruit_list extends AppCompatActivity {
             });
         }
         else{
-            db.readNearRecruitWith(listData, comu1postnum, str, end, 10, new Acts() {
+            db.readNearRecruitWith(listData, comu1postnum, str, end, distance, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;

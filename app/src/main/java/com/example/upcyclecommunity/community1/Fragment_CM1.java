@@ -1,6 +1,8 @@
 package com.example.upcyclecommunity.community1;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +44,7 @@ public class Fragment_CM1 extends Fragment {
     LinearLayoutManager layoutManager;
     ArrayList<Long> listData;
 
+    int distance = -1;
     Context mContext;
     public static boolean isUpdating;
 
@@ -61,14 +64,38 @@ public class Fragment_CM1 extends Fragment {
             @Override
             public void onClick(View view) {
                 if(cur_pos_condition_btn.isSelected()) {
+                    distance = -1;
                     cur_pos_condition_btn.setSelected(false);
                     isUpdating = true;
                     resetListData(5);
                 }
                 else {
-                    cur_pos_condition_btn.setSelected(true);
-                    isUpdating = true;
-                    resetListData(5);
+                    //다이얼로그
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("몇 킬로미터 내의 게시물만 조회할까요?")
+                                    .setMultiChoiceItems(new String[]{"3km", "5km", "10km"}, null, new DialogInterface.OnMultiChoiceClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                            switch (i) {
+                                                case 0:
+                                                    distance = 3;
+                                                    break;
+                                                case 1:
+                                                    distance = 5;
+                                                    break;
+                                                case 2:
+                                                    distance = 10;
+                                                    break;
+                                            }
+                                            dialogInterface.dismiss();
+                                            if(distance > 0) {
+                                                cur_pos_condition_btn.setSelected(true);
+                                                isUpdating = true;
+                                                resetListData(5);
+                                            }
+                                        }
+                                    });
+                    builder.show();
                 }
             }
         });
@@ -158,7 +185,7 @@ public class Fragment_CM1 extends Fragment {
             });
         }
         else{
-            db.readNearPostsFirst(listData, count, 10, CATEGORY, new Acts() {
+            db.readNearPostsFirst(listData, count, distance, CATEGORY, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;
@@ -216,7 +243,7 @@ public class Fragment_CM1 extends Fragment {
             });
         }
         else{
-            db.readNearPostsWith(listData, str, end, (double)10, CATEGORY, new Acts() {
+            db.readNearPostsWith(listData, str, end, (double)distance, CATEGORY, new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
                     int position = listData.size() - 1;

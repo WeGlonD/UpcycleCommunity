@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community1.Fragment_CM1;
 import com.example.upcyclecommunity.community1.Personal_Post;
-import com.example.upcyclecommunity.community1.communityAdapter;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post;
@@ -72,6 +70,8 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
             holder.linearLayout.setVisibility(View.INVISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
+
+            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_line));
         }
         else {
             holder.load_more_btn.setVisibility(View.GONE);
@@ -85,6 +85,8 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             holder.linearLayout.setVisibility(View.VISIBLE);
             holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
+            holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
+
             Log.d("minseok","postnumber"+postNumber+"i"+i);
             db.readOnePost(postArray, postNumber, CATEGORY, new Acts() {
                 @Override
