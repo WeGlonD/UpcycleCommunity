@@ -13,7 +13,7 @@
         android:id="@+id/bottom_community2"
         android:enabled="true"
         android:title="커뮤2"
-        android:icon="@drawable/trade"
+        android:icon="@drawable/ic_baseline_connect_without_contact_24"
         />
     <item android:id="@+id/blank"
         android:title=""
