@@ -515,6 +515,8 @@ public class MainActivity extends AppCompatActivity {
                         //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
                     }
                     else{
+                        CommunityRecycler.setVisibility(View.VISIBLE);
+                        nosearch.setVisibility(View.GONE);
                         if(currentTab==1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
                         else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
                     }

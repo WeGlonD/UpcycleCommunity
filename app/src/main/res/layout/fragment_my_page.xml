@@ -85,73 +85,9 @@
                     android:src="@drawable/ic_baseline_login_24"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/my_page_user_dataLayout"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:layout_margin="@dimen/my_page_profileLayout_margin">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:id="@+id/my_page_user_data1Layout"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:layout_marginLeft="@dimen/my_page_user_dataLayout_leftMargin">-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/my_page_data1_imageView"-->
-<!--                            android:layout_width="@dimen/my_page_user_data_imageSize"-->
-<!--                            android:layout_height="@dimen/my_page_user_data_imageSize"/>-->
-<!--                        <TextView-->
-<!--                            android:id="@+id/my_page_data1_textView"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="@dimen/my_page_user_data_textSize"-->
-<!--                            android:textSize="@dimen/my_page_user_data_textSize"-->
-<!--                            android:text="@string/my_page_user_data_initialValue"-->
-<!--                            android:gravity="center_horizontal"/>-->
-<!--                    </LinearLayout>-->
-<!--                    <LinearLayout-->
-<!--                        android:id="@+id/my_page_user_data2Layout"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:layout_marginLeft="@dimen/my_page_user_dataLayout_leftMargin">-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/my_page_data2_imageView"-->
-<!--                            android:layout_width="@dimen/my_page_user_data_imageSize"-->
-<!--                            android:layout_height="@dimen/my_page_user_data_imageSize"/>-->
-<!--                        <TextView-->
-<!--                            android:id="@+id/my_page_data2_textView"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="@dimen/my_page_user_data_textSize"-->
-<!--                            android:textSize="@dimen/my_page_user_data_textSize"-->
-<!--                            android:text="@string/my_page_user_data_initialValue"-->
-<!--                            android:gravity="center_horizontal"/>-->
-<!--                    </LinearLayout>-->
-<!--                    <LinearLayout-->
-<!--                        android:id="@+id/my_page_user_data3Layout"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:layout_marginLeft="@dimen/my_page_user_dataLayout_leftMargin">-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/my_page_data3_imageView"-->
-<!--                            android:layout_width="@dimen/my_page_user_data_imageSize"-->
-<!--                            android:layout_height="@dimen/my_page_user_data_imageSize"/>-->
-<!--                        <TextView-->
-<!--                            android:id="@+id/my_page_data3_textView"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="@dimen/my_page_user_data_textSize"-->
-<!--                            android:textSize="@dimen/my_page_user_data_textSize"-->
-<!--                            android:text="@string/my_page_user_data_initialValue"-->
-<!--                            android:gravity="center_horizontal"/>-->
-<!--                    </LinearLayout>-->
-<!--                </LinearLayout>-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
