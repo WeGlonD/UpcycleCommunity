@@ -96,6 +96,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
                         if (task.isSuccessful()){
                             boolean hasImage = false;
+                            boolean hasClickCnt = false;
                             Iterable<DataSnapshot> postData = task.getResult().getChildren();
                             for(DataSnapshot data : postData){
                                 String key = data.getKey();
@@ -115,6 +116,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                                     holder.mComment.setText(String.valueOf(value));
                                 }
                                 else if (key.equals("clickcnt")){
+                                    hasClickCnt = true;
                                     String value = String.valueOf(data.getValue(Long.class));
                                     holder.commentCnt_tv.setText(value);
                                 }
@@ -139,6 +141,9 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                             if (!(hasImage)){
                                 holder.progressBar.setVisibility(View.INVISIBLE);
                                 holder.postFirstImage_iv.setImageResource(R.drawable.transparent);
+                            }
+                            if (!(hasClickCnt)){
+                                holder.clickCnt_text_tv.setVisibility(View.GONE);
                             }
                         }
                         else{

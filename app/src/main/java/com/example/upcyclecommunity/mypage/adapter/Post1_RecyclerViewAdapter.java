@@ -63,6 +63,7 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
 //        Long postKey = listData.get(Long.valueOf(position));
         Database db = new Database();
         Long postNumber = listData.get(position);
+        holder.images_iv.setVisibility(View.GONE);
         db.readOnePostLine(postNumber, Long.valueOf(2), CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
@@ -75,6 +76,22 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
                 }
                 else{
                     holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+                }
+            }
+
+            @Override
+            public void ifFail(Object task) {
+                holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.post_iv.setImageResource(R.drawable.ic_launcher_background);
+            }
+        });
+        db.readOnePostLine(postNumber, Long.valueOf(3), CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                String line = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+                if(line != null){
+                    holder.images_iv.setVisibility(View.VISIBLE);
+                    holder.images_iv.setImageResource(R.drawable.ic_baseline_photo_library_24);
                 }
             }
 
@@ -102,12 +119,14 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
 
     class Post1_ViewHolder extends RecyclerView.ViewHolder{
         ImageView post_iv;
+        ImageView images_iv;
         ProgressBar progressBar;
 
         public Post1_ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             post_iv = itemView.findViewById(R.id.post1_item_imageView);
+            images_iv = itemView.findViewById(R.id.post1_item_images_image_imageView);
             progressBar = itemView.findViewById(R.id.post1_item_progress_circular);
 
             itemView.setOnClickListener(view -> {

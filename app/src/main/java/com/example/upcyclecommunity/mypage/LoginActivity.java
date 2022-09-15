@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         User user = new User();
         mContext = getApplicationContext();
 
+        password_et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         visibility_iv.setOnClickListener(view -> {
             Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
             if (password_et.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {

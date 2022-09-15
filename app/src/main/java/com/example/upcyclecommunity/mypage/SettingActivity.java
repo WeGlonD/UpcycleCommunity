@@ -4,8 +4,10 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +34,7 @@ import com.example.upcyclecommunity.community1.WritePostActivity;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.User;
+import com.example.upcyclecommunity.recruit.recruit_list;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -53,6 +57,8 @@ public class SettingActivity extends AppCompatActivity {
     private EditText password_et;
     private EditText password_check_et;
     private Button update_btn;
+
+    private boolean isImageChanged = false;
 
     private Context context;
 
@@ -82,7 +88,7 @@ public class SettingActivity extends AppCompatActivity {
         Database db = new Database();
 
         profile_iv.setOnClickListener(view -> {
-            doTakeAlbumAction();
+            Dialog();
         });
 
         update_btn.setOnClickListener(view -> {
@@ -95,28 +101,47 @@ public class SettingActivity extends AppCompatActivity {
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.setTitle("loading...");
             dialog.show();
-            db.writeImage(bitmapDrawable, Database.getUserProfileImageRoot(),
-                    Database.getAuth().getCurrentUser().getUid(), new Acts() {
-                        @Override
-                        public void ifSuccess(Object task) {
-                            Database.getUserRoot().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
-                                    child("name").setValue(name).addOnCompleteListener(taskName -> {
-                                        user.updateEmail(email).addOnCompleteListener(taskEmail -> {
-                                            dialog.dismiss();
-                                            if(taskEmail.isSuccessful())
-                                                finish();
-                                            else
-                                                printToast("email update fail");
-                                        });
+
+            Database.getUserRoot().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
+                    child("name").setValue(name).addOnCompleteListener(taskName -> {
+                        if (taskName.isSuccessful()){
+                            user.updateEmail(email).addOnCompleteListener(taskEmail -> {
+
+                                if(taskEmail.isSuccessful()){
+                                    if (isImageChanged) {
+                                        db.writeImage(bitmapDrawable, Database.getUserProfileImageRoot(),
+                                                Database.getAuth().getCurrentUser().getUid(), new Acts() {
+                                                    @Override
+                                                    public void ifSuccess(Object task) {
+                                                        dialog.dismiss();
+                                                        finish();
+                                                    }
+
+                                                    @Override
+                                                    public void ifFail(Object task) {
+                                                        dialog.dismiss();
+                                                        printToast("image update fail");
+                                                    }
+                                                });
+                                    }
+                                    else{
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                }
+                                else{
+                                    dialog.dismiss();
+                                    printToast("email update fail");
+                                }
                             });
                         }
-
-                        @Override
-                        public void ifFail(Object task) {
+                        else{
                             dialog.dismiss();
-                            printToast("image update fail");
+                            printToast("name update fail");
                         }
+
                     });
+
         });
     }
 
@@ -127,8 +152,7 @@ public class SettingActivity extends AppCompatActivity {
     public void doTakePhotoAction() // 카메라 촬영 후 이미지 가져오기
     {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = FirebaseAuth.getInstance().getCurrentUser().getUid();
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         //File StorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = null;
@@ -176,9 +200,31 @@ public class SettingActivity extends AppCompatActivity {
                     load() : 이미지를 로드한다. 다양한 방법으로 이미지를 불러올 수 있다. (Bitmap, Drawable, String, Uri, File, ResourId(Int), ByteArray)
                     into() : 이미지를 보여줄 View를 지정한다.*/
 
-                    Glide.with(this).load(mImageCaptureUri).centerCrop().override(100).into(profile_iv);
+                    if (mImageCaptureUri != null){
+                        Glide.with(this).load(mImageCaptureUri).centerCrop().override(100).into(profile_iv);
+                        isImageChanged = true;
+                    }
+
                     break;
             }
         }
+    }
+
+    public void Dialog(){
+        DialogInterface.OnClickListener fromAlbum = (dialog, which) -> {
+            //수정
+            doTakeAlbumAction();
+            dialog.dismiss();
+        };
+        DialogInterface.OnClickListener fromCamera = (dialog, which) -> {
+            //삭제
+            doTakePhotoAction();
+            dialog.dismiss();
+        };
+        new AlertDialog.Builder(this)
+                .setTitle("사진 선택")
+                .setPositiveButton("앨범에서 가져오기", fromAlbum)
+                .setNegativeButton("사진 촬영", fromCamera)
+                .show();
     }
 }

@@ -4,8 +4,10 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -78,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
         mContext = getApplicationContext();
 
         profile_iv.setOnClickListener(view -> {
-            doTakeAlbumAction();
+            Dialog();
         });
 
         signUp_btn.setOnClickListener(view -> {
@@ -111,8 +113,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                     String trim_email = email.replaceAll("\\s", "");
                     String trim_password = password.replaceAll("\\s", "");
-                    Log.d("why?", email);
-                    Log.d("why?", password);
 
                     user.create(email, password, new Acts() {
                         @Override
@@ -221,6 +221,7 @@ public class SignUpActivity extends AppCompatActivity {
                 case PICK_FROM_ALBUM:
                     mImageCaptureUri = data.getData();
 
+
                 case PICK_FROM_CAMERA:
 
                     /*
@@ -229,8 +230,28 @@ public class SignUpActivity extends AppCompatActivity {
                     into() : 이미지를 보여줄 View를 지정한다.*/
 
                     Glide.with(this).load(mImageCaptureUri).centerCrop().override(100).into(profile_iv);
+
                     break;
             }
         }
+
+    }
+
+    public void Dialog(){
+        DialogInterface.OnClickListener fromAlbum = (dialog, which) -> {
+            //수정
+            doTakeAlbumAction();
+            dialog.dismiss();
+        };
+        DialogInterface.OnClickListener fromCamera = (dialog, which) -> {
+            //삭제
+            doTakePhotoAction();
+            dialog.dismiss();
+        };
+        new AlertDialog.Builder(this)
+                .setTitle("사진 선택")
+                .setPositiveButton("앨범에서 가져오기", fromAlbum)
+                .setNegativeButton("사진 촬영", fromCamera)
+                .show();
     }
 }

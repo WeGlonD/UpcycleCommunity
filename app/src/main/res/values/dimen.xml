@@ -4,11 +4,11 @@
     <dimen name="my_page_topLayout_padding">7dp</dimen>
     <dimen name="my_page_user_name_textSize">35sp</dimen>
     <dimen name="my_page_user_data_imageSize">30sp</dimen>
-    <dimen name="my_page_user_data_textSize">30sp</dimen>
+    <dimen name="my_page_user_data_textSize">25sp</dimen>
     <dimen name="my_page_profileLayout_margin">5dp</dimen>
     <dimen name="my_page_user_dataLayout_leftMargin">5dp</dimen>
     <dimen name="my_page_viewPager_height">300dp</dimen>
-    <dimen name="my_page_logout_button_size">45dp</dimen>
+    <dimen name="my_page_logout_button_size">25dp</dimen>
 
     <dimen name="signup_profile_image_size">100dp</dimen>
     <dimen name="signup_profile_bottomMargin">20dp</dimen>

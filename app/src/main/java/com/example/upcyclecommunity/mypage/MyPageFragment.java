@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -63,6 +64,7 @@ public class MyPageFragment extends Fragment {
     private TextView userData3_tv;
     private ImageView setting_iv;
     private ImageView logout_iv;
+    private Button setting_btn;
 
     private TabLayout tabLayout;
     private int currentTabIndex = 0;
@@ -122,16 +124,53 @@ public class MyPageFragment extends Fragment {
         profile_iv = view.findViewById(R.id.my_page_profile_imageView);
         profile_progressbar = view.findViewById(R.id.my_page_progress_circular);
         userName_tv = view.findViewById(R.id.my_page_user_name_textView);
-//        userData1_tv = view.findViewById(R.id.my_page_data1_textView);
-//        userData2_tv = view.findViewById(R.id.my_page_data2_textView);
-//        userData3_tv = view.findViewById(R.id.my_page_data3_textView);
-        setting_iv = view.findViewById(R.id.my_page_setting_imageView);
+        userData1_tv = view.findViewById(R.id.my_page_data1_textView);
+        userName_tv.setSelected(true);
+        userName_tv.setHorizontallyScrolling(true);
+        userData2_tv = view.findViewById(R.id.my_page_data2_textView);
+        userData3_tv = view.findViewById(R.id.my_page_data3_textView);
+//        setting_iv = view.findViewById(R.id.my_page_setting_imageView);
         logout_iv = view.findViewById(R.id.my_page_logout_imageView);
+        setting_btn = view.findViewById(R.id.my_page_setting_button);
 
         tabLayout = view.findViewById(R.id.my_page_tabLayout);
         viewPager = view.findViewById(R.id.my_page_viewPager);
 
-        setting_iv.setOnClickListener(viw -> {
+//        setting_iv.setOnClickListener(viw -> {
+//            ProgressDialog dialog = new ProgressDialog(context);
+//            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            dialog.setTitle("loading...");
+//            dialog.show();
+//            db.readUser(new Acts() {
+//                @Override
+//                public void ifSuccess(Object task) {
+//                    User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
+//                    StorageReference storageReference = db.readImage(Database.getUserProfileImageRoot(), Database.getAuth().getCurrentUser().getUid());
+//                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//
+//                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                            String email = user.getEmail();
+//
+//                            Intent it = new Intent(context, SettingActivity.class);
+//                            it.putExtra("picUri", String.valueOf(uri));
+//                            it.putExtra("name", data.getName());
+//                            it.putExtra("email", email);
+//                            dialog.dismiss();
+//                            startActivity(it);
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void ifFail(Object task) {
+//                    dialog.dismiss();
+//                    Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
+//                }
+//            });
+//        });
+        setting_btn.setOnClickListener(viw -> {
             ProgressDialog dialog = new ProgressDialog(context);
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             dialog.setTitle("loading...");
@@ -219,7 +258,28 @@ public class MyPageFragment extends Fragment {
             db.readUser(new Acts() {
                 @Override
                 public void ifSuccess(Object task) {
-                    User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
+                    profile_progressbar.setVisibility(View.VISIBLE);
+
+                    DataSnapshot dataSnapshot = ((Task<DataSnapshot>) task).getResult();
+                    for (DataSnapshot dataLine : dataSnapshot.getChildren()){
+                        String key = dataLine.getKey();
+                        if (key.equals("post1")){
+                            long count = dataLine.getChildrenCount()-1;
+                            userData2_tv.setText(String.valueOf(count));
+                        }
+                        else if (key.equals("post2")){
+                            long count = dataLine.getChildrenCount()-1;
+                            userData1_tv.setText(String.valueOf(count));
+                        }
+                        else if (key.equals("post3")){
+                            long count = dataLine.getChildrenCount()-1;
+                            userData3_tv.setText(String.valueOf(count));
+                        }
+                        else if (key.equals("name")){
+                            String value = dataLine.getValue(String.class);
+                            userName_tv.setText(value);
+                        }
+                    }
                     StorageReference storageReference = db.readImage(Database.getUserProfileImageRoot(), Database.getAuth().getCurrentUser().getUid());
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
@@ -227,7 +287,6 @@ public class MyPageFragment extends Fragment {
                             if (mGlideRequestManager != null){
                                 profile_progressbar.setVisibility(View.INVISIBLE);
                                 mGlideRequestManager.load(uri).into(profile_iv);
-                                userName_tv.setText(data.getName());
                             }
                         }
                     });
@@ -245,6 +304,9 @@ public class MyPageFragment extends Fragment {
             profile_progressbar.setVisibility(View.INVISIBLE);
             profile_iv.setImageResource(R.drawable.ic_baseline_person_24);
             userName_tv.setText(R.string.my_page_user_name_initialValue);
+            userData1_tv.setText("0");
+            userData2_tv.setText("0");
+            userData3_tv.setText("0");
             fragments.clear();
             fragments.add(new MyPagePost1_Fragment());
             fragments.add(new MyPagePost2_Fragment());
