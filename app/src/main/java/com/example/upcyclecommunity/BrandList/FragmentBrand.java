@@ -31,7 +31,7 @@ public class FragmentBrand extends Fragment implements View.OnClickListener {
     RecyclerView BrandListRecycler;
     BrandRecyclerAdapter adapter;
     LinearLayoutManager layoutManager;
-    LinearLayout Filter;
+    public LinearLayout Filter;
     ArrayList<Brand> BrandArrayList;
     ArrayList<CheckBox> filterOptions;
     @Nullable

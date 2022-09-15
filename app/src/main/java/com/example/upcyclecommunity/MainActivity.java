@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem TagItem;
     FloatingActionButton fab;
 
+    FragmentBrand BrandListTab;
     MyPageFragment MyPageTab;
 
     @Override
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(currentTab == 1){
+                if(currentTab == 2){
                     if(Database.getAuth().getCurrentUser()!=null) {
                         Intent intent = new Intent(mainContext, WritePostActivity.class);
                         intent.putExtra("postn", Long.MAX_VALUE + "");
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 }
-                else if(currentTab==2){
+                else if(currentTab==1){
                     if(Database.getAuth().getCurrentUser()!=null) {
                         Intent intent = new Intent(mainContext, community2_upload.class);
                         intent.putExtra("postn", Long.MAX_VALUE + "");
@@ -158,7 +159,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 else if (currentTab==3){
-
+                    if(BrandListTab.Filter.getVisibility()==View.VISIBLE){
+//                    (root.findViewById(R.id.FilterTitleText)).setVisibility(View.VISIBLE);
+                        BrandListTab.Filter.setVisibility(View.GONE);
+                    }
+                    else{
+//                    (root.findViewById(R.id.FilterTitleText)).setVisibility(View.INVISIBLE);
+                        BrandListTab.Filter.setVisibility(View.VISIBLE);
+                    }
                 }
                 else if (currentTab==4){
                     if(Database.getAuth().getCurrentUser() == null){
@@ -237,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bottom_brandlist:
                 if(currentTab==3) break;
-                FragmentBrand BrandListTab = new FragmentBrand();
+                BrandListTab = new FragmentBrand();
                 fragmentTransaction.replace(R.id.main_frame, BrandListTab).commit();
                 category = 3;
                 currentTab = 3;
