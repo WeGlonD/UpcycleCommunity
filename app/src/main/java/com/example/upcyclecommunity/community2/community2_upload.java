@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -27,6 +29,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community1.WritePostActivity;
+import com.example.upcyclecommunity.community1.WritePostUploading;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.database.Post;
@@ -66,6 +69,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
     String preTagStr;
     int preImageCnt;
     public static String community2_change_content = "";
+    WritePostUploading writePostUploading;
 
 
 
@@ -85,6 +89,9 @@ public class community2_upload extends Activity implements View.OnClickListener 
         write_tag.setOnClickListener(this);
         tags = new ArrayList<>();
         imagecontainer = new ImageView(this);
+
+        writePostUploading = new WritePostUploading(this);
+        writePostUploading.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         upload_content = findViewById(R.id.btn_community2_upload);
         upload_content.setOnClickListener(this);
@@ -141,6 +148,7 @@ public class community2_upload extends Activity implements View.OnClickListener 
                 Toast.makeText(getApplicationContext(), "최대 10개의 아이템만 등록 가능합니다. 소스를 수정하세요.", Toast.LENGTH_SHORT).show();
         }
         else if(v==upload_content){
+            writePostUploading.show();
             Upload_post();
         }
         else if(v==write_tag){
@@ -250,22 +258,28 @@ public class community2_upload extends Activity implements View.OnClickListener 
         String time = sdf.format(new Timestamp(System.currentTimeMillis()));
 
         if(mItems.size()==0){
-            Toast.makeText(context, "이미지를 넣어주세요!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "이미지 없이는 작성할 수 없습니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
         else if(title.contains(".")){
-            Toast.makeText(context, "'.'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "'.'은 제목으로 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
         else if(title.contains("#")){
-            Toast.makeText(context, "'#'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "'#'은 제목으로 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
         else if(title.contains("$")){
-            Toast.makeText(context, "'$'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "'$'은 제목으로 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
         else if(title.contains("[")){
-            Toast.makeText(context, "'['은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "'['은 제목으로 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
         else if(title.contains("]")){
-            Toast.makeText(context, "']'은 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "']'은 제목으로 입력 불가능합니다!!", Toast.LENGTH_SHORT).show();
+            writePostUploading.dismiss();
         }
         else{
             if(editing){
@@ -306,6 +320,10 @@ public class community2_upload extends Activity implements View.OnClickListener 
                             String url = uri.toString();
                             db.writePostByLine(postnum,fi+2l, url, title, time, tags,CATEGORY);
                             Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
+                            if(fi == mItems.size()-1) {
+                                writePostUploading.dismiss();
+                                finish();
+                            }
                         }
                     });
                 }

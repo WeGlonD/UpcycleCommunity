@@ -351,7 +351,8 @@ public class Fragment_CM2 extends Fragment {
                                 db.deletePost(Long.parseLong(postNumber), writerUid, CATEGORY, "", new Acts() {
                                     @Override
                                     public void ifSuccess(Object task) {
-                                        //finish();
+                                        isUpdating=true;
+                                        resetListData(15);
                                     }
                                     @Override
                                     public void ifFail(Object task) {

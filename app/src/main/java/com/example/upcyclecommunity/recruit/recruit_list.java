@@ -71,7 +71,7 @@ public class recruit_list extends AppCompatActivity {
         Radapter = new recruit_Adapter(listData,mContext,(str, end) -> getListDataWith(str, end));
         recruit_recyclerview.setAdapter(Radapter);
         recruit_isUpdating = true;
-        resetListData(10);
+        //resetListData(10);
         recruit_recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -132,6 +132,13 @@ public class recruit_list extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recruit_isUpdating=true;
+        resetListData(15);
     }
 
     public void getListDataWith(Long str, Long end) {

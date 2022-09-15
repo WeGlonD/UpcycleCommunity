@@ -702,6 +702,11 @@ public class Database {
                                 });
                             }
                         }
+                        if(idx<=0){
+                            returnList.add(-1L);
+                            acts.ifSuccess(snapshot);
+                            recruit_list.recruit_isUpdating = false;
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
