@@ -10,6 +10,8 @@
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.17" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.17" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/layout_background.xml" value="0.17" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_comments.xml" value="0.4884653961885657" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_comments_recyclerview_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_my_post1.xml" value="0.2526041666666667" />
