@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bottom_community1:
                 if(currentTab==1) break;
                 Fragment_CM2 Community2 = new Fragment_CM2();
-                fragmentTransaction.replace(R.id.main_frame, Community2).commit();
+                fragmentTransaction.replace(R.id.main_frame, Community2).commitAllowingStateLoss();
                 category = 2;
                 currentTab = 1;
                 fab.setImageResource(R.drawable.upload);
