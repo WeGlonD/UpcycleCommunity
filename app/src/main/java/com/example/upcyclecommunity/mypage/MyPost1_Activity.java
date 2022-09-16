@@ -75,7 +75,7 @@ public class MyPost1_Activity extends AppCompatActivity {
 
             @Override
             public void ifFail(Object task) {
-                Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "유저 게시글을 불러오는데 실패 했습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
         });

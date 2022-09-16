@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         if(mAuth == null)
-            Toast.makeText(this, "NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "인증 센터를 부르는데 실패 했습니다.", Toast.LENGTH_SHORT).show();
 
 
         email_et = findViewById(R.id.activity_login_email_editText);
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setTitle("login...");
+                dialog.setTitle("로그인 중...");
                 dialog.show();
 
                 user.login(email, password, new Acts() {
@@ -112,12 +112,12 @@ public class LoginActivity extends AppCompatActivity {
         helpPassword_tv.setOnClickListener(view -> {
             String email = email_et.getText().toString().replaceAll("\\s", "");
             if (email.isEmpty()){
-                Toast.makeText(mContext, "write your email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "이메일을 적어주세요", Toast.LENGTH_SHORT).show();
             }
             else{
                 Database.getAuth().sendPasswordResetEmail(email).addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
-                        Toast.makeText(mContext, "email sent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "이메일이 전송 되었습니다. 메일함을 확인해 주세요.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

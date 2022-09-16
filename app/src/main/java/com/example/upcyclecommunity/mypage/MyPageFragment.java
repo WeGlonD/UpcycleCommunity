@@ -173,7 +173,7 @@ public class MyPageFragment extends Fragment {
         setting_btn.setOnClickListener(viw -> {
             ProgressDialog dialog = new ProgressDialog(context);
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setTitle("loading...");
+            dialog.setTitle("정보 불러오는 중...");
             dialog.show();
             db.readUser(new Acts() {
                 @Override
@@ -200,7 +200,7 @@ public class MyPageFragment extends Fragment {
                 @Override
                 public void ifFail(Object task) {
                     dialog.dismiss();
-                    Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
+                    Toast.makeText(getContext(), "유저정보를 불러오는데 실패했습니다", Toast.LENGTH_LONG);
                 }
             });
         });
@@ -296,7 +296,7 @@ public class MyPageFragment extends Fragment {
                 public void ifFail(Object task) {
                     profile_progressbar.setVisibility(View.INVISIBLE);
                     profile_iv.setImageResource(R.drawable.ic_baseline_person_24);
-                    Toast.makeText(getContext(), "fail to load user data", Toast.LENGTH_LONG);
+                    Toast.makeText(getContext(), "유저 정보를 불러오는데 실패했습니다..", Toast.LENGTH_LONG);
                 }
             });
         }

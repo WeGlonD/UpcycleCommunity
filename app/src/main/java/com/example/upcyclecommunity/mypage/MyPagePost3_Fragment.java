@@ -121,7 +121,7 @@ public class MyPagePost3_Fragment extends Fragment {
                 @Override
                 public void ifFail(Object task) {
                     if (mContext != null)
-                        Toast.makeText(mContext, "user post loading fail", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "유저 게시글을 불러오는데 실패 했습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
         }

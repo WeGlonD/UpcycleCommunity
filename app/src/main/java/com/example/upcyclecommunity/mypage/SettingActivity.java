@@ -99,7 +99,7 @@ public class SettingActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             ProgressDialog dialog = new ProgressDialog(context);
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setTitle("loading...");
+            dialog.setTitle("로딩중...");
             dialog.show();
 
             Database.getUserRoot().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
@@ -120,7 +120,7 @@ public class SettingActivity extends AppCompatActivity {
                                                     @Override
                                                     public void ifFail(Object task) {
                                                         dialog.dismiss();
-                                                        printToast("image update fail");
+                                                        printToast("프로필 사진 업데이트에 실패 했습니다.");
                                                     }
                                                 });
                                     }
@@ -131,13 +131,13 @@ public class SettingActivity extends AppCompatActivity {
                                 }
                                 else{
                                     dialog.dismiss();
-                                    printToast("email update fail");
+                                    printToast("이메일 업데이트에 실패 했습니다.");
                                 }
                             });
                         }
                         else{
                             dialog.dismiss();
-                            printToast("name update fail");
+                            printToast("이름 업데이트에 실패 했습니다.");
                         }
 
                     });

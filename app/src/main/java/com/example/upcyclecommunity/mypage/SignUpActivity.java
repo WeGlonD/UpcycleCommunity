@@ -108,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
                 else{
                     ProgressDialog dialog = new ProgressDialog(this);
                     dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    dialog.setTitle("signUp...");
+                    dialog.setTitle("회원가입중...");
                     dialog.show();
 
                     String trim_email = email.replaceAll("\\s", "");
@@ -133,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                 @Override
                                                 public void ifFail(Object task) {
                                                     dialog.dismiss();
-                                                    Toast.makeText(mContext, "save user profile image fail", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, "유저 프로필 이미지 저장에 실패 했습니다.", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                 }
@@ -141,7 +141,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 @Override
                                 public void ifFail(Object task) {
                                     dialog.dismiss();
-                                    Toast.makeText(mContext, "user login fail", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "로그인에 실패 했습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -149,7 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
                         @Override
                         public void ifFail(Object task) {
                             dialog.dismiss();
-                            Toast.makeText(mContext, "user create fail", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "계정 생성에 실패 했습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
