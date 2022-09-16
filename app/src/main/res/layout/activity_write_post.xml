@@ -72,6 +72,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recruitFor"
+                    android:layout_margin="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
