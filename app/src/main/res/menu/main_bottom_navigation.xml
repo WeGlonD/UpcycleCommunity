@@ -5,14 +5,14 @@
     <item
         android:id="@+id/bottom_community1"
         android:enabled="true"
-        android:title="커뮤1"
+        android:title="공유"
         android:icon="@drawable/community1"
         android:checked="true"/>
 
     <item
         android:id="@+id/bottom_community2"
         android:enabled="true"
-        android:title="커뮤2"
+        android:title="나눔"
         android:icon="@drawable/ic_baseline_connect_without_contact_24"
         />
     <item android:id="@+id/blank"
