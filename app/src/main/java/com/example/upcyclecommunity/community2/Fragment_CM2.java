@@ -125,7 +125,7 @@ public class Fragment_CM2 extends Fragment {
                     if (nowLayoutManager != null){
                         if (isUpdating == false && nowLayoutManager.findFirstCompletelyVisibleItemPosition() > -1){
                             if (nowLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
-                                Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getContext(), "up "+listData.size(), Toast.LENGTH_LONG).show();
                                 isUpdating = true;
                                 resetListData(5);
                             }
@@ -133,7 +133,7 @@ public class Fragment_CM2 extends Fragment {
                                 int position = nowLayoutManager.findLastCompletelyVisibleItemPosition();
                                 if (position >= 0){
                                     Long lastPostNumber = listData.get(position);
-                                    Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getContext(), "down "+listData.size(), Toast.LENGTH_LONG).show();
                                     //                        Toast.makeText(getContext(), ""+position+" "+lastPostNumber, Toast.LENGTH_LONG).show();
                                     //                        Log.d("Dirtfy_test", ""+position+" "+lastPostNumber);
                                     isUpdating = true;
@@ -167,7 +167,7 @@ public class Fragment_CM2 extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                     return;
                 }
             });
@@ -200,7 +200,7 @@ public class Fragment_CM2 extends Fragment {
 
             @Override
             public void ifFail(Object task) {
-                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                 return;
             }
         });
@@ -222,7 +222,7 @@ public class Fragment_CM2 extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                     return;
                 }
             });

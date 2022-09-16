@@ -182,7 +182,7 @@ public class Personal_Post extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (FirebaseAuth.getInstance().getCurrentUser() == null){
-                    Toast.makeText(context, "로그인을 하세요~", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     ArrayList<String> keylist = new ArrayList<>();
@@ -247,7 +247,7 @@ public class Personal_Post extends AppCompatActivity {
                 Log.d("Minseok",CATEGORY+"");
                 Post personal_p = postArray.get(0);
                 String Ttitle = personal_p.getTitle();
-                Toast.makeText(context, String.valueOf(postn), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, String.valueOf(postn), Toast.LENGTH_SHORT).show();
 
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());

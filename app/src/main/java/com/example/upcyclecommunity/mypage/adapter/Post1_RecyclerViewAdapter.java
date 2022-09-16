@@ -133,7 +133,7 @@ public class Post1_RecyclerViewAdapter extends RecyclerView.Adapter<Post1_Recycl
 
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
                 Log.d("Dirtfy_test", postNumber);
-                Toast.makeText(context, postNumber, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, postNumber, Toast.LENGTH_SHORT).show();
 
                 Intent it = new Intent(context, MyPost1_Activity.class);
                 it.putExtra("position", getAdapterPosition());

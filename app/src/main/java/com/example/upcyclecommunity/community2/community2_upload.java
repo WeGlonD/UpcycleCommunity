@@ -153,7 +153,7 @@ public class community2_upload extends AppCompatActivity implements View.OnClick
                 doTakeAlbumAction(PICK_FROM_ALBUM);
             }
             else
-                Toast.makeText(getApplicationContext(), "최대 10개의 아이템만 등록 가능합니다. 소스를 수정하세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "최대 10개의 이미지만 등록 가능합니다.", Toast.LENGTH_SHORT).show();
         }
         else if(v==upload_content){
             writePostUploading.show();
@@ -203,7 +203,7 @@ public class community2_upload extends AppCompatActivity implements View.OnClick
                                 }
                             }
                             ((ViewGroup)now.getParent()).removeView(now);
-                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
                         }
                     });
                     tags_field.addView(newTagTv);
@@ -340,7 +340,7 @@ public class community2_upload extends AppCompatActivity implements View.OnClick
                         public void onSuccess(Uri uri) {
                             String url = uri.toString();
                             db.writePostByLine(postnum,fi+2l, url, title, time, tags,CATEGORY);
-                            Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
                             if(fi == mItems.size()-1) {
                                 writePostUploading.dismiss();
                                 finish();
@@ -431,7 +431,7 @@ public class community2_upload extends AppCompatActivity implements View.OnClick
                                 }
                             }
                             ((ViewGroup)now.getParent()).removeView(now);
-                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
                         }
                     });
                     tagLayout.addView(newTagTv);

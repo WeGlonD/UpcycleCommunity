@@ -499,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void ifFail(Object task) {
-                        Toast.makeText(mainContext, "hello", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainContext, "error", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 });

@@ -183,7 +183,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                 }
                             }
                             ((ViewGroup)now.getParent()).removeView(now);
-                            Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
                         }
                     });
                     tagLayout.addView(newTagTv);
@@ -300,7 +300,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                     mImageCaptureUri = data.getData();
 
                 case PICK_FROM_CAMERA:
-                    Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "사진 삽입", Toast.LENGTH_SHORT).show();
                     //String profilePath = data.getStringExtra("profilePath");
                     parent = findViewById(R.id.contentsLayout);
 
@@ -401,7 +401,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                     }
                                 }
                                 ((ViewGroup)now.getParent()).removeView(now);
-                                Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(),""+tags.size(),Toast.LENGTH_SHORT).show();
                             }
                         });
                         tags_field.addView(newTagTv);
@@ -546,7 +546,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                                 public void onSuccess(Uri uri) {
                                     String url = uri.toString();
                                     db.writePostByLine(postnum,finalI, url, title, time, tags,category);
-                                    Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
                                     if((int)((finalI-1)/2) == imageViews.size()-1){
                                         db.writePostByLine(postnum, finalI+1, editTexts.get((int)(finalI/2)).getText().toString(), title, time, tags,category);
                                         writePostUploading.dismiss();

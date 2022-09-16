@@ -65,7 +65,7 @@ public class CommentsActivity extends AppCompatActivity {
 
         submit_btn.setOnClickListener(view -> {
             if (FirebaseAuth.getInstance().getCurrentUser() == null){
-                Toast.makeText(mContext, "로그인을 하세요~", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
             }
             else{
                 String comment = comment_et.getText().toString();

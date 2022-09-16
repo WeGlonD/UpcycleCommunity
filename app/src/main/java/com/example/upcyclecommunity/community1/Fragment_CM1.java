@@ -166,7 +166,7 @@ public class Fragment_CM1 extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                     return;
                 }
             });
@@ -182,7 +182,7 @@ public class Fragment_CM1 extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                     return;
                 }
             });
@@ -199,7 +199,7 @@ public class Fragment_CM1 extends Fragment {
 
             @Override
             public void ifFail(Object task) {
-                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                 return;
             }
         });
@@ -224,7 +224,7 @@ public class Fragment_CM1 extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                     return;
                 }
             });
@@ -243,7 +243,7 @@ public class Fragment_CM1 extends Fragment {
 
                 @Override
                 public void ifFail(Object task) {
-                    Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
                     return;
                 }
             });

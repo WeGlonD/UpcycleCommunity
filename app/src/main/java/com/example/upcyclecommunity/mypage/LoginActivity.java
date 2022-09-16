@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
         password_et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         visibility_iv.setOnClickListener(view -> {
-            Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
             if (password_et.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
                 password_et.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 visibility_iv.setImageResource(R.drawable.ic_baseline_visibility_off_24);

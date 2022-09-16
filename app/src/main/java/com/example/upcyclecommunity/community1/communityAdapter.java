@@ -189,9 +189,9 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
             load_more_btn = view.findViewById(R.id.community1_item_load_more_button);
             load_more_btn.setOnClickListener(viw -> {
-                Toast.makeText(mContext, "last click", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "last click", Toast.LENGTH_SHORT).show();
                 if(mOnClickListener != null){
-                    Toast.makeText(mContext, "last click not null", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "last click not null", Toast.LENGTH_SHORT).show();
                     Long lastPostNumber = listData.get(listData.size()-2);
                     Fragment_CM1.isUpdating = true;
                     mOnClickListener.clickEvent(lastPostNumber+1, lastPostNumber+5);
@@ -213,7 +213,7 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
 
             view.setOnClickListener(viw -> {
                 Long postNumber = listData.get(getAdapterPosition());
-                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
                 if (!(postNumber.equals((long) -1))){
                     String stringPostNumber = String.valueOf(postNumber);
                     Log.d("Dirtfy_test", stringPostNumber);

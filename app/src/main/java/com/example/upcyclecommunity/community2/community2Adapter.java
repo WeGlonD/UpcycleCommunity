@@ -224,7 +224,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             comment_linearLayout = view.findViewById(R.id.community2_item_clickCnt_linearLayout);
             comment_linearLayout.setOnClickListener(viw -> {
                 Long postNumber = listData.get(getAdapterPosition());
-                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
                 String stringPostNumber = String.valueOf(postNumber);
                 Log.d("Dirtfy_test", stringPostNumber);
 
@@ -236,7 +236,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             comment_iv = view.findViewById(R.id.community2_item_commentImage_imageView);
             comment_iv.setOnClickListener(viw -> {
                 Long postNumber = listData.get(getAdapterPosition());
-                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
                 String stringPostNumber = String.valueOf(postNumber);
                 Log.d("Dirtfy_test", stringPostNumber);
 
@@ -248,7 +248,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             mComment = view.findViewById(R.id.community2_item_commentCnt_textView);
             mComment.setOnClickListener(viw -> {
                 Long postNumber = listData.get(getAdapterPosition());
-                Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, ""+postNumber, Toast.LENGTH_SHORT).show();
                 String stringPostNumber = String.valueOf(postNumber);
                 Log.d("Dirtfy_test", stringPostNumber);
 
@@ -274,7 +274,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             mViewAdapter = new ViewAdapter(mUriItems, mContext, new ViewAdapter.clickListener() {
                 @Override
                 public void mclickListener_Dialog(View view, int position) {
-                    Toast.makeText(mContext, "hi hi", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "hi hi", Toast.LENGTH_SHORT).show();
                 }
             });
 
