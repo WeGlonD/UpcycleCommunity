@@ -725,7 +725,11 @@ public class Database {
         String from = String.valueOf(str);
         String to = String.valueOf(end);
 
-        postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).endAt(to).
+        int firstSize = returnList.size();
+
+        Long finalEnd = end;
+        Long finalStr = str;
+        postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -735,6 +739,9 @@ public class Database {
                                 Log.d("WeGlonD", postNumber + "");
                                 returnList.add(postNumber);
                                 acts.ifSuccess(snapshot);
+
+                                if (returnList.size() >= firstSize+ finalEnd - finalStr)
+                                    break;
                             }
                         }
                         returnList.add(-1L);
