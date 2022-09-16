@@ -192,9 +192,11 @@ public class communityAdapter extends RecyclerView.Adapter<communityAdapter.MyVi
                 //Toast.makeText(mContext, "last click", Toast.LENGTH_SHORT).show();
                 if(mOnClickListener != null){
                     //Toast.makeText(mContext, "last click not null", Toast.LENGTH_SHORT).show();
-                    Long lastPostNumber = listData.get(listData.size()-2);
-                    Fragment_CM1.isUpdating = true;
-                    mOnClickListener.clickEvent(lastPostNumber+1, lastPostNumber+5);
+                    if(listData.size() > 1) {
+                        Long lastPostNumber = listData.get(listData.size() - 2);
+                        Fragment_CM1.isUpdating = true;
+                        mOnClickListener.clickEvent(lastPostNumber + 1, lastPostNumber + 5);
+                    }
                 }
             });
 
