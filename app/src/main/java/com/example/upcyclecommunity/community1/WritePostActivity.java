@@ -452,6 +452,9 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.deleteimage:
                 parent.removeView((View)selectediv.getParent());
+                int idx = imageViews.indexOf(selectediv);
+                imageViews.remove(idx);
+                editTexts.remove(idx+1);
                 relative.setVisibility(View.GONE);
                 break;
         }
