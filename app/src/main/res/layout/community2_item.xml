@@ -10,10 +10,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/community2_item_metaData_constraintLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/community2_item_pagemark">
 
 <!--        <ImageView-->
@@ -57,12 +58,16 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
         <TextView
             android:id="@+id/community2_item_title_textView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:textSize="25sp"
             android:text="00000"
             android:layout_marginLeft="10dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toRightOf="@id/community2_item_userPic_imageView"
             app:layout_constraintBottom_toTopOf="@id/community2_item_userName_textView"/>
         <TextView

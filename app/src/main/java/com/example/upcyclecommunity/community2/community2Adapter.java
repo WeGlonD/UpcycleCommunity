@@ -66,6 +66,8 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         if (firebaseUser != null) {
             nowuser = firebaseUser.getUid();
         }
+        holder.mTitle.setSelected(true);
+        holder.mTitle.setHorizontallyScrolling(true);
         String fUser = nowuser;
         Database.getDBRoot().child("Post" + CATEGORY).
                 child("posting").child(String.valueOf(postNumber)).
