@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,6 +66,7 @@ public class Personal_Post extends AppCompatActivity {
     Long recruitPostnum;
     Context context;
     RecyclerView recruitRecycler;
+    WritePostDeleting writePostDeleting;
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
@@ -86,9 +89,11 @@ public class Personal_Post extends AppCompatActivity {
                     if (writerUid.equals(Database.getAuth().getCurrentUser().getUid())) {
                         switch (item.getItemId()) {
                             case R.id.menu_deltePost:
+                                writePostDeleting.show();
                                 db.deletePost(postn, writerUid, CATEGORY, recruitPostnum+"", new Acts() {
                                     @Override
                                     public void ifSuccess(Object task) {
+                                        writePostDeleting.dismiss();
                                         finish();
                                     }
 
@@ -128,6 +133,10 @@ public class Personal_Post extends AppCompatActivity {
         postArray = new ArrayList<>();
         contents = new ArrayList<>();
         tags = new ArrayList<>();
+
+        writePostDeleting = new WritePostDeleting(context);
+        writePostDeleting.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        writePostDeleting.setCancelable(false);
 
         titleview = findViewById(R.id.tv_personal_name);
         tag_detail = findViewById(R.id.tag_detail);
