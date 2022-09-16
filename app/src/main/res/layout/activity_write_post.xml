@@ -27,7 +27,8 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="제목"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textSize="25sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -80,8 +81,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="start|top"
-                    android:hint="내용"
-                    android:inputType="textMultiLine" />
+                    android:hint="내용\n"
+                    android:inputType="textMultiLine"
+                    android:textSize="22sp"/>
             </LinearLayout>
 
             <LinearLayout

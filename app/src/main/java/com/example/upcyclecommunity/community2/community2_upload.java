@@ -325,7 +325,7 @@ public class community2_upload extends AppCompatActivity implements View.OnClick
 
     public void Uploading(Long postnum, Database db, String title, String time){
         String content = ((EditText)findViewById(R.id.community2_upload_content)).getText().toString();
-        db.writePostByLine(postnum, 1l, content, title, time, tags, CATEGORY);
+        db.writePostByLine(postnum, 1l, content.trim(), title, time, tags, CATEGORY);
         for(int i = 0;i<mItems.size();i++){
             int fi = i;
             Glide.with(this).load(mItems.get(i)).centerCrop().override(1000).into(imagecontainer);

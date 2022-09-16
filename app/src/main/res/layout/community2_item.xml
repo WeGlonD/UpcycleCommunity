@@ -123,6 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
+            android:textSize="22sp"
             android:ellipsize="end"/>
         <TextView
             android:id="@+id/community2_item_timeStamp_textView"

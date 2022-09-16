@@ -256,33 +256,41 @@ public class Personal_Post extends AppCompatActivity {
                 //user
                 Database.getUserRoot().child(User_Id).child("name").get().addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {
-                        String Name = task1.getResult().getValue(String.class);
-                        Database.getUserProfileImageRoot().child(User_Id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                profile_name.setText(Name);
-                                profile_date.setText(personal_p.getTimeStamp());
-                                String iv_url = uri.toString();
-                                Glide.with(getApplicationContext()).load(iv_url).into(profile_src);
-                                LinearLayout.LayoutParams layparms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                parent.setLayoutParams(layparms);
-                                parent.setOrientation(LinearLayout.VERTICAL);
-                                contents = personal_p.getContents();
-                                for (int i = 0; i < contents.size(); i++) {
-                                    if (i % 2 == 0) {
-                                        TextView tv = new TextView(Personal_Post.this);
-                                        tv.setLayoutParams(layparms);
-                                        tv.setText(contents.get(i));
-                                        parent.addView(tv);
-                                    } else {
-                                        ImageView iv = new ImageView(Personal_Post.this);
-                                        iv.setLayoutParams(layparms);
-                                        Glide.with(getApplicationContext()).load(contents.get(i)).centerCrop().override(1000).into(iv);
-                                        parent.addView(iv);
+                        try{
+                            String Name = task1.getResult().getValue(String.class);
+                            Database.getUserProfileImageRoot().child(User_Id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    profile_name.setText(Name);
+                                    profile_date.setText(personal_p.getTimeStamp());
+                                    String iv_url = uri.toString();
+                                    Glide.with(getApplicationContext()).load(iv_url).into(profile_src);
+                                    LinearLayout.LayoutParams layparms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    parent.setLayoutParams(layparms);
+                                    parent.setOrientation(LinearLayout.VERTICAL);
+                                    contents = personal_p.getContents();
+                                    for (int i = 0; i < contents.size(); i++) {
+                                        if (i % 2 == 0) {
+                                            TextView tv = new TextView(Personal_Post.this);
+                                            tv.setTextSize(22);
+                                            tv.setLayoutParams(layparms);
+                                            tv.setText(contents.get(i).trim()+"\n");
+                                            Log.d("albumResult",contents.get(i).trim()+"");
+                                            parent.addView(tv);
+                                        } else {
+                                            ImageView iv = new ImageView(Personal_Post.this);
+                                            iv.setLayoutParams(layparms);
+                                            Glide.with(getApplicationContext()).load(contents.get(i)).centerCrop().override(1000).into(iv);
+                                            parent.addView(iv);
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        catch (Exception e){
+                            Toast.makeText(context, "삭제되거나 존재하지 않습니다!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                     } else {
 
                     }

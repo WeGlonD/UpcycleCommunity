@@ -214,6 +214,30 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+        DialogInterface.OnClickListener no = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //네
+                dialog.dismiss();
+            }
+        };
+        DialogInterface.OnClickListener yes = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //아니오
+                finish();
+                dialog.dismiss();
+            }
+        };
+        new AlertDialog.Builder(mainContext)
+                .setTitle("앱을 종료하시겠습니까?")
+                .setPositiveButton("아니오", no)
+                .setNegativeButton("네",yes)
+                .show();
+    }
+
     public void setFragment(int n) {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (n) {

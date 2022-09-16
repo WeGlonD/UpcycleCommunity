@@ -93,16 +93,31 @@ public class Fragment_CM2 extends Fragment {
             @Override
             public void mclickListener_Dialog(String postNumber) {
                 if (Database.getAuth().getCurrentUser() != null){
-                    Database.getDBRoot().child("Post2").child("posting").
-                            child(postNumber).child("writer").get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()){
-                            String user_uid = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
-                            if(user_uid.equals(Database.getAuth().getCurrentUser().getUid()))
-                                Dialog(postNumber);
-                            else
-                                recruitDialog(postNumber);
-                        }
-                    });
+                    try{
+                        Database.getDBRoot().child("Post2").child("posting").
+                                child(postNumber).child("writer").get().addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()){
+                                        try{
+                                            String user_uid = ((Task<DataSnapshot>) task).getResult().getValue(String.class);
+                                            if(user_uid.equals(Database.getAuth().getCurrentUser().getUid()))
+                                                Dialog(postNumber);
+                                            else
+                                                recruitDialog(postNumber);
+                                        }
+                                        catch (Exception e){
+                                            Toast.makeText(mContext, "게시물이 존재하지 않습니다", Toast.LENGTH_SHORT).show();
+                                            isUpdating = true;
+                                            resetListData(5);
+                                        }
+                                    }
+                                });
+                    }
+                    catch (Exception e){
+                        Toast.makeText(mContext, "게시물이 존재하지 않습니다", Toast.LENGTH_SHORT).show();
+                        isUpdating = true;
+                        resetListData(5);
+                    }
+
                 }
 
             }

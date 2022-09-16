@@ -16,7 +16,8 @@
                 android:id="@+id/community2_upload_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="제목 : "/>
+                android:hint="제목 : "
+                android:textSize="25sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,8 +96,9 @@
                 android:id="@+id/community2_upload_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="내용 : "
-                android:text="\n\n\n\n\n\n"/>
+                android:hint="내용 :\n\n\n\n"
+                android:textSize="22sp"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
