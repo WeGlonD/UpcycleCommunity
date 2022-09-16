@@ -305,7 +305,7 @@ public class Fragment_CM2 extends Fragment {
             }
         };
         new AlertDialog.Builder(getActivity())
-                .setTitle("")
+                .setTitle("모임을 만들거나 참여할 수 있습니다!")
                 .setPositiveButton("모임 조회", recruitPosting)
                 .setNegativeButton("취소",cancel)
                 .show();
