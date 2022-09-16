@@ -551,7 +551,9 @@ public class Database {
                                             Log.d("WeGlonD", "picture del - "+category + "-" + postnum + "-" + fTitle + "-" +i);
                                         }
                                     }
-
+                                    postingRoot.child(""+postnum).child("likeuser").removeValue();
+                                    postingRoot.child(""+postnum).child("comment").removeValue();
+                                    postingRoot.child(""+postnum).child("recruit").removeValue();
                                     postingRoot.child(postnum+"").removeValue();
                                     Log.d("WeGlonD", "Database - deletePost - 삭제완료");
                                     acts.ifSuccess(task);

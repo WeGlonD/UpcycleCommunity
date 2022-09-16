@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.upcyclecommunity.R;
 import com.example.upcyclecommunity.community1.WritePostActivity;
+import com.example.upcyclecommunity.community1.WritePostDeleting;
 import com.example.upcyclecommunity.database.Acts;
 import com.example.upcyclecommunity.database.Database;
 import com.example.upcyclecommunity.mypage.LoginActivity;
@@ -48,6 +51,7 @@ public class Fragment_CM2 extends Fragment {
     Context mContext;
     //Button cur_pos_condition_btn;
     public static boolean isUpdating = false;
+    WritePostDeleting writePostDeleting;
 
     @Nullable
     @Override
@@ -87,6 +91,10 @@ public class Fragment_CM2 extends Fragment {
 //        location2.setLongitude(127.27801);
 //
 //        Log.d("WeGlonD", "distance "+location1.distanceTo(location2));
+
+        writePostDeleting = new WritePostDeleting(getContext());
+        writePostDeleting.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        writePostDeleting.setCancelable(false);
 
         listData = new ArrayList<>();
         Cadapter = new community2Adapter(listData, getContext(), new community2Adapter.clickListener() {
@@ -267,6 +275,7 @@ public class Fragment_CM2 extends Fragment {
                 //삭제
                 change_posting(postNumber,2);
                 dialog.dismiss();
+                writePostDeleting.show();
             }
         };
         DialogInterface.OnClickListener recruitPosting = new DialogInterface.OnClickListener() {
@@ -337,6 +346,7 @@ public class Fragment_CM2 extends Fragment {
                                     @Override
                                     public void ifSuccess(Object task) {
                                         isUpdating=true;
+                                        writePostDeleting.dismiss();
                                         resetListData(15);
                                     }
                                     @Override
