@@ -985,6 +985,7 @@ public class Database {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            Log.d("WeGlonD", dataSnapshot.toString());
                             if(!(dataSnapshot.getKey().equals("totalnumber"))) {
                                 double latitude = dataSnapshot.child("latitude").getValue(Double.class);
                                 double longitude = dataSnapshot.child("longitude").getValue(Double.class);

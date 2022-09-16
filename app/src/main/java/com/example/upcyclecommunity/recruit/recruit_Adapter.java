@@ -73,14 +73,13 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.mTitle.setVisibility(View.INVISIBLE);
             holder.userName_tv.setVisibility(View.INVISIBLE);
             holder.date_tv.setVisibility(View.INVISIBLE);
-            holder.commentCnt_tv.setVisibility(View.INVISIBLE);
+//            holder.commentCnt_tv.setVisibility(View.INVISIBLE);
             holder.mComment.setVisibility(View.INVISIBLE);
             holder.userPic.setVisibility(View.INVISIBLE);
             holder.progressBar.setVisibility(View.INVISIBLE);
 
-            holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
+//            holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
             holder.linearLayout.setVisibility(View.INVISIBLE);
-            holder.clickCnt_text_tv.setVisibility(View.INVISIBLE);
 
             try{
                 holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_line));
@@ -94,13 +93,12 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             holder.mTitle.setVisibility(View.VISIBLE);
             holder.userName_tv.setVisibility(View.VISIBLE);
             holder.date_tv.setVisibility(View.VISIBLE);
-            holder.commentCnt_tv.setVisibility(View.VISIBLE);
+//            holder.commentCnt_tv.setVisibility(View.VISIBLE);
             holder.mComment.setVisibility(View.VISIBLE);
             holder.userPic.setVisibility(View.VISIBLE);
             holder.progressBar.setVisibility(View.VISIBLE);
-            holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
+//            holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             holder.linearLayout.setVisibility(View.VISIBLE);
-            holder.clickCnt_text_tv.setVisibility(View.VISIBLE);
             try {
                 holder.itemView.setBackground(mContext.getDrawable(R.drawable.border_and_white));
             }
@@ -218,12 +216,12 @@ public class recruit_Adapter extends RecyclerView.Adapter<recruit_Adapter.MyView
             mTitle = view.findViewById(R.id.recruit_tv_post_title1);
             userName_tv = view.findViewById(R.id.recruit_item_userName_textView);
             date_tv = view.findViewById(R.id.recruit_item_date_textView);
-            commentCnt_tv = view.findViewById(R.id.recruit_item_clickCnt_textView);
+//            commentCnt_tv = view.findViewById(R.id.recruit_item_clickCnt_textView);
             mComment = view.findViewById(R.id.recruit_tv_comment1);
             userPic = view.findViewById(R.id.recruit_post_iv);
             progressBar = view.findViewById(R.id.recruit_item_progress_circular);
 
-            clickCnt_text_tv = view.findViewById(R.id.recruit_item_clickCnt_text_textView);
+//            clickCnt_text_tv = view.findViewById(R.id.recruit_item_clickCnt_text_textView);
             linearLayout = view.findViewById(R.id.recruit_item_linearLayout);
             commentCnt_text_tv = view.findViewById(R.id.recruit_noid);
 
