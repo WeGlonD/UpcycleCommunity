@@ -171,38 +171,43 @@ public class MyPageFragment extends Fragment {
 //            });
 //        });
         setting_btn.setOnClickListener(viw -> {
-            ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            dialog.setTitle("정보 불러오는 중...");
-            dialog.show();
-            db.readUser(new Acts() {
-                @Override
-                public void ifSuccess(Object task) {
-                    User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
-                    StorageReference storageReference = db.readImage(Database.getUserProfileImageRoot(), Database.getAuth().getCurrentUser().getUid());
-                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                ProgressDialog dialog = new ProgressDialog(context);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setTitle("정보 불러오는 중...");
+                dialog.show();
+                db.readUser(new Acts() {
+                    @Override
+                    public void ifSuccess(Object task) {
+                        User.Data data = ((Task<DataSnapshot>) task).getResult().getValue(User.Data.class);
+                        StorageReference storageReference = db.readImage(Database.getUserProfileImageRoot(), Database.getAuth().getCurrentUser().getUid());
+                        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
 
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            String email = user.getEmail();
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String email = user.getEmail();
 
-                            Intent it = new Intent(context, SettingActivity.class);
-                            it.putExtra("picUri", String.valueOf(uri));
-                            it.putExtra("name", data.getName());
-                            it.putExtra("email", email);
-                            dialog.dismiss();
-                            startActivity(it);
-                        }
-                    });
-                }
+                                Intent it = new Intent(context, SettingActivity.class);
+                                it.putExtra("picUri", String.valueOf(uri));
+                                it.putExtra("name", data.getName());
+                                it.putExtra("email", email);
+                                dialog.dismiss();
+                                startActivity(it);
+                            }
+                        });
+                    }
 
-                @Override
-                public void ifFail(Object task) {
-                    dialog.dismiss();
-                    Toast.makeText(getContext(), "유저정보를 불러오는데 실패했습니다", Toast.LENGTH_LONG);
-                }
-            });
+                    @Override
+                    public void ifFail(Object task) {
+                        dialog.dismiss();
+                        Toast.makeText(getContext(), "유저정보를 불러오는데 실패했습니다", Toast.LENGTH_LONG);
+                    }
+                });
+            }
+            else{
+                Toast.makeText(context, "로그인이 필요합니다", Toast.LENGTH_SHORT).show();
+            }
         });
 //        logout_iv.setOnClickListener(viw -> {
 //            if(Database.getAuth().getCurrentUser() == null){
