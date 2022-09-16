@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/community2_viewholder_container"
     android:background="@drawable/community2_item_lyaout_background"
+    android:elevation="5dp"
     android:layout_marginHorizontal="14dp"
     android:layout_marginVertical="7dp"
     android:padding="10dp"
