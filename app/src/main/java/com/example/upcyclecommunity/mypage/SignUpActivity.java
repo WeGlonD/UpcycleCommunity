@@ -21,6 +21,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,6 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText email_et;
     private EditText password_et;
     private EditText password_check_et;
+    private CheckBox contract_agree_cb;
     private Button signUp_btn;
 
     private Context mContext;
@@ -73,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity {
         email_et = findViewById(R.id.activity_signup_email_editText);
         password_et = findViewById(R.id.activity_signup_password_editText);
         password_check_et = findViewById(R.id.activity_signup_password_check_editText);
+        contract_agree_cb = findViewById(R.id.activity_signup_contract_agree_checkBox);
         signUp_btn = findViewById(R.id.activity_signup_signUp_button);
 
         Database db = new Database();
@@ -84,6 +87,11 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         signUp_btn.setOnClickListener(view -> {
+            if(!contract_agree_cb.isChecked()){
+                Toast.makeText(this, getString(R.string.activity_signup_contract_agree_require), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Bitmap bitmap = makeBitmap(profile_iv.getDrawable());
             BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
             String name = name_et.getText().toString();

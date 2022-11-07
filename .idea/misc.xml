@@ -9,9 +9,12 @@
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.17" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.17" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/layout_background.xml" value="0.17" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_comments.xml" value="0.1743659420289855" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_my_post1.xml" value="0.2526041666666667" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_setting.xml" value="0.25364583333333335" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_signup.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/comment_layout.xml" value="0.2526041666666667" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/community1_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/community2_item.xml" value="0.25364583333333335" />

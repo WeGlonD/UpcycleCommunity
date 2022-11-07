@@ -51,6 +51,7 @@ public class SettingActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth = null;
 
+    private Button delete_btn;
     private ImageView profile_iv;
     private EditText name_et;
     private EditText email_et;
@@ -70,6 +71,7 @@ public class SettingActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         context = this;
 
+        delete_btn = findViewById(R.id.activity_setting_account_delete_button);
         profile_iv = findViewById(R.id.activity_setting_profile_imageView);
         name_et = findViewById(R.id.activity_setting_name_editText);
         email_et = findViewById(R.id.activity_setting_email_editText);
@@ -86,6 +88,41 @@ public class SettingActivity extends AppCompatActivity {
 
 
         Database db = new Database();
+
+        delete_btn.setOnClickListener(view -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("계정 삭제");
+            dialog.setMessage("정말 계정을 삭제하시겠습니까?\n게시물 및 댓글 등은 삭제 되지않습니다.");
+
+            dialog.setPositiveButton("예", ((dialogInterface, i) -> {
+                ProgressDialog dlg = new ProgressDialog(context);
+                dlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dlg.setTitle("로딩중...");
+                dlg.show();
+
+                Database.getUserRoot().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
+                        removeValue().addOnCompleteListener(task -> {
+                           if(task.isSuccessful()) {
+//                               FirebaseAuth.getInstance().getCurrentUser().
+                               FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(taskUser -> {
+                                   if(taskUser.isSuccessful()){
+                                       printToast("삭제가 완료 되었습니다...");
+                                   }
+                                   else{
+                                        printToast("계정 삭제에 실패하였습니다");
+                                   }
+                               });
+                           }
+                           else {
+                                printToast("계정 데이터 삭제에 실패하였습니다");
+                           }
+                        });
+            }));
+            dialog.setNegativeButton("취소", ((dialogInterface, i) -> {
+
+            }));
+            dialog.show();
+        });
 
         profile_iv.setOnClickListener(view -> {
             Dialog();
