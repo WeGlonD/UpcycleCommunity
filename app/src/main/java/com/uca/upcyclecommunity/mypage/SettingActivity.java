@@ -87,24 +87,36 @@ public class SettingActivity extends AppCompatActivity {
             dialog.setPositiveButton("예", ((dialogInterface, i) -> {
                 ProgressDialog dlg = new ProgressDialog(context);
                 dlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dlg.setTitle("로딩중...");
+                dlg.setTitle("계정 데이터 삭제중...");
                 dlg.show();
 
                 Database.getUserRoot().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
                         removeValue().addOnCompleteListener(task -> {
+                            dlg.setTitle("프로필 이미지 삭게중...");
                            if(task.isSuccessful()) {
-//                               FirebaseAuth.getInstance().getCurrentUser().
-                               FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(taskUser -> {
-                                   if(taskUser.isSuccessful()){
-                                       printToast("삭제가 완료 되었습니다...");
-                                   }
-                                   else{
-                                        printToast("계정 삭제에 실패하였습니다");
-                                   }
+                               Database.getUserProfileImageRoot().
+                                       child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
+                                       delete().addOnCompleteListener(taskProfile -> {
+                                           dlg.setTitle("계정 삭제중...");
+                                    if(taskProfile.isSuccessful()){
+                                        FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(taskUser -> {
+                                            if(taskUser.isSuccessful())
+                                                printToast("삭제가 완료 되었습니다...");
+                                            else
+                                                printToast("계정 삭제에 실패하였습니다");
+                                            dlg.dismiss();
+                                            finish();
+                                        });
+                                    }
+                                    else{
+                                        printToast("프로필 이미지 삭제에 실패하였습니다");
+                                        dlg.dismiss();
+                                    }
                                });
                            }
                            else {
                                 printToast("계정 데이터 삭제에 실패하였습니다");
+                                dlg.dismiss();
                            }
                         });
             }));
