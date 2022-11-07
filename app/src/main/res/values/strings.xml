@@ -30,8 +30,13 @@
     <string name="activity_signup_email_textView_hint">이메일</string>
     <string name="activity_signup_password_textView_hint">비밀번호(8자리 이상)</string>
     <string name="activity_signup_password_check_textView_hint">비밀번호 재확인</string>
-    <string name="activity_signup_contract_text">암튼 그런거 하지 마세요~</string>
-    <string name="activity_signup_contract_agree">위 내용에 동의합니다</string>
+    <string name="activity_signup_contract_text1">이용약관 보러가기</string>
+    <string name="activity_signup_contract_text2">개인정보 처리방침 보러가기</string>
+    <string name="activity_signup_contract_text3">위치정보 이용약관 보러가기</string>
+    <string name="activity_signup_contract_url1">https://blog.naver.com/retomoo/222922382469</string>
+    <string name="activity_signup_contract_url2">https://blog.naver.com/retomoo/222917513024</string>
+    <string name="activity_signup_contract_url3">https://blog.naver.com/retomoo/222922384974</string>
+    <string name="activity_signup_contract_agree">위 내용들을 이해하고 동의합니다</string>
     <string name="activity_signup_contract_agree_require">약관에 동의하기 바랍니다</string>
     <string name="activity_signup_signUp_button_text">회원가입</string>
     <string name="activity_signup_invalid_password">잘못된 비밀번호 입니다</string>

@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -54,6 +55,9 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password_check_et;
     private CheckBox contract_agree_cb;
     private Button signUp_btn;
+    private TextView contract_tv1;
+    private TextView contract_tv2;
+    private TextView contract_tv3;
 
     private Context mContext;
 
@@ -71,6 +75,9 @@ public class SignUpActivity extends AppCompatActivity {
         password_check_et = findViewById(R.id.activity_signup_password_check_editText);
         contract_agree_cb = findViewById(R.id.activity_signup_contract_agree_checkBox);
         signUp_btn = findViewById(R.id.activity_signup_signUp_button);
+        contract_tv1 = findViewById(R.id.activity_signup_contract_textView1);
+        contract_tv2 = findViewById(R.id.activity_signup_contract_textView2);
+        contract_tv3 = findViewById(R.id.activity_signup_contract_textView3);
 
         Database db = new Database();
         User user = new User();
@@ -160,6 +167,35 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.activity_signup_password_is_not_same), Toast.LENGTH_SHORT).show();
             }
         });
+
+        contract_tv1.setOnClickListener(view -> {
+            goToWeb_Contract(1);
+        });
+        contract_tv2.setOnClickListener(view -> {
+            goToWeb_Contract(2);
+        });
+        contract_tv3.setOnClickListener(view -> {
+            goToWeb_Contract(3);
+        });
+    }
+
+    public void goToWeb_Contract(int n){
+        String url = null;
+        switch(n){
+            case 1:
+                url = getString(R.string.activity_signup_contract_url1);
+                break;
+            case 2:
+                url = getString(R.string.activity_signup_contract_url2);
+                break;
+            case 3:
+                url = getString(R.string.activity_signup_contract_url3);
+                break;
+        }
+
+        Intent it = new Intent(Intent.ACTION_VIEW);
+        it.setData(Uri.parse(url));
+        startActivity(it);
     }
 
     public Bitmap makeBitmap(Drawable drawable){

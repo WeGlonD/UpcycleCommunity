@@ -69,7 +69,7 @@ public class MyLocation {
             if(locationList.size()>0){
                 location = locationList.get(locationList.size() - 1);
                 String markerSnippet = "위도:" + String.valueOf(location.getLatitude()) + "경도:" + String.valueOf(location.getLongitude());
-                //Log.d("WeGlonD", "onLocationResult : " + markerSnippet);
+                Log.d("WeGlonD", "onLocationResult : " + markerSnippet);
                 mCurrentLocation = location;
             }
         }
