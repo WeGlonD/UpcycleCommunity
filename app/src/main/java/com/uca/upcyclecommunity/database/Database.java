@@ -552,9 +552,7 @@ public class Database {
 
     public void readAllPost(ArrayList<Long> returnList, String category, Acts acts){
         String path = "firebase.Database.readAllPost - ";
-
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
-
         postRoot.child("posting").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 for (DataSnapshot dataSnapshot : task.getResult().getChildren()){

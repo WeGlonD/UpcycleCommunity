@@ -63,6 +63,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.uca.upcyclecommunity.recruit.recruit_list"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.uca.upcyclecommunity.ReportReason"
+            android:screenOrientation="portrait"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.uca.upcyclecommunity.fileprovider"
