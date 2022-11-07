@@ -104,6 +104,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                 holder.tags_tv.setText(value);
                             } else if (key.equals("writer")) {
                                 String value = data.getValue(String.class);
+                                holder.writerUID = value;
                                 Database.getUserRoot().child(value).child("name").get().addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         String name = task1.getResult().getValue(String.class);
@@ -204,6 +205,8 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public Button like_btn;
         public ImageView more;
 
+        public String writerUID;
+
         public LinearLayout comment_linearLayout;
         public ImageView comment_iv;
         public TextView mComment;
@@ -236,12 +239,33 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
+                            String nowUser = Database.getAuth().getCurrentUser().getUid();
                             switch (item.getItemId()){
                                 case R.id.reportpost:
                                     Toast.makeText(mContext,"Report Post clicked!",Toast.LENGTH_SHORT).show();
+                                    Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").get().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Long reportpostcnt = task.getResult().getValue(Long.class);
+                                            if (reportpostcnt == null)
+                                                reportpostcnt = 0l;
+                                            reportpostcnt++;
+                                            Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").setValue(reportpostcnt);
+                                            Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child(reportpostcnt + "").setValue(postnum);
+                                        }
+                                    });
                                     return true;
                                 case R.id.reportuser:
                                     Toast.makeText(mContext, "Report clicked!", Toast.LENGTH_SHORT).show();
+                                    Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").get().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Long reportusercnt = task.getResult().getValue(Long.class);
+                                            if (reportusercnt == null)
+                                                reportusercnt = 0l;
+                                            reportusercnt++;
+                                            Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").setValue(reportusercnt);
+                                            Database.getUserRoot().child(nowUser).child("reportuser").child(reportusercnt + "").setValue(writerUID);
+                                        }
+                                    });
                                     return true;
                                 default:
                                     return false;
