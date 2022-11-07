@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.uca.upcyclecommunity.R;
 import com.uca.upcyclecommunity.database.Database;
 import com.google.firebase.auth.FirebaseUser;
@@ -105,6 +108,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                     if (task1.isSuccessful()) {
                                         String name = task1.getResult().getValue(String.class);
                                         holder.userName.setText(name);
+                                        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                                            if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(value)){
+                                                holder.more.setVisibility(View.VISIBLE);
+                                            }
+                                        }
                                     } else {
                                         holder.userName.setText("error");
                                     }
@@ -194,6 +202,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public TextView timeStamp_tv;
         public TextView likeCnt_tv;
         public Button like_btn;
+        public ImageView more;
 
         public LinearLayout comment_linearLayout;
         public ImageView comment_iv;
@@ -218,6 +227,30 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             postPic_progressBar = view.findViewById(R.id.community2_item_post_image_progress_circular);
             tags_tv = view.findViewById(R.id.community2_item_tags_textView);
             timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
+            more = view.findViewById(R.id.more);
+            more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popupMenu = new PopupMenu(mContext, view);
+                    popupMenu.inflate(R.menu.menu_report);
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()){
+                                case R.id.reportpost:
+                                    Toast.makeText(mContext,"Report Post clicked!",Toast.LENGTH_SHORT).show();
+                                    return true;
+                                case R.id.reportuser:
+                                    Toast.makeText(mContext, "Report clicked!", Toast.LENGTH_SHORT).show();
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
 
             comment_linearLayout = view.findViewById(R.id.community2_item_clickCnt_linearLayout);
             comment_linearLayout.setOnClickListener(viw -> {
@@ -334,7 +367,6 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                     }
                 }
             });
-
             view.setOnClickListener(viw -> {
                 String postNumber = String.valueOf(listData.get(getAdapterPosition()));
                 mclickListener.mclickListener_Dialog(postNumber);
