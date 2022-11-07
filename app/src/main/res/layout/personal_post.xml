@@ -44,7 +44,7 @@
 
                     <LinearLayout
                         android:layout_marginLeft="10dp"
-                        android:layout_width="match_parent"
+                        android:layout_width="300dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
                         <TextView
@@ -66,6 +66,13 @@
 
                     </LinearLayout>
 
+                    <ImageView
+                        android:id="@+id/personal_post_report_imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_baseline_announcement_24"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

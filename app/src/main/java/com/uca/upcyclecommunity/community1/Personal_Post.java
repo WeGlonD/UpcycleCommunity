@@ -254,6 +254,8 @@ public class Personal_Post extends AppCompatActivity {
                 String Ttitle = personal_p.getTitle();
                 //Toast.makeText(context, String.valueOf(postn), Toast.LENGTH_SHORT).show();
 
+                findViewById(R.id.personal_post_report_imageView).setVisibility(View.VISIBLE);
+
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());
                 User_Id = personal_p.getUser_id();
