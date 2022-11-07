@@ -72,7 +72,8 @@
                         android:layout_height="30dp"
                         android:adjustViewBounds="true"
                         android:src="@drawable/ic_baseline_announcement_24"
-                        android:visibility="gone"/>
+                        android:visibility="gone"
+                        android:layout_marginRight="5dp"/>
 
                 </LinearLayout>
 
