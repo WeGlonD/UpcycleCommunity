@@ -47,11 +47,11 @@
     <string name="activity_setting_account_delete_button_text">계정 삭제</string>
     <string name="activity_setting_update_button_text">업데이트!</string>
 
-    <string name="activity_report_reason_1">reason1</string>
-    <string name="activity_report_reason_2">reason2</string>
-    <string name="activity_report_reason_3">reason3</string>
-    <string name="activity_report_reason_4">reason4</string>
-    <string name="activity_report_reason_5">reason5</string>
+    <string name="activity_report_reason_1">아동학대 혹은 착취</string>
+    <string name="activity_report_reason_2">음란물과 같은 성적만족을 주기 위한 콘텐츠</string>
+    <string name="activity_report_reason_3">개인이나 집단에 대한 폭력이나 증오심 조장</string>
+    <string name="activity_report_reason_4">폭발물, 총기 등의 제작방법 또는 준하는 행위</string>
+    <string name="activity_report_reason_5">기타 사유</string>
     <string name="activity_report_reason_submit">제출</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

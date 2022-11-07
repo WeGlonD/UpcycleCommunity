@@ -5,46 +5,57 @@
     android:padding="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <TextView
+        android:id="@+id/activity_report_reason_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="신고사유"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <RadioGroup
         android:id="@+id/activity_report_reason_rg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/activity_report_reason_title">
 
         <RadioButton
             android:id="@+id/activity_report_reason_1_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_report_reason_1"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
         <RadioButton
             android:id="@+id/activity_report_reason_2_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_report_reason_2"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
         <RadioButton
             android:id="@+id/activity_report_reason_3_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_report_reason_3"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
         <RadioButton
             android:id="@+id/activity_report_reason_4_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_report_reason_4"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
         <RadioButton
             android:id="@+id/activity_report_reason_5_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_report_reason_5"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
     </RadioGroup>
 
