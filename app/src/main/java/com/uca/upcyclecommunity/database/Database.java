@@ -555,89 +555,204 @@ public class Database {
 
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
 
-        postRoot.child("posting").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                for (DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    if(!(dataSnapshot.getKey().equals("totalnumber"))){
-                        Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                        Log.d("WeGlonD", postNumber+"");
-                        returnList.add(postNumber);
+        ArrayList<Long> bannedPost = new ArrayList<>();
+        ArrayList<String> bannedUser = new ArrayList<>();
+        String userUID = null;
+        if(mAuth.getCurrentUser()!=null){
+            userUID = mAuth.getCurrentUser().getUid();
+            String finalUserUID = userUID;
+            userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                if(task2.isSuccessful()){
+                    for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                            Long bannedNumber = dataSnapshot.getValue(Long.class);
+                            Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                            bannedPost.add(bannedNumber);
+                        }
                     }
-                    acts.ifSuccess(task);
-                    if (category.equals("1")){
-                        Fragment_CM1.isUpdating = false;
-                    }
-                    if (category.equals("2")){
-                        Fragment_CM2.isUpdating = false;
-                    }
-                    if (category.equals("3")){
-                        recruit_list.recruit_isUpdating = false;
-                    }
+                    userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    String bannedUserId = dataSnapshot.getValue(String.class);
+                                    Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                    bannedUser.add(bannedUserId);
+                                }
+                            }
+
+                            //여기에 코드 쓰기
+                            postRoot.child("posting").get().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()){
+                                    for (DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                                            if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                Log.d("WeGlonD", postNumber + "");
+                                                returnList.add(postNumber);
+                                            }
+                                        }
+                                        acts.ifSuccess(task);
+                                        if (category.equals("1")){
+                                            Fragment_CM1.isUpdating = false;
+                                        }
+                                        if (category.equals("2")){
+                                            Fragment_CM2.isUpdating = false;
+                                        }
+                                        if (category.equals("3")){
+                                            recruit_list.recruit_isUpdating = false;
+                                        }
+                                    }
+                                }
+                                else{
+                                    acts.ifFail(task);
+                                }
+                            });
+
+                        }
+                    });
                 }
-            }
-            else{
-                acts.ifFail(task);
-            }
-        });
+            });
+        }
+        else{
+
+        }
+
     }
 
     public void readPostsFirst(ArrayList<Long> returnList, int count, String category, Acts acts) {
         String path = "firebase.Database.readAllPost - ";
         DatabaseReference postRoot = mDBRoot.child("Post" + category);
-        postRoot.child("posting").limitToFirst(count).
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            if(!(dataSnapshot.getKey().equals("totalnumber"))){
-                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                                Log.d("WeGlonD", postNumber+"");
-                                returnList.add(postNumber);
-                                acts.ifSuccess(snapshot);
+
+        ArrayList<Long> bannedPost = new ArrayList<>();
+        ArrayList<String> bannedUser = new ArrayList<>();
+        String userUID = null;
+        if(mAuth.getCurrentUser()!=null){
+            userUID = mAuth.getCurrentUser().getUid();
+            String finalUserUID = userUID;
+            userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                if(task2.isSuccessful()){
+                    for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                            Long bannedNumber = dataSnapshot.getValue(Long.class);
+                            Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                            bannedPost.add(bannedNumber);
+                        }
+                    }
+                    userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    String bannedUserId = dataSnapshot.getValue(String.class);
+                                    Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                    bannedUser.add(bannedUserId);
+                                }
                             }
-                        }
-                        if (category.equals("1")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            Fragment_CM1.isUpdating = false;
-                        }
-                        if (category.equals("2")){
-                            //returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            Fragment_CM2.isUpdating = false;
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            //여기에 코드 쓰기
+                            postRoot.child("posting").get().addOnCompleteListener(task ->  {
+                                if(task.isSuccessful()) {
+                                    DataSnapshot res = task.getResult();
+                                    for (DataSnapshot dataSnapshot : res.getChildren()) {
+                                        if (!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                            if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                Log.d("WeGlonD", postNumber + "");
+                                                returnList.add(postNumber);
+                                                acts.ifSuccess(res);
+                                            }
+                                        }
+                                    }
+                                    if (category.equals("1")) {
+                                        returnList.add((long) -1);
+                                        acts.ifSuccess(res);
+                                        Fragment_CM1.isUpdating = false;
+                                    }
+                                    if (category.equals("2")) {
+                                        //returnList.add((long) -1);
+                                        acts.ifSuccess(res);
+                                        Fragment_CM2.isUpdating = false;
+                                    }
+                                }
+                            });
 
-                    }
-                });
+                        }
+                    });
+                }
+            });
+        }
+
+
     }
 
     public void readAllRecruit(ArrayList<Long> returnList, String postnum, int count, Acts acts) {
-        mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            if (!dataSnapshot.getKey().equals("cnt")) {
-                                Log.d("minseok",""+dataSnapshot.getValue(Long.class));
-                                returnList.add(dataSnapshot.getValue(Long.class));
-                                acts.ifSuccess(snapshot);
-                                if(returnList.size() >= count)
-                                    break;
-                            }
-                        }
-                        returnList.add(-1L);
-                        acts.ifSuccess(snapshot);
-                        recruit_list.recruit_isUpdating = false;
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+        mDBRoot.child("Post3").child("posting").get().addOnCompleteListener(task5 -> {
+            if(task5.isSuccessful()){
+                final DataSnapshot post3 = task5.getResult();
+
+                ArrayList<Long> bannedPost = new ArrayList<>();
+                ArrayList<String> bannedUser = new ArrayList<>();
+                String userUID = null;
+                if(mAuth.getCurrentUser()!=null){
+                    userUID = mAuth.getCurrentUser().getUid();
+                    String finalUserUID = userUID;
+                    userRoot.child(userUID).child("reportpost3").get().addOnCompleteListener(task2 -> {
+                        if(task2.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                    Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                    bannedPost.add(bannedNumber);
+                                }
+                            }
+                            userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                                            String bannedUserId = dataSnapshot.getValue(String.class);
+                                            Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                            bannedUser.add(bannedUserId);
+                                        }
+                                    }
+
+                                    //여기에 코드 쓰기
+                                    mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                        if (!dataSnapshot.getKey().equals("cnt")) {
+                                                            if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                                returnList.add(dataSnapshot.getValue(Long.class));
+                                                                acts.ifSuccess(snapshot);
+                                                                if (returnList.size() >= count)
+                                                                    break;
+                                                            }
+                                                        }
+                                                    }
+                                                    returnList.add(-1L);
+                                                    acts.ifSuccess(snapshot);
+                                                    recruit_list.recruit_isUpdating = false;
+                                                }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                                }
+                            });
+                        }
+                    });
+                }
+
+            }
+        });
+
     }
 
     public void readNearAllRecruit(ArrayList<Long> returnList, String postnum, int count, double MaxDistanceKm, Acts acts){
@@ -646,55 +761,98 @@ public class Database {
         nowPosition.setLatitude(MainActivity.location.getLatitude());
         nowPosition.setLongitude(MainActivity.location.getLongitude());
 
-        mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int idx = -1;
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            idx++;
-                            Log.d("weglond", dataSnapshot.getKey());
-                            if (!dataSnapshot.getKey().equals("cnt")) {
-                                int finalIdx = idx;
-                                mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class)+"").child("latitude").get().addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        double latitude = task.getResult().getValue(Double.class);
-                                        Log.d("WeGlonD", "lat "+ latitude);
-                                        mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class)+"").child("longitude").get().addOnCompleteListener(task1 -> {
-                                            if(task1.isSuccessful()){
-                                                double longitude = task1.getResult().getValue(Double.class);
-                                                Log.d("WeGlonD", "lng "+ longitude);
-                                                Location postPosition = new Location("");
-                                                postPosition.setLatitude(latitude);
-                                                postPosition.setLongitude(longitude);
-                                                if(nowPosition.distanceTo(postPosition) <= MaxDistanceKm*1000) {
-                                                    Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
-                                                    if(returnList.size() < count) {
-                                                        returnList.add(dataSnapshot.getValue(Long.class));
-                                                        acts.ifSuccess(snapshot);
-                                                    }
-                                                }
-                                                if(finalIdx == snapshot.getChildrenCount()-1) {
-                                                    Log.d("weglond", "마지막 child / -1 add");
-                                                    returnList.add(-1L);
-                                                    acts.ifSuccess(snapshot);
-                                                    recruit_list.recruit_isUpdating = false;
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                        if(idx<=0){
-                            returnList.add(-1L);
-                            acts.ifSuccess(snapshot);
-                            recruit_list.recruit_isUpdating = false;
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
+        mDBRoot.child("Post3").child("posting").get().addOnCompleteListener(task5 -> {
+           if(task5.isSuccessful()){
+               final DataSnapshot post3 = task5.getResult();
+
+               ArrayList<Long> bannedPost = new ArrayList<>();
+               ArrayList<String> bannedUser = new ArrayList<>();
+               String userUID = null;
+               if(mAuth.getCurrentUser()!=null){
+                   userUID = mAuth.getCurrentUser().getUid();
+                   String finalUserUID = userUID;
+                   userRoot.child(userUID).child("reportpost3").get().addOnCompleteListener(task2 -> {
+                       if(task2.isSuccessful()){
+                           for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                               if(!(dataSnapshot.getKey().equals("cnt"))){
+                                   Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                   Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                   bannedPost.add(bannedNumber);
+                               }
+                           }
+                           userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                               if(task1.isSuccessful()){
+                                   for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                       if(!(dataSnapshot.getKey().equals("cnt"))){
+                                           String bannedUserId = dataSnapshot.getValue(String.class);
+                                           Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                           bannedUser.add(bannedUserId);
+                                       }
+                                   }
+
+                                   //여기에 코드 쓰기
+                                   mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                                           .addListenerForSingleValueEvent(new ValueEventListener() {
+                                               @Override
+                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                   int idx = -1;
+                                                   for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                       idx++;
+                                                       Log.d("weglond", dataSnapshot.getKey());
+                                                       if (!dataSnapshot.getKey().equals("cnt")) {
+                                                           if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                                   bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                               int finalIdx = idx;
+                                                               mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class) + "").child("latitude").get().addOnCompleteListener(task -> {
+                                                                   if (task.isSuccessful()) {
+                                                                       double latitude = task.getResult().getValue(Double.class);
+                                                                       Log.d("WeGlonD", "lat " + latitude);
+                                                                       mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class) + "").child("longitude").get().addOnCompleteListener(task1 -> {
+                                                                           if (task1.isSuccessful()) {
+                                                                               double longitude = task1.getResult().getValue(Double.class);
+                                                                               Log.d("WeGlonD", "lng " + longitude);
+                                                                               Location postPosition = new Location("");
+                                                                               postPosition.setLatitude(latitude);
+                                                                               postPosition.setLongitude(longitude);
+                                                                               if (nowPosition.distanceTo(postPosition) <= MaxDistanceKm * 1000) {
+                                                                                   Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                                                   if (returnList.size() < count) {
+                                                                                       returnList.add(dataSnapshot.getValue(Long.class));
+                                                                                       acts.ifSuccess(snapshot);
+                                                                                   }
+                                                                               }
+                                                                               if (finalIdx == snapshot.getChildrenCount() - 1) {
+                                                                                   Log.d("weglond", "마지막 child / -1 add");
+                                                                                   returnList.add(-1L);
+                                                                                   acts.ifSuccess(snapshot);
+                                                                                   recruit_list.recruit_isUpdating = false;
+                                                                               }
+                                                                           }
+                                                                       });
+                                                                   }
+                                                               });
+                                                           }
+                                                       }
+                                                   }
+                                                   if(idx<=0){
+                                                       returnList.add(-1L);
+                                                       acts.ifSuccess(snapshot);
+                                                       recruit_list.recruit_isUpdating = false;
+                                                   }
+                                               }
+                                               @Override
+                                               public void onCancelled(@NonNull DatabaseError error) {}
+                                           });
+
+                               }
+                           });
+                       }
+                   });
+               }
+           }
+        });
+
+
     }
 
     public void readRecruitPostsWith(ArrayList<Long> returnList,String postnum, Long str, Long end, Acts acts) {
@@ -713,30 +871,74 @@ public class Database {
 
         Long finalEnd = end;
         Long finalStr = str;
-        postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            if(!(dataSnapshot.getKey().equals("cnt"))) {
-                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                                Log.d("WeGlonD", postNumber + "");
-                                returnList.add(postNumber);
-                                acts.ifSuccess(snapshot);
 
-                                if (returnList.size() >= firstSize+ finalEnd - finalStr)
-                                    break;
+        mDBRoot.child("Post3").child("posting").get().addOnCompleteListener(task5 -> {
+            if(task5.isSuccessful()) {
+                final DataSnapshot post3 = task5.getResult();
+
+                ArrayList<Long> bannedPost = new ArrayList<>();
+                ArrayList<String> bannedUser = new ArrayList<>();
+                String userUID = null;
+                if(mAuth.getCurrentUser()!=null){
+                    userUID = mAuth.getCurrentUser().getUid();
+                    String finalUserUID = userUID;
+                    userRoot.child(userUID).child("reportpost3").get().addOnCompleteListener(task2 -> {
+                        if(task2.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                    Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                    bannedPost.add(bannedNumber);
+                                }
                             }
-                        }
-                        returnList.add(-1L);
-                        acts.ifSuccess(snapshot);
-                        recruit_list.recruit_isUpdating = false;
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                                            String bannedUserId = dataSnapshot.getValue(String.class);
+                                            Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                            bannedUser.add(bannedUserId);
+                                        }
+                                    }
 
-                    }
-                });
+                                    //여기에 코드 쓰기
+                                    postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).
+                                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                                        if(!(dataSnapshot.getKey().equals("cnt"))) {
+                                                            if(!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                                Log.d("WeGlonD", postNumber + "");
+                                                                returnList.add(postNumber);
+                                                                acts.ifSuccess(snapshot);
+
+                                                                if (returnList.size() >= firstSize + finalEnd - finalStr)
+                                                                    break;
+                                                            }
+                                                        }
+                                                    }
+                                                    returnList.add(-1L);
+                                                    acts.ifSuccess(snapshot);
+                                                    recruit_list.recruit_isUpdating = false;
+                                                }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
     public void readNearRecruitWith(ArrayList<Long> returnList,String postnum, Long str, Long end, double MaxDistanceKm, Acts acts){
@@ -755,6 +957,46 @@ public class Database {
         String from = String.valueOf(str);
 
         int maxcnt = (int)(end - str + 1 + returnList.size());
+
+        mDBRoot.child("Post3").child("posting").get().addOnCompleteListener(task5 -> {
+            if(task5.isSuccessful()){
+                final DataSnapshot post3 = task5.getResult();
+
+                ArrayList<Long> bannedPost = new ArrayList<>();
+                ArrayList<String> bannedUser = new ArrayList<>();
+                String userUID = null;
+                if(mAuth.getCurrentUser()!=null){
+                    userUID = mAuth.getCurrentUser().getUid();
+                    String finalUserUID = userUID;
+                    userRoot.child(userUID).child("reportpost3").get().addOnCompleteListener(task2 -> {
+                        if(task2.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                    Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                    bannedPost.add(bannedNumber);
+                                }
+                            }
+                            userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                                            String bannedUserId = dataSnapshot.getValue(String.class);
+                                            Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                            bannedUser.add(bannedUserId);
+                                        }
+                                    }
+
+                                    //여기에 코드 쓰기
+
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
 
         postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).
                 addListenerForSingleValueEvent(new ValueEventListener() {
@@ -855,25 +1097,6 @@ public class Database {
                     }
                 });
 
-//        postingRoot.get().addOnCompleteListener(task -> {
-//            if(task.isSuccessful()) {
-//                for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-//                    if(!dataSnapshot.getKey().equals("totalnumber")){
-//                        double latitude = dataSnapshot.child("latitude").getValue(Double.class);
-//                        double longitude = dataSnapshot.child("longitude").getValue(Double.class);
-//                        Location postlocation = new Location("");
-//                        postlocation.setLongitude(longitude);
-//                        postlocation.setLatitude(latitude);
-//                        if(nowPosition.distanceTo(postlocation) < MaxDistanceKm*1000){
-//                            returnList.add(Long.parseLong(dataSnapshot.getKey()));
-//                        }
-//                    }
-//                    if(returnList.size() == count)
-//                        break;
-//                }
-//                acts.ifSuccess(task);
-//            }
-//        });
     }
 
     public void readPostsWith(ArrayList<Long> returnList, Long str, Long end, String category, Acts acts){
