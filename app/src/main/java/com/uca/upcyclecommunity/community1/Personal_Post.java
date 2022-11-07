@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.uca.upcyclecommunity.R;
+import com.uca.upcyclecommunity.ReportReason;
 import com.uca.upcyclecommunity.community2.community2Adapter;
 import com.uca.upcyclecommunity.database.Acts;
 import com.uca.upcyclecommunity.database.Comment;
@@ -63,6 +65,7 @@ public class Personal_Post extends AppCompatActivity {
     Context context;
     RecyclerView recruitRecycler;
     WritePostDeleting writePostDeleting;
+    ImageView Report;
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
@@ -144,7 +147,7 @@ public class Personal_Post extends AppCompatActivity {
         btn_comment = findViewById(R.id.btn_commentInput);
         recruitRecycler = findViewById(R.id.recruitPost);
         recruitRecycler.setLayoutManager(new LinearLayoutManager(context));
-
+        Report = findViewById(R.id.personal_post_report_imageView);
         if(getIntent().getStringExtra("category").equals("3")) {
             CATEGORY = "3";
             ArrayList<Long> arr = new ArrayList<>();
@@ -183,6 +186,60 @@ public class Personal_Post extends AppCompatActivity {
 
         comment_layout = findViewById(R.id.comments_layout);
 
+        Report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(context, view);
+                popupMenu.inflate(R.menu.menu_report);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        String nowUser = Database.getAuth().getCurrentUser().getUid();
+                        switch (item.getItemId()){
+                            case R.id.reportpost:
+                                Toast.makeText(context,"Report Post clicked!",Toast.LENGTH_SHORT).show();
+                                Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").get().addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Long reportpostcnt = task.getResult().getValue(Long.class);
+                                        if (reportpostcnt == null)
+                                            reportpostcnt = 0l;
+                                        reportpostcnt++;
+                                        Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").setValue(reportpostcnt);
+                                        Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child(reportpostcnt + "").setValue(postn);
+                                    }
+                                });
+                                Intent it = new Intent(context,ReportReason.class);
+                                it.putExtra("type","POST");
+                                it.putExtra("reportpost",postn+"");
+                                it.putExtra("category",CATEGORY);
+                                context.startActivity(it);
+                                return true;
+                            case R.id.reportuser:
+                                Toast.makeText(context, "Report clicked!", Toast.LENGTH_SHORT).show();
+                                Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").get().addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Long reportusercnt = task.getResult().getValue(Long.class);
+                                        if (reportusercnt == null)
+                                            reportusercnt = 0l;
+                                        reportusercnt++;
+                                        Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").setValue(reportusercnt);
+                                        Database.getUserRoot().child(nowUser).child("reportuser").child(reportusercnt + "").setValue(postArray.get(0).getUser_id());
+                                    }
+                                });
+                                Intent it2 = new Intent(context, ReportReason.class);
+                                it2.putExtra("type","USER");
+                                it2.putExtra("reportuser",postArray.get(0).getUser_id());
+                                it2.putExtra("category",CATEGORY);
+                                context.startActivity(it2);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+            }
+        });
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
