@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.uca.upcyclecommunity.R;
+import com.uca.upcyclecommunity.ReportReason;
 import com.uca.upcyclecommunity.database.Database;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -253,6 +254,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                             Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child(reportpostcnt + "").setValue(postnum);
                                         }
                                     });
+                                    Intent it = new Intent(mContext,ReportReason.class);
+                                    it.putExtra("type","POST");
+                                    it.putExtra("reportpost",postnum+"");
+                                    it.putExtra("category",CATEGORY);
+                                    mContext.startActivity(it);
                                     return true;
                                 case R.id.reportuser:
                                     Toast.makeText(mContext, "Report clicked!", Toast.LENGTH_SHORT).show();
@@ -266,6 +272,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                             Database.getUserRoot().child(nowUser).child("reportuser").child(reportusercnt + "").setValue(writerUID);
                                         }
                                     });
+                                    Intent it2 = new Intent(mContext, ReportReason.class);
+                                    it2.putExtra("type","USER");
+                                    it2.putExtra("reportuser",writerUID);
+                                    it2.putExtra("category",CATEGORY);
+                                    mContext.startActivity(it2);
                                     return true;
                                 default:
                                     return false;

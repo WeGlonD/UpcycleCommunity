@@ -9,12 +9,17 @@
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.17" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.17" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/drawable/layout_background.xml" value="0.17" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_comments.xml" value="0.1743659420289855" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_my_post1.xml" value="0.2526041666666667" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_report_reason.xml" value="0.2526041666666667" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_setting.xml" value="0.25364583333333335" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/activity_signup.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/comment_layout.xml" value="0.2526041666666667" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/community1_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/community2_item.xml" value="0.25364583333333335" />
+        <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/fragment_cm1.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/fragment_cm2.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/fragment_my_page.xml" value="0.25364583333333335" />
         <entry key="..\:/Project/UpcycleCommunity/app/src/main/res/layout/fragment_my_page_post2_.xml" value="0.25364583333333335" />
@@ -62,17 +67,12 @@
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/personal_post.xml" value="0.2210144927536232" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/post1_item.xml" value="0.17572463768115942" />
         <entry key="..\:/Project/ne/UpcycleCommunity/app/src/main/res/layout/post2_item.xml" value="0.2" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/border_and_white.xml" value="0.1255" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/border_line.xml" value="0.1255" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/border_stroke.xml" value="0.1245" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/filter_background.xml" value="0.2265" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1235" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/like_selector.xml" value="0.1255" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/selector_filter.xml" value="0.1225" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/shape_filter_clicked.xml" value="0.1225" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/drawable/shape_filter_unclicked.xml" value="0.1225" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/activity_signup.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/activity_write_post.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/brand_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/comment_item_layout.xml" value="0.536" />
@@ -86,18 +86,14 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/layout/personal_post.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/User/AndroidStudioProjects/UpcycleCommunity/app/src/main/res/menu/main_bottom_navigation.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1215" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/border_and_white.xml" value="0.1035" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/border_line.xml" value="0.136" />
+        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/border_line.xml" value="0.1585" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/community2_item_lyaout_background.xml" value="0.1585" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/filter_background.xml" value="0.1585" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/heart_shape_red.xml" value="0.1585" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/heart_shape_white.xml" value="0.1585" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.1035" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_connect_without_contact_24.xml" value="0.1035" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/ic_baseline_image_24.xml" value="0.1585" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1215" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/layout_background.xml" value="0.1215" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/like_selector.xml" value="0.1035" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/menu_selector_color.xml" value="0.1065" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/shape_filter_clicked.xml" value="0.1585" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/drawable/shape_filter_unclicked.xml" value="0.1585" />
@@ -107,14 +103,14 @@
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_comments_recyclerview_item.xml" value="0.24114583333333334" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_login.xml" value="0.24114583333333334" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_main.xml" value="0.136" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_my_post1.xml" value="0.12322274881516587" />
+        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_my_post1.xml" value="0.19519927536231885" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_setting.xml" value="0.24114583333333334" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_signup.xml" value="0.24114583333333334" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/activity_write_post.xml" value="0.2" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/brand_item.xml" value="0.24114583333333334" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/comment_item_layout.xml" value="0.24114583333333334" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/community1_item.xml" value="0.264" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/community2_item.xml" value="0.264" />
+        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/community1_item.xml" value="0.144" />
+        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/community2_item.xml" value="0.22554347826086957" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/community2_upload.xml" value="0.11727456940222898" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/dialog_uploading.xml" value="0.19519927536231885" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/fragment_brandlist.xml" value="0.24114583333333334" />
@@ -130,7 +126,6 @@
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/layout/recruit_list_layout.xml" value="0.22554347826086957" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/menu/main_bottom_navigation.xml" value="0.24114583333333334" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/menu/menu_personal_post.xml" value="0.24114583333333334" />
-        <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/menu/menu_report.xml" value="0.24010416666666667" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/menu/search_menu.xml" value="0.23743589743589744" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1215" />
         <entry key="..\:/Users/user/UpcycleCommunity/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1215" />
