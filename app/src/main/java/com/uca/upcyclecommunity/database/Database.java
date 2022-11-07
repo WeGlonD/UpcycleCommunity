@@ -614,7 +614,33 @@ public class Database {
             });
         }
         else{
-
+            postRoot.child("posting").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    for (DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                        if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                            if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                Log.d("WeGlonD", postNumber + "");
+                                returnList.add(postNumber);
+                            }
+                        }
+                        acts.ifSuccess(task);
+                        if (category.equals("1")){
+                            Fragment_CM1.isUpdating = false;
+                        }
+                        if (category.equals("2")){
+                            Fragment_CM2.isUpdating = false;
+                        }
+                        if (category.equals("3")){
+                            recruit_list.recruit_isUpdating = false;
+                        }
+                    }
+                }
+                else{
+                    acts.ifFail(task);
+                }
+            });
         }
 
     }
@@ -773,6 +799,34 @@ public class Database {
                             });
                         }
                     });
+                }
+                else{
+                    mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        if (!dataSnapshot.getKey().equals("cnt")) {
+                                            if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                returnList.add(dataSnapshot.getValue(Long.class));
+                                                acts.ifSuccess(snapshot);
+                                                if (returnList.size() >= count)
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    returnList.add(-1L);
+                                    acts.ifSuccess(snapshot);
+                                    recruit_list.recruit_isUpdating = false;
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                 }
 
             }
@@ -1014,6 +1068,36 @@ public class Database {
                             });
                         }
                     });
+                }
+                else{
+                    postRoot.child("posting").child(postnum).child("recruit").orderByValue().startAt(from).
+                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))) {
+                                            if(!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                Log.d("WeGlonD", postNumber + "");
+                                                returnList.add(postNumber);
+                                                acts.ifSuccess(snapshot);
+
+                                                if (returnList.size() >= firstSize + finalEnd - finalStr)
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    returnList.add(-1L);
+                                    acts.ifSuccess(snapshot);
+                                    recruit_list.recruit_isUpdating = false;
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                 }
             }
         });
