@@ -1251,50 +1251,133 @@ public class Database {
         Location nowPosition = new Location("");
         nowPosition.setLatitude(MainActivity.location.getLatitude());
         nowPosition.setLongitude(MainActivity.location.getLongitude());
-        postingRoot.
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            if(!(dataSnapshot.getKey().equals("totalnumber"))){
-                                double latitude = dataSnapshot.child("latitude").getValue(Double.class);
-                                double longitude = dataSnapshot.child("longitude").getValue(Double.class);
-                                Location postLocation = new Location("");
-                                postLocation.setLatitude(latitude);
-                                postLocation.setLongitude(longitude);
-                                if(nowPosition.distanceTo(postLocation) <= MaxDistanceKm*1000) {
-                                    Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                                    Log.d("WeGlonD", postNumber + "");
-                                    returnList.add(postNumber);
-                                    acts.ifSuccess(snapshot);
+
+        ArrayList<Long> bannedPost = new ArrayList<>();
+        ArrayList<String> bannedUser = new ArrayList<>();
+        String userUID = null;
+        if(mAuth.getCurrentUser()!=null){
+            userUID = mAuth.getCurrentUser().getUid();
+            String finalUserUID = userUID;
+            userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                if(task2.isSuccessful()){
+                    for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                            Long bannedNumber = dataSnapshot.getValue(Long.class);
+                            Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                            bannedPost.add(bannedNumber);
+                        }
+                    }
+                    userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    String bannedUserId = dataSnapshot.getValue(String.class);
+                                    Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                    bannedUser.add(bannedUserId);
                                 }
                             }
-                            if(returnList.size() == count)
-                                break;
-                        }
-                        if (category.equals("1")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            Fragment_CM1.isUpdating = false;
-                        }
-                        if (category.equals("2")){
-                            //returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            Fragment_CM2.isUpdating = false;
-                        }
-                        if (category.equals("3")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            recruit_list.recruit_isUpdating = false;
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            //여기에 코드 쓰기
+                            postingRoot.
+                                    addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                                if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                                                    if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                                            bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                        double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                                                        double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                                                        Location postLocation = new Location("");
+                                                        postLocation.setLatitude(latitude);
+                                                        postLocation.setLongitude(longitude);
+                                                        if (nowPosition.distanceTo(postLocation) <= MaxDistanceKm * 1000) {
+                                                            Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                            Log.d("WeGlonD", postNumber + "");
+                                                            returnList.add(postNumber);
+                                                            acts.ifSuccess(snapshot);
+                                                        }
+                                                    }
+                                                }
+                                                if(returnList.size() == count)
+                                                    break;
+                                            }
+                                            if (category.equals("1")){
+                                                returnList.add((long) -1);
+                                                acts.ifSuccess(snapshot);
+                                                Fragment_CM1.isUpdating = false;
+                                            }
+                                            if (category.equals("2")){
+                                                //returnList.add((long) -1);
+                                                acts.ifSuccess(snapshot);
+                                                Fragment_CM2.isUpdating = false;
+                                            }
+                                            if (category.equals("3")){
+                                                returnList.add((long) -1);
+                                                acts.ifSuccess(snapshot);
+                                                recruit_list.recruit_isUpdating = false;
+                                            }
+                                        }
 
-                    }
-                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
+                                        }
+                                    });
+
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            postingRoot.
+                    addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                if(!(dataSnapshot.getKey().equals("totalnumber"))){
+                                    if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                            bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                        double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                                        double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                                        Location postLocation = new Location("");
+                                        postLocation.setLatitude(latitude);
+                                        postLocation.setLongitude(longitude);
+                                        if (nowPosition.distanceTo(postLocation) <= MaxDistanceKm * 1000) {
+                                            Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                            Log.d("WeGlonD", postNumber + "");
+                                            returnList.add(postNumber);
+                                            acts.ifSuccess(snapshot);
+                                        }
+                                    }
+                                }
+                                if(returnList.size() == count)
+                                    break;
+                            }
+                            if (category.equals("1")){
+                                returnList.add((long) -1);
+                                acts.ifSuccess(snapshot);
+                                Fragment_CM1.isUpdating = false;
+                            }
+                            if (category.equals("2")){
+                                //returnList.add((long) -1);
+                                acts.ifSuccess(snapshot);
+                                Fragment_CM2.isUpdating = false;
+                            }
+                            if (category.equals("3")){
+                                returnList.add((long) -1);
+                                acts.ifSuccess(snapshot);
+                                recruit_list.recruit_isUpdating = false;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+        }
     }
 
     public void readPostsWith(ArrayList<Long> returnList, Long str, Long end, String category, Acts acts){
@@ -1317,42 +1400,119 @@ public class Database {
 
 //        Toast.makeText(context, from+" "+to, Toast.LENGTH_LONG).show();
 
-        postRoot.child("posting").orderByKey().startAt(from).
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            if(!(dataSnapshot.getKey().equals("totalnumber"))) {
-                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                                Log.d("WeGlonD", postNumber + "");
-                                returnList.add(postNumber);
-                                acts.ifSuccess(snapshot);
+        ArrayList<Long> bannedPost = new ArrayList<>();
+        ArrayList<String> bannedUser = new ArrayList<>();
+        String userUID = null;
+        if(mAuth.getCurrentUser()!=null){
+            userUID = mAuth.getCurrentUser().getUid();
+            String finalUserUID = userUID;
+            userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                if(task2.isSuccessful()){
+                    for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                            Long bannedNumber = dataSnapshot.getValue(Long.class);
+                            Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                            bannedPost.add(bannedNumber);
+                        }
+                    }
+                    userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    String bannedUserId = dataSnapshot.getValue(String.class);
+                                    Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                    bannedUser.add(bannedUserId);
+                                }
+                            }
 
-                                if (returnList.size() == maxcnt)
-                                    break;
+                            //여기에 코드 쓰기
+                            postRoot.child("posting").orderByKey().startAt(from).
+                                    addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                                if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                                    if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                                            bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                        Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                        Log.d("WeGlonD", postNumber + "");
+                                                        returnList.add(postNumber);
+                                                        acts.ifSuccess(snapshot);
+
+                                                        if (returnList.size() == maxcnt)
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                            if (category.equals("1")){
+                                                returnList.add((long) -1);
+                                                acts.ifSuccess(snapshot);
+                                                Fragment_CM1.isUpdating = false;
+                                            }
+                                            if (category.equals("2")){
+                                                //returnList.add((long) -1);
+                                                //acts.ifSuccess(snapshot);
+                                                Fragment_CM2.isUpdating = false;
+                                            }
+                                            if (category.equals("3")){
+                                                returnList.add((long) -1);
+                                                recruit_list.recruit_isUpdating = false;
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            postRoot.child("posting").orderByKey().startAt(from).
+                    addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                    if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                            bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                        Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                        Log.d("WeGlonD", postNumber + "");
+                                        returnList.add(postNumber);
+                                        acts.ifSuccess(snapshot);
+
+                                        if (returnList.size() == maxcnt)
+                                            break;
+                                    }
+                                }
+                            }
+                            if (category.equals("1")){
+                                returnList.add((long) -1);
+                                acts.ifSuccess(snapshot);
+                                Fragment_CM1.isUpdating = false;
+                            }
+                            if (category.equals("2")){
+                                //returnList.add((long) -1);
+                                //acts.ifSuccess(snapshot);
+                                Fragment_CM2.isUpdating = false;
+                            }
+                            if (category.equals("3")){
+                                returnList.add((long) -1);
+                                recruit_list.recruit_isUpdating = false;
                             }
                         }
-                        if (category.equals("1")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            Fragment_CM1.isUpdating = false;
-                        }
-                        if (category.equals("2")){
-                            //returnList.add((long) -1);
-                            //acts.ifSuccess(snapshot);
-                            Fragment_CM2.isUpdating = false;
-                        }
-                        if (category.equals("3")){
-                            returnList.add((long) -1);
-                            recruit_list.recruit_isUpdating = false;
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+        }
+
     }
 
     public void readNearPostsWith(ArrayList<Long> returnList, Long str, Long end, Double MaxDistanceKm, String category, Acts acts){
@@ -1383,51 +1543,134 @@ public class Database {
 
 //        Toast.makeText(context, from+" "+to, Toast.LENGTH_LONG).show();
 
-        postRoot.child("posting").orderByKey().startAt(from).
-                addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            Log.d("WeGlonD", dataSnapshot.toString());
-                            if(!(dataSnapshot.getKey().equals("totalnumber"))) {
-                                double latitude = dataSnapshot.child("latitude").getValue(Double.class);
-                                double longitude = dataSnapshot.child("longitude").getValue(Double.class);
-                                Location postLocation = new Location("");
-                                postLocation.setLatitude(latitude);
-                                postLocation.setLongitude(longitude);
-                                if(nowPosition.distanceTo(postLocation) <= MaxDistanceKm*1000) {
-                                    Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                                    Log.d("WeGlonD", postNumber + "");
-                                    returnList.add(postNumber);
-                                    acts.ifSuccess(snapshot);
+        ArrayList<Long> bannedPost = new ArrayList<>();
+        ArrayList<String> bannedUser = new ArrayList<>();
+        String userUID = null;
+        if(mAuth.getCurrentUser()!=null){
+            userUID = mAuth.getCurrentUser().getUid();
+            String finalUserUID = userUID;
+            userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                if(task2.isSuccessful()){
+                    for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                            Long bannedNumber = dataSnapshot.getValue(Long.class);
+                            Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                            bannedPost.add(bannedNumber);
+                        }
+                    }
+                    userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    String bannedUserId = dataSnapshot.getValue(String.class);
+                                    Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                    bannedUser.add(bannedUserId);
                                 }
                             }
-                            if(returnList.size() == maxcnt)
-                                break;
-                        }
-                        if (category.equals("1")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            Fragment_CM1.isUpdating = false;
-                        }
-                        if (category.equals("2")){
-                            //returnList.add((long) -1);
-                            //acts.ifSuccess(snapshot);
-                            Fragment_CM2.isUpdating = false;
-                        }
-                        if (category.equals("3")){
-                            returnList.add((long) -1);
-                            acts.ifSuccess(snapshot);
-                            recruit_list.recruit_isUpdating = false;
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            //여기에 코드 쓰기
+                            postRoot.child("posting").orderByKey().startAt(from).
+                                    addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                                Log.d("WeGlonD", dataSnapshot.toString());
+                                                if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                                    if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                                            bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                        double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                                                        double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                                                        Location postLocation = new Location("");
+                                                        postLocation.setLatitude(latitude);
+                                                        postLocation.setLongitude(longitude);
+                                                        if (nowPosition.distanceTo(postLocation) <= MaxDistanceKm * 1000) {
+                                                            Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                                            Log.d("WeGlonD", postNumber + "");
+                                                            returnList.add(postNumber);
+                                                            acts.ifSuccess(snapshot);
+                                                        }
+                                                    }
+                                                }
+                                                if(returnList.size() == maxcnt)
+                                                    break;
+                                            }
+                                            if (category.equals("1")){
+                                                returnList.add((long) -1);
+                                                acts.ifSuccess(snapshot);
+                                                Fragment_CM1.isUpdating = false;
+                                            }
+                                            if (category.equals("2")){
+                                                //returnList.add((long) -1);
+                                                //acts.ifSuccess(snapshot);
+                                                Fragment_CM2.isUpdating = false;
+                                            }
+                                            if (category.equals("3")){
+                                                returnList.add((long) -1);
+                                                acts.ifSuccess(snapshot);
+                                                recruit_list.recruit_isUpdating = false;
+                                            }
+                                        }
 
-                    }
-                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
+                                        }
+                                    });
+
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            postRoot.child("posting").orderByKey().startAt(from).
+                    addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                Log.d("WeGlonD", dataSnapshot.toString());
+                                if(!(dataSnapshot.getKey().equals("totalnumber"))) {
+                                    if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                            bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                        double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                                        double longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                                        Location postLocation = new Location("");
+                                        postLocation.setLatitude(latitude);
+                                        postLocation.setLongitude(longitude);
+                                        if (nowPosition.distanceTo(postLocation) <= MaxDistanceKm * 1000) {
+                                            Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                            Log.d("WeGlonD", postNumber + "");
+                                            returnList.add(postNumber);
+                                            acts.ifSuccess(snapshot);
+                                        }
+                                    }
+                                }
+                                if(returnList.size() == maxcnt)
+                                    break;
+                            }
+                            if (category.equals("1")){
+                                returnList.add((long) -1);
+                                acts.ifSuccess(snapshot);
+                                Fragment_CM1.isUpdating = false;
+                            }
+                            if (category.equals("2")){
+                                //returnList.add((long) -1);
+                                //acts.ifSuccess(snapshot);
+                                Fragment_CM2.isUpdating = false;
+                            }
+                            if (category.equals("3")){
+                                returnList.add((long) -1);
+                                acts.ifSuccess(snapshot);
+                                recruit_list.recruit_isUpdating = false;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+        }
     }
 
     public void readName(ArrayList<Long> returnList, String keyword, String category, Acts acts){
@@ -1437,30 +1680,102 @@ public class Database {
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference titleRoot = postRoot.child("Title");
 
-        titleRoot.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    String post_title = dataSnapshot.getKey();
-                    Log.d("minseok", "readName - post_title : "+post_title);
-                    Log.d("minseok", "readName - keyword : "+keyword);
-                    if(post_title.contains(keyword)){
-                        Log.d("minseok", "readName - contains True");
-                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                            Log.d("minseok", "readName - datasnapshot1 Key : "+dataSnapshot1.getKey());
-                            if(!dataSnapshot1.getKey().equals("cnt")){
-                                returnList.add(dataSnapshot1.getValue(Long.class));
-                                Log.d("minseok", "readName - datasnapshot1 Key NOT EQUALS cnt");
+        postRoot.child("posting").get().addOnCompleteListener(task5 -> {
+            if(task5.isSuccessful()){
+                final DataSnapshot postN = task5.getResult();
+
+                ArrayList<Long> bannedPost = new ArrayList<>();
+                ArrayList<String> bannedUser = new ArrayList<>();
+                String userUID = null;
+                if(mAuth.getCurrentUser()!=null){
+                    userUID = mAuth.getCurrentUser().getUid();
+                    String finalUserUID = userUID;
+                    userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                        if(task2.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                    Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                    bannedPost.add(bannedNumber);
+                                }
                             }
+                            userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                                            String bannedUserId = dataSnapshot.getValue(String.class);
+                                            Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                            bannedUser.add(bannedUserId);
+                                        }
+                                    }
+
+                                    //여기에 코드 쓰기
+                                    titleRoot.get().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()){
+                                            for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                                String post_title = dataSnapshot.getKey();
+                                                Log.d("minseok", "readName - post_title : "+post_title);
+                                                Log.d("minseok", "readName - keyword : "+keyword);
+                                                if(post_title.contains(keyword)){
+                                                    Log.d("minseok", "readName - contains True");
+                                                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                                        Log.d("minseok", "readName - datasnapshot1 Key : "+dataSnapshot1.getKey());
+                                                        if(!dataSnapshot1.getKey().equals("cnt")){
+                                                            if(!(bannedUser.contains(postN.child(dataSnapshot1.getValue(Long.class)+"").child("writer").getValue(String.class)) ||
+                                                                    bannedPost.contains(dataSnapshot1.getValue(Long.class)))) {
+                                                                returnList.add(dataSnapshot1.getValue(Long.class));
+                                                                Log.d("minseok", "readName - datasnapshot1 Key NOT EQUALS cnt");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            acts.ifSuccess(task);
+                                        }
+                                        else{
+                                            acts.ifFail(task);
+                                            return;
+                                        }
+                                    });
+
+                                }
+                            });
                         }
-                    }
+                    });
                 }
-                acts.ifSuccess(task);
-            }
-            else{
-                acts.ifFail(task);
-                return;
+                else{
+                    titleRoot.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                String post_title = dataSnapshot.getKey();
+                                Log.d("minseok", "readName - post_title : "+post_title);
+                                Log.d("minseok", "readName - keyword : "+keyword);
+                                if(post_title.contains(keyword)){
+                                    Log.d("minseok", "readName - contains True");
+                                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                        Log.d("minseok", "readName - datasnapshot1 Key : "+dataSnapshot1.getKey());
+                                        if(!dataSnapshot1.getKey().equals("cnt")){
+                                            if(!(bannedUser.contains(postN.child(dataSnapshot1.getValue(Long.class)+"").child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(dataSnapshot1.getValue(Long.class)))) {
+                                                returnList.add(dataSnapshot1.getValue(Long.class));
+                                                Log.d("minseok", "readName - datasnapshot1 Key NOT EQUALS cnt");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            acts.ifSuccess(task);
+                        }
+                        else{
+                            acts.ifFail(task);
+                            return;
+                        }
+                    });
+                }
             }
         });
+
+
     }
 
     public void readTag(ArrayList<Long> returnList, String keyword, String category, Acts acts){
@@ -1469,25 +1784,92 @@ public class Database {
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference tagRoot = postRoot.child("Tag");
 
-        tagRoot.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                    String post_tag = dataSnapshot.getKey();
-                    if(post_tag.contains(keyword)){
-                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                            if(!dataSnapshot1.getKey().equals("cnt")){
-                                Long tmp = dataSnapshot1.getValue(Long.class);
-                                if(!returnList.contains(tmp))
-                                    returnList.add(tmp);
+        postRoot.child("posting").get().addOnCompleteListener(task5 -> {
+            if(task5.isSuccessful()){
+                final DataSnapshot postN = task5.getResult();
+
+                ArrayList<Long> bannedPost = new ArrayList<>();
+                ArrayList<String> bannedUser = new ArrayList<>();
+                String userUID = null;
+                if(mAuth.getCurrentUser()!=null){
+                    userUID = mAuth.getCurrentUser().getUid();
+                    String finalUserUID = userUID;
+                    userRoot.child(userUID).child("reportpost"+category).get().addOnCompleteListener(task2 -> {
+                        if(task2.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                    Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                    bannedPost.add(bannedNumber);
+                                }
                             }
+                            userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                                            String bannedUserId = dataSnapshot.getValue(String.class);
+                                            Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                            bannedUser.add(bannedUserId);
+                                        }
+                                    }
+
+                                    //여기에 코드 쓰기
+                                    tagRoot.get().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()){
+                                            for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                                String post_tag = dataSnapshot.getKey();
+                                                if(post_tag.contains(keyword)){
+                                                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                                        if(!dataSnapshot1.getKey().equals("cnt")){
+                                                            if(!(bannedUser.contains(postN.child(dataSnapshot1.getValue(Long.class)+"").child("writer").getValue(String.class)) ||
+                                                                    bannedPost.contains(dataSnapshot1.getValue(Long.class)))) {
+                                                                Long tmp = dataSnapshot1.getValue(Long.class);
+                                                                if (!returnList.contains(tmp))
+                                                                    returnList.add(tmp);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            acts.ifSuccess(task);
+                                        }
+                                        else{
+                                            acts.ifFail(task);
+                                            return;
+                                        }
+                                    });
+
+                                }
+                            });
                         }
-                    }
+                    });
                 }
-                acts.ifSuccess(task);
-            }
-            else{
-                acts.ifFail(task);
-                return;
+                else{
+                    tagRoot.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                String post_tag = dataSnapshot.getKey();
+                                if(post_tag.contains(keyword)){
+                                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                        if(!dataSnapshot1.getKey().equals("cnt")){
+                                            if(!(bannedUser.contains(postN.child(dataSnapshot1.getValue(Long.class)+"").child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(dataSnapshot1.getValue(Long.class)))) {
+                                                Long tmp = dataSnapshot1.getValue(Long.class);
+                                                if (!returnList.contains(tmp))
+                                                    returnList.add(tmp);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            acts.ifSuccess(task);
+                        }
+                        else{
+                            acts.ifFail(task);
+                            return;
+                        }
+                    });
+                }
             }
         });
     }
