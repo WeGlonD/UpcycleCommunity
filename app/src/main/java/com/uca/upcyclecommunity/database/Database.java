@@ -841,136 +841,136 @@ public class Database {
         nowPosition.setLongitude(MainActivity.location.getLongitude());
 
         mDBRoot.child("Post3").child("posting").get().addOnCompleteListener(task5 -> {
-           if(task5.isSuccessful()){
-               final DataSnapshot post3 = task5.getResult();
+            if(task5.isSuccessful()){
+                final DataSnapshot post3 = task5.getResult();
 
-               ArrayList<Long> bannedPost = new ArrayList<>();
-               ArrayList<String> bannedUser = new ArrayList<>();
-               String userUID = null;
-               if(mAuth.getCurrentUser()!=null){
-                   userUID = mAuth.getCurrentUser().getUid();
-                   String finalUserUID = userUID;
-                   userRoot.child(userUID).child("reportpost3").get().addOnCompleteListener(task2 -> {
-                       if(task2.isSuccessful()){
-                           for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
-                               if(!(dataSnapshot.getKey().equals("cnt"))){
-                                   Long bannedNumber = dataSnapshot.getValue(Long.class);
-                                   Log.d("WeGlonD", "Banned Post : " + bannedNumber);
-                                   bannedPost.add(bannedNumber);
-                               }
-                           }
-                           userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
-                               if(task1.isSuccessful()){
-                                   for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
-                                       if(!(dataSnapshot.getKey().equals("cnt"))){
-                                           String bannedUserId = dataSnapshot.getValue(String.class);
-                                           Log.d("WeGlonD", "Banned User : " + bannedUserId);
-                                           bannedUser.add(bannedUserId);
-                                       }
-                                   }
+                ArrayList<Long> bannedPost = new ArrayList<>();
+                ArrayList<String> bannedUser = new ArrayList<>();
+                String userUID = null;
+                if(mAuth.getCurrentUser()!=null){
+                    userUID = mAuth.getCurrentUser().getUid();
+                    String finalUserUID = userUID;
+                    userRoot.child(userUID).child("reportpost3").get().addOnCompleteListener(task2 -> {
+                        if(task2.isSuccessful()){
+                            for(DataSnapshot dataSnapshot : task2.getResult().getChildren()){
+                                if(!(dataSnapshot.getKey().equals("cnt"))){
+                                    Long bannedNumber = dataSnapshot.getValue(Long.class);
+                                    Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                                    bannedPost.add(bannedNumber);
+                                }
+                            }
+                            userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(DataSnapshot dataSnapshot : task1.getResult().getChildren()){
+                                        if(!(dataSnapshot.getKey().equals("cnt"))){
+                                            String bannedUserId = dataSnapshot.getValue(String.class);
+                                            Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                            bannedUser.add(bannedUserId);
+                                        }
+                                    }
 
-                                   //여기에 코드 쓰기
-                                   mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
-                                           .addListenerForSingleValueEvent(new ValueEventListener() {
-                                               @Override
-                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                   int idx = -1;
-                                                   for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                                       idx++;
-                                                       Log.d("weglond", dataSnapshot.getKey());
-                                                       if (!dataSnapshot.getKey().equals("cnt")) {
-                                                           if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                                   bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
-                                                               int finalIdx = idx;
+                                    //여기에 코드 쓰기
+                                    mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    int idx = -1;
+                                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                        idx++;
+                                                        Log.d("weglond", dataSnapshot.getKey());
+                                                        if (!dataSnapshot.getKey().equals("cnt")) {
+                                                            if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                int finalIdx = idx;
 
-                                                               double latitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("latitude").getValue(Double.class);
-                                                               Log.d("WeGlonD", "lat " + latitude);
+                                                                double latitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("latitude").getValue(Double.class);
+                                                                Log.d("WeGlonD", "lat " + latitude);
 
-                                                               double longitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("longitude").getValue(Double.class);
-                                                               Log.d("WeGlonD", "lng " + longitude);
-                                                               Location postPosition = new Location("");
-                                                               postPosition.setLatitude(latitude);
-                                                               postPosition.setLongitude(longitude);
-                                                               if (nowPosition.distanceTo(postPosition) <= MaxDistanceKm * 1000) {
-                                                                   Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
-                                                                   if (returnList.size() < count) {
-                                                                       returnList.add(dataSnapshot.getValue(Long.class));
-                                                                       acts.ifSuccess(snapshot);
-                                                                   }
-                                                               }
-                                                               if (finalIdx == snapshot.getChildrenCount() - 1) {
-                                                                   Log.d("weglond", "마지막 child / -1 add");
-                                                                   returnList.add(-1L);
-                                                                   acts.ifSuccess(snapshot);
-                                                                   recruit_list.recruit_isUpdating = false;
-                                                               }
-                                                           }
-                                                       }
-                                                   }
-                                                   if(idx<=0){
-                                                       returnList.add(-1L);
-                                                       acts.ifSuccess(snapshot);
-                                                       recruit_list.recruit_isUpdating = false;
-                                                   }
-                                               }
-                                               @Override
-                                               public void onCancelled(@NonNull DatabaseError error) {}
-                                           });
+                                                                double longitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("longitude").getValue(Double.class);
+                                                                Log.d("WeGlonD", "lng " + longitude);
+                                                                Location postPosition = new Location("");
+                                                                postPosition.setLatitude(latitude);
+                                                                postPosition.setLongitude(longitude);
+                                                                if (nowPosition.distanceTo(postPosition) <= MaxDistanceKm * 1000) {
+                                                                    Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                                    if (returnList.size() < count) {
+                                                                        returnList.add(dataSnapshot.getValue(Long.class));
+                                                                        acts.ifSuccess(snapshot);
+                                                                    }
+                                                                }
+                                                                if (finalIdx == snapshot.getChildrenCount() - 1) {
+                                                                    Log.d("weglond", "마지막 child / -1 add");
+                                                                    returnList.add(-1L);
+                                                                    acts.ifSuccess(snapshot);
+                                                                    recruit_list.recruit_isUpdating = false;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if(idx<=0){
+                                                        returnList.add(-1L);
+                                                        acts.ifSuccess(snapshot);
+                                                        recruit_list.recruit_isUpdating = false;
+                                                    }
+                                                }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {}
+                                            });
 
-                               }
-                           });
-                       }
-                   });
-               }
-               else{
-                   mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
-                           .addListenerForSingleValueEvent(new ValueEventListener() {
-                               @Override
-                               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                   int idx = -1;
-                                   for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                       idx++;
-                                       Log.d("weglond", dataSnapshot.getKey());
-                                       if (!dataSnapshot.getKey().equals("cnt")) {
-                                           if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                   bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
-                                               int finalIdx = idx;
+                                }
+                            });
+                        }
+                    });
+                }
+                else{
+                    mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int idx = -1;
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        idx++;
+                                        Log.d("weglond", dataSnapshot.getKey());
+                                        if (!dataSnapshot.getKey().equals("cnt")) {
+                                            if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                int finalIdx = idx;
 
-                                               double latitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("latitude").getValue(Double.class);
-                                               Log.d("WeGlonD", "lat " + latitude);
+                                                double latitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("latitude").getValue(Double.class);
+                                                Log.d("WeGlonD", "lat " + latitude);
 
-                                               double longitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("longitude").getValue(Double.class);
-                                               Log.d("WeGlonD", "lng " + longitude);
-                                               Location postPosition = new Location("");
-                                               postPosition.setLatitude(latitude);
-                                               postPosition.setLongitude(longitude);
-                                               if (nowPosition.distanceTo(postPosition) <= MaxDistanceKm * 1000) {
-                                                   Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
-                                                   if (returnList.size() < count) {
-                                                       returnList.add(dataSnapshot.getValue(Long.class));
-                                                       acts.ifSuccess(snapshot);
-                                                   }
-                                               }
-                                               if (finalIdx == snapshot.getChildrenCount() - 1) {
-                                                   Log.d("weglond", "마지막 child / -1 add");
-                                                   returnList.add(-1L);
-                                                   acts.ifSuccess(snapshot);
-                                                   recruit_list.recruit_isUpdating = false;
-                                               }
-                                           }
-                                       }
-                                   }
-                                   if(idx<=0){
-                                       returnList.add(-1L);
-                                       acts.ifSuccess(snapshot);
-                                       recruit_list.recruit_isUpdating = false;
-                                   }
-                               }
-                               @Override
-                               public void onCancelled(@NonNull DatabaseError error) {}
-                           });
-               }
-           }
+                                                double longitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("longitude").getValue(Double.class);
+                                                Log.d("WeGlonD", "lng " + longitude);
+                                                Location postPosition = new Location("");
+                                                postPosition.setLatitude(latitude);
+                                                postPosition.setLongitude(longitude);
+                                                if (nowPosition.distanceTo(postPosition) <= MaxDistanceKm * 1000) {
+                                                    Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                    if (returnList.size() < count) {
+                                                        returnList.add(dataSnapshot.getValue(Long.class));
+                                                        acts.ifSuccess(snapshot);
+                                                    }
+                                                }
+                                                if (finalIdx == snapshot.getChildrenCount() - 1) {
+                                                    Log.d("weglond", "마지막 child / -1 add");
+                                                    returnList.add(-1L);
+                                                    acts.ifSuccess(snapshot);
+                                                    recruit_list.recruit_isUpdating = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(idx<=0){
+                                        returnList.add(-1L);
+                                        acts.ifSuccess(snapshot);
+                                        recruit_list.recruit_isUpdating = false;
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {}
+                            });
+                }
+            }
         });
 
 

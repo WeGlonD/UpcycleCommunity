@@ -455,6 +455,7 @@ public class MainActivity extends AppCompatActivity {
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
+
                 if(currentTab == 1){
                     CommunityRecycler = findViewById(R.id.title_community2);
                     nosearch = findViewById(R.id.no_search);
@@ -484,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
-            ///검색을 실행하던 도중 뒤로가기 하면 콜랍스 함수가 실행되지만 익스팬더블이 뜨려고 했지만 검색에 검색 중이던 함수가 다시 작동이 되서 어댑터에 리사이클류 그게 뜨지 않고 오류가 발생
+            ///검색을 실행하던 도중 뒤로가기 하면 콜랍스 함수가 실행되지만 익스팬더블이 뜨려고 했지만 검색에 검색 중이던 함수가 다시 작동이 돼서 어댑터에 리사이클류 그게 뜨지 않고 오류가 발생
             /// 콜랩스 함수가 시작되면 무조건 입력중이던 함수는 적용안되게 수정함
 
             //검색이 종료되었을 때
@@ -548,22 +549,41 @@ public class MainActivity extends AppCompatActivity {
         db.readName(searched, keyword, category+"", new Acts() {
             @Override
             public void ifSuccess(Object task) {
-                if (searched != null) {
-                    Log.d("minseok", "searchName - ifSuccess - searched is NOT null");
-                    if(keyword.equals("")||searched.size()==0){
-                        CommunityRecycler.setVisibility(View.GONE);
-                        nosearch.setVisibility(View.VISIBLE);
-                        //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
-                    }
-                    else{
-                        CommunityRecycler.setVisibility(View.VISIBLE);
-                        nosearch.setVisibility(View.GONE);
-                        if(currentTab == 1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
-                        else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched, mainContext));
-                    }
+                if(!searching){
+                    Database db = new Database(mainContext);
+                    ArrayList<Long> listData = new ArrayList<>();
+                    db.readAllPost(listData, category+"", new Acts() {
+                        @Override
+                        public void ifSuccess(Object task) {
+                            if(currentTab == 1)CommunityRecycler.setAdapter(new community2Adapter(listData,mainContext,mclickListener));
+                            else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(listData, mainContext));
+                        }
+
+                        @Override
+                        public void ifFail(Object task) {
+                            Toast.makeText(mainContext, "error", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    });
                 }
                 else{
-                    Log.d("minseok", "searchName - ifSuccess - searched is null");
+                    if (searched != null) {
+                        Log.d("minseok", "searchName - ifSuccess - searched is NOT null");
+                        if(keyword.equals("")||searched.size()==0){
+                            CommunityRecycler.setVisibility(View.GONE);
+                            nosearch.setVisibility(View.VISIBLE);
+                            //CommunityRecycler.setAdapter(new communityAdapter(searched,mainContext));
+                        }
+                        else{
+                            CommunityRecycler.setVisibility(View.VISIBLE);
+                            nosearch.setVisibility(View.GONE);
+                            if(currentTab == 1)CommunityRecycler.setAdapter(new community2Adapter(searched,mainContext,mclickListener));
+                            else if(currentTab==2)CommunityRecycler.setAdapter(new communityAdapter(searched, mainContext));
+                        }
+                    }
+                    else{
+                        Log.d("minseok", "searchName - ifSuccess - searched is null");
+                    }
                 }
             }
 
