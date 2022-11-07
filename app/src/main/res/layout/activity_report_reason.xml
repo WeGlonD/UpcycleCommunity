@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RadioGroup
+        android:id="@+id/activity_report_reason_rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/activity_report_reason_1_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_report_reason_1"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/activity_report_reason_2_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_report_reason_2"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/activity_report_reason_3_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_report_reason_3"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/activity_report_reason_4_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_report_reason_4"
+            android:textSize="20sp"/>
+
+        <RadioButton
+            android:id="@+id/activity_report_reason_5_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_report_reason_5"
+            android:textSize="20sp"/>
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/activity_report_reason_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/activity_report_reason_rg" />
+
+    <Button
+        android:id="@+id/activity_report_reason_submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_report_reason_submit"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
