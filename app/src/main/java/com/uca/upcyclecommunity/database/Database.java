@@ -681,8 +681,34 @@ public class Database {
                 }
             });
         }
-
-
+        else{
+            postRoot.child("posting").get().addOnCompleteListener(task ->  {
+                if(task.isSuccessful()) {
+                    DataSnapshot res = task.getResult();
+                    for (DataSnapshot dataSnapshot : res.getChildren()) {
+                        if (!(dataSnapshot.getKey().equals("totalnumber"))) {
+                            if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                Long postNumber = Long.parseLong(dataSnapshot.getKey());
+                                Log.d("WeGlonD", postNumber + "");
+                                returnList.add(postNumber);
+                                acts.ifSuccess(res);
+                            }
+                        }
+                    }
+                    if (category.equals("1")) {
+                        returnList.add((long) -1);
+                        acts.ifSuccess(res);
+                        Fragment_CM1.isUpdating = false;
+                    }
+                    if (category.equals("2")) {
+                        //returnList.add((long) -1);
+                        acts.ifSuccess(res);
+                        Fragment_CM2.isUpdating = false;
+                    }
+                }
+            });
+        }
     }
 
     public void readAllRecruit(ArrayList<Long> returnList, String postnum, int count, Acts acts) {
@@ -847,6 +873,61 @@ public class Database {
                            });
                        }
                    });
+               }
+               else{
+                   mDBRoot.child("Post2").child("posting").child(postnum).child("recruit").orderByValue()
+                           .addListenerForSingleValueEvent(new ValueEventListener() {
+                               @Override
+                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                   int idx = -1;
+                                   for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                       idx++;
+                                       Log.d("weglond", dataSnapshot.getKey());
+                                       if (!dataSnapshot.getKey().equals("cnt")) {
+                                           if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
+                                                   bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                               int finalIdx = idx;
+                                               mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class) + "").child("latitude").get().addOnCompleteListener(task -> {
+                                                   if (task.isSuccessful()) {
+                                                       double latitude = task.getResult().getValue(Double.class);
+                                                       Log.d("WeGlonD", "lat " + latitude);
+                                                       mDBRoot.child("Post3").child("posting").child(dataSnapshot.getValue(Long.class) + "").child("longitude").get().addOnCompleteListener(task1 -> {
+                                                           if (task1.isSuccessful()) {
+                                                               double longitude = task1.getResult().getValue(Double.class);
+                                                               Log.d("WeGlonD", "lng " + longitude);
+                                                               Location postPosition = new Location("");
+                                                               postPosition.setLatitude(latitude);
+                                                               postPosition.setLongitude(longitude);
+                                                               if (nowPosition.distanceTo(postPosition) <= MaxDistanceKm * 1000) {
+                                                                   Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
+                                                                   if (returnList.size() < count) {
+                                                                       returnList.add(dataSnapshot.getValue(Long.class));
+                                                                       acts.ifSuccess(snapshot);
+                                                                   }
+                                                               }
+                                                               if (finalIdx == snapshot.getChildrenCount() - 1) {
+                                                                   Log.d("weglond", "마지막 child / -1 add");
+                                                                   returnList.add(-1L);
+                                                                   acts.ifSuccess(snapshot);
+                                                                   recruit_list.recruit_isUpdating = false;
+                                                               }
+                                                           }
+                                                       });
+                                                   }
+                                               });
+                                           }
+                                       }
+                                   }
+                                   if(idx<=0){
+                                       returnList.add(-1L);
+                                       acts.ifSuccess(snapshot);
+                                       recruit_list.recruit_isUpdating = false;
+                                   }
+                               }
+                               @Override
+                               public void onCancelled(@NonNull DatabaseError error) {}
+                           });
+
                }
            }
         });
