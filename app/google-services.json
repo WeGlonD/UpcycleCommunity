@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:590459379270:android:c5d6efd89ba500f4d33447",
         "android_client_info": {
-          "package_name": "com.example.upcyclecommunity"
+          "package_name": "com.uca.upcyclecommunity"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "590459379270-9fs66qate0ckd6hfjfdjmjmae248dn4t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.upcyclecommunity",
+            "package_name": "com.uca.upcyclecommunity",
             "certificate_hash": "443bf67fbff0f8adcf123539759d5aad12065791"
           }
         },

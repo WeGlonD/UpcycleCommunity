@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.upcyclecommunity">
+    package="com.uca.upcyclecommunity">
 
     <uses-feature
         android:required="true"
@@ -33,7 +33,7 @@
         android:theme="@style/Theme.UpcycleCommunity"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="com.uca.upcyclecommunity.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
@@ -42,30 +42,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".community1.WritePostActivity"
+        <activity android:name="com.uca.upcyclecommunity.community1.WritePostActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Loading"
+        <activity android:name="com.uca.upcyclecommunity.Loading"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
-        <activity android:name=".community1.Personal_Post"
+        <activity android:name="com.uca.upcyclecommunity.community1.Personal_Post"
             android:screenOrientation="portrait"/>
-        <activity android:name=".community2.community2_upload"
+        <activity android:name="com.uca.upcyclecommunity.community2.community2_upload"
             android:screenOrientation="portrait"/>
-        <activity android:name=".mypage.LoginActivity"
+        <activity android:name="com.uca.upcyclecommunity.mypage.LoginActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".mypage.SignUpActivity"
+        <activity android:name="com.uca.upcyclecommunity.mypage.SignUpActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".mypage.SettingActivity"
+        <activity android:name="com.uca.upcyclecommunity.mypage.SettingActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".community2.CommentsActivity"
+        <activity android:name="com.uca.upcyclecommunity.community2.CommentsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".mypage.MyPost1_Activity"
+        <activity android:name="com.uca.upcyclecommunity.mypage.MyPost1_Activity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".recruit.recruit_list"
+        <activity android:name="com.uca.upcyclecommunity.recruit.recruit_list"
             android:screenOrientation="portrait"/>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.upcyclecommunity.fileprovider"
+            android:authorities="com.uca.upcyclecommunity.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
