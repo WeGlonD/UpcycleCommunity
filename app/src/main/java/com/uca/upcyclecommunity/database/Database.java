@@ -776,7 +776,7 @@ public class Database {
                                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                                         if (!dataSnapshot.getKey().equals("cnt")) {
                                                             if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                    bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                                 Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
                                                                 returnList.add(dataSnapshot.getValue(Long.class));
                                                                 acts.ifSuccess(snapshot);
@@ -808,7 +808,7 @@ public class Database {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         if (!dataSnapshot.getKey().equals("cnt")) {
                                             if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                    bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                 Log.d("minseok", "" + dataSnapshot.getValue(Long.class));
                                                 returnList.add(dataSnapshot.getValue(Long.class));
                                                 acts.ifSuccess(snapshot);
@@ -880,7 +880,7 @@ public class Database {
                                                        Log.d("weglond", dataSnapshot.getKey());
                                                        if (!dataSnapshot.getKey().equals("cnt")) {
                                                            if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                                   bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                   bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                                int finalIdx = idx;
 
                                                                double latitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("latitude").getValue(Double.class);
@@ -933,7 +933,7 @@ public class Database {
                                        Log.d("weglond", dataSnapshot.getKey());
                                        if (!dataSnapshot.getKey().equals("cnt")) {
                                            if (!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                   bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                   bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                int finalIdx = idx;
 
                                                double latitude = post3.child(""+dataSnapshot.getValue(Long.class)).child("latitude").getValue(Double.class);
@@ -1030,7 +1030,7 @@ public class Database {
                                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                                                         if(!(dataSnapshot.getKey().equals("cnt"))) {
                                                             if(!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                    bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                                 Long postNumber = Long.parseLong(dataSnapshot.getKey());
                                                                 Log.d("WeGlonD", postNumber + "");
                                                                 returnList.add(postNumber);
@@ -1064,7 +1064,7 @@ public class Database {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                                         if(!(dataSnapshot.getKey().equals("cnt"))) {
                                             if(!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                    bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                 Long postNumber = Long.parseLong(dataSnapshot.getKey());
                                                 Log.d("WeGlonD", postNumber + "");
                                                 returnList.add(postNumber);
@@ -1148,7 +1148,7 @@ public class Database {
                                                         idx++;
                                                         if(!(dataSnapshot.getKey().equals("cnt"))) {
                                                             if(!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                                    bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                                 Long postNumber = Long.parseLong(dataSnapshot.getKey());
                                                                 int finalIdx = idx;
 
@@ -1200,7 +1200,7 @@ public class Database {
                                         idx++;
                                         if(!(dataSnapshot.getKey().equals("cnt"))) {
                                             if(!(bannedUser.contains(post3.child(dataSnapshot.getValue(Long.class) + "").child("writer").getValue(String.class)) ||
-                                                    bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                    bannedPost.contains(dataSnapshot.getValue(Long.class)))) {
                                                 Long postNumber = Long.parseLong(dataSnapshot.getKey());
                                                 int finalIdx = idx;
 

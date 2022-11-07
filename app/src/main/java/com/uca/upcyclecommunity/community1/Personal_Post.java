@@ -46,6 +46,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Personal_Post extends AppCompatActivity {
     public static String CATEGORY = "1";
+    public static Personal_Post CurInst;
     Database db = new Database();
     ArrayList<Post> postArray;
     TextView titleview;
@@ -125,6 +126,7 @@ public class Personal_Post extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_post);
+        CurInst = this;
 
         context = this;
 

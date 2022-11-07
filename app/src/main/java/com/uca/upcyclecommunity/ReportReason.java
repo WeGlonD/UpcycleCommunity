@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.uca.upcyclecommunity.community1.Personal_Post;
 import com.uca.upcyclecommunity.database.Database;
 
 public class ReportReason extends AppCompatActivity {
@@ -91,6 +92,7 @@ public class ReportReason extends AppCompatActivity {
                         }
                     });
                 }
+                Personal_Post.CurInst.finish();
                 finish();
             }
         });
