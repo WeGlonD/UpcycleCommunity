@@ -144,7 +144,7 @@ public class CommentsActivity extends AppCompatActivity {
 
             @Override
             public void ifFail(Object task) {
-                Toast.makeText(mContext, "loading comments error!", Toast.LENGTH_LONG).show();
+//                Toast.makeText(mContext, "loading comments error!", Toast.LENGTH_LONG).show();
             }
         });
     }
