@@ -67,10 +67,18 @@ public class Personal_Post extends AppCompatActivity {
     RecyclerView recruitRecycler;
     WritePostDeleting writePostDeleting;
     ImageView Report;
+    MenuItem menu_edit;
+    MenuItem menu_delete;
+    MenuItem menu_reportpost;
+    MenuItem menu_reportuser;
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_personal_post, menu);
+        menu_edit = menu.findItem(R.id.menu_editPost);
+        menu_delete = menu.findItem(R.id.menu_deltePost);
+        menu_reportpost = menu.findItem(R.id.menu_reportPost);
+        menu_reportuser = menu.findItem(R.id.menu_reportUser);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -80,41 +88,56 @@ public class Personal_Post extends AppCompatActivity {
             if (task.isSuccessful()) {
                 String writerUid = task.getResult().getValue(String.class);
                 if (Database.getAuth().getCurrentUser() == null) {
-                    Toast.makeText(getApplicationContext(), "로그인 후 게시물을 수정/삭제할 수 있습니다!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "로그인 후 게시물을 수정/삭제, 신고할 수 있습니다!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                 } else {
-                    Log.d("WeGlonD", "get : " + Database.getAuth().getCurrentUser().getUid());
+                    String nowUser = Database.getAuth().getCurrentUser().getUid();
+                    Log.d("WeGlonD", "get : " + nowUser);
                     Log.d("WeGlonD", "post writer : " + writerUid);
-                    if (writerUid.equals(Database.getAuth().getCurrentUser().getUid())) {
-                        switch (item.getItemId()) {
-                            case R.id.menu_deltePost:
-                                writePostDeleting.show();
-                                db.deletePost(postn, writerUid, CATEGORY, recruitPostnum + "", new Acts() {
-                                    @Override
-                                    public void ifSuccess(Object task) {
-                                        writePostDeleting.dismiss();
-                                        finish();
-                                    }
+                    switch (item.getItemId()) {
+                        case R.id.menu_deltePost:
+                            writePostDeleting.show();
+                            db.deletePost(postn, writerUid, CATEGORY, recruitPostnum + "", new Acts() {
+                                @Override
+                                public void ifSuccess(Object task) {
+                                    writePostDeleting.dismiss();
+                                    finish();
+                                }
 
-                                    @Override
-                                    public void ifFail(Object task) {
-                                        Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                break;
-                            case R.id.menu_editPost:
-                                //수정 코드
-                                Intent it = new Intent(this, WritePostActivity.class);
-                                it.putExtra("postn", postn + "");
-                                if (CATEGORY.equals("3"))
-                                    it.putExtra("recruitPostnum", recruitPostnum + "");
-                                startActivity(it);
-                                finish();
-                                break;
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "자신의 게시물만 수정/삭제 가능합니다", Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void ifFail(Object task) {
+                                    Toast.makeText(getApplicationContext(), "삭제실패", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        case R.id.menu_editPost:
+                            //수정 코드
+                            Intent it = new Intent(this, WritePostActivity.class);
+                            it.putExtra("postn", postn + "");
+                            if (CATEGORY.equals("3"))
+                                it.putExtra("recruitPostnum", recruitPostnum + "");
+                            startActivity(it);
+                            finish();
+                            break;
+                        case R.id.menu_reportPost:
+                            Toast.makeText(this, "Report Post clicked!", Toast.LENGTH_SHORT).show();
+                            Intent it1 = new Intent(this, ReportReason.class);
+                            it1.putExtra("type", "POST");
+                            it1.putExtra("reportpost", postn + "");
+                            it1.putExtra("NowUser", nowUser);
+                            it1.putExtra("category", CATEGORY);
+                            startActivity(it1);
+                            break;
+                        case R.id.menu_reportUser:
+                            Toast.makeText(this, "Report clicked!", Toast.LENGTH_SHORT).show();
+                            Intent it2 = new Intent(this, ReportReason.class);
+                            it2.putExtra("type", "USER");
+                            it2.putExtra("reportuser", postArray.get(0).getUser_id());
+                            it2.putExtra("NowUser", nowUser);
+                            it2.putExtra("category", CATEGORY);
+                            startActivity(it2);
+                            break;
                     }
                 }
             }
@@ -187,60 +210,7 @@ public class Personal_Post extends AppCompatActivity {
 
         comment_layout = findViewById(R.id.comments_layout);
 
-        Report.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(context, view);
-                popupMenu.inflate(R.menu.menu_report);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        String nowUser = Database.getAuth().getCurrentUser().getUid();
-                        switch (item.getItemId()) {
-                            case R.id.reportpost:
-                                Toast.makeText(context, "Report Post clicked!", Toast.LENGTH_SHORT).show();
-                                Database.getUserRoot().child(nowUser).child("reportpost" + CATEGORY).child("cnt").get().addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Long reportpostcnt = task.getResult().getValue(Long.class);
-                                        if (reportpostcnt == null)
-                                            reportpostcnt = 0l;
-                                        reportpostcnt++;
-                                        Database.getUserRoot().child(nowUser).child("reportpost" + CATEGORY).child("cnt").setValue(reportpostcnt);
-                                        Database.getUserRoot().child(nowUser).child("reportpost" + CATEGORY).child(reportpostcnt + "").setValue(postn);
-                                    }
-                                });
-                                Intent it = new Intent(context, ReportReason.class);
-                                it.putExtra("type", "POST");
-                                it.putExtra("reportpost", postn + "");
-                                it.putExtra("category", CATEGORY);
-                                context.startActivity(it);
-                                return true;
-                            case R.id.reportuser:
-                                Toast.makeText(context, "Report clicked!", Toast.LENGTH_SHORT).show();
-                                Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").get().addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Long reportusercnt = task.getResult().getValue(Long.class);
-                                        if (reportusercnt == null)
-                                            reportusercnt = 0l;
-                                        reportusercnt++;
-                                        Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").setValue(reportusercnt);
-                                        Database.getUserRoot().child(nowUser).child("reportuser").child(reportusercnt + "").setValue(postArray.get(0).getUser_id());
-                                    }
-                                });
-                                Intent it2 = new Intent(context, ReportReason.class);
-                                it2.putExtra("type", "USER");
-                                it2.putExtra("reportuser", postArray.get(0).getUser_id());
-                                it2.putExtra("category", CATEGORY);
-                                context.startActivity(it2);
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-                popupMenu.show();
-            }
-        });
+
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,12 +225,7 @@ public class Personal_Post extends AppCompatActivity {
                             CommentView newCommentContainer = new CommentView(context, cmt, Glide.with(getApplicationContext()));
                             newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                             newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
-                            newCommentContainer.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    commentClickAction(view);
-                                }
-                            });
+
                             newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View view) {
@@ -290,6 +255,9 @@ public class Personal_Post extends AppCompatActivity {
                     //tagkey1 : key / tagkey2 : userUid
                     newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                     newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
+                    newCommentContainer.setOnClickListener(viw ->{
+                        commentClickAction(newCommentContainer);
+                    });
                     newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
@@ -323,6 +291,19 @@ public class Personal_Post extends AppCompatActivity {
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());
                 User_Id = personal_p.getUser_id();
+
+                menu_delete.setVisible(false);
+                menu_edit.setVisible(false);
+                menu_reportpost.setVisible(true);
+                menu_reportuser.setVisible(true);
+
+                if(Database.getAuth().getCurrentUser()!=null && Database.getAuth().getCurrentUser().getUid().equals(User_Id)){
+                    menu_delete.setVisible(true);
+                    menu_edit.setVisible(true);
+                    menu_reportpost.setVisible(false);
+                    menu_reportuser.setVisible(false);
+                }
+
                 Log.d("Minseok", User_Id);
                 //user
                 Database.getUserRoot().child(User_Id).child("name").get().addOnCompleteListener(task1 -> {
@@ -413,6 +394,7 @@ public class Personal_Post extends AppCompatActivity {
                     it.putExtra("type","COMMENT");
                     it.putExtra("reportpost",postn+"");
                     it.putExtra("reportCommentNum",(String) view.getTag(R.string.tagKey1));
+                    it.putExtra("category",CATEGORY);
                     String nowUser1 = Database.getAuth().getCurrentUser().getUid();
                     it.putExtra("NowUser",nowUser1);
                     startActivity(it);
@@ -422,7 +404,7 @@ public class Personal_Post extends AppCompatActivity {
         new AlertDialog.Builder(context)
                 .setTitle("신고")
                 .setPositiveButton("계정 신고", reportuserListener)
-                .setNeutralButton("게시물 신고", reportpostListener)
+                .setNeutralButton("댓글 신고", reportpostListener)
                 .show();
     }
 

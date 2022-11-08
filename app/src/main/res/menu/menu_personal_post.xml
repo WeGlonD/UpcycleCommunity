@@ -4,4 +4,8 @@
         android:id="@+id/menu_editPost" />
     <item android:title="게시물 삭제"
         android:id="@+id/menu_deltePost"/>
+    <item android:title="게시물 신고"
+        android:id="@+id/menu_reportPost"/>
+    <item android:title="작성자 신고"
+        android:id="@+id/menu_reportUser"/>
 </menu>

@@ -160,7 +160,7 @@ public class ReportReason extends AppCompatActivity {
                                     reportpostcnt1++;
                                     Database.getDBRoot().child("Report").child("comment").child("Post"+category).child(detail).child("cnt").setValue(reportpostcnt1);
                                     Database.getDBRoot().child("Report").child("comment").child("Post"+category).child(detail).child(reportpostcnt1+"").child(Userid).setValue(CommentN);
-                                    Database.getDBRoot().child("Report").child("Post"+category).child(reportpostcnt1 + "").child("reason").setValue(reportreason);
+                                    Database.getDBRoot().child("Report").child("comment").child("Post"+category).child(detail).child(reportpostcnt1 + "").child("reason").setValue(reportreason);
 
                                     reportingDialog.dismiss();
                                     if(Personal_Post.CurInst!=null)
