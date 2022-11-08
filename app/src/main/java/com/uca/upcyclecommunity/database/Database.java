@@ -2148,30 +2148,93 @@ public class Database {
         DatabaseReference postRoot = mDBRoot.child("Post"+category);
         DatabaseReference postingRoot = postRoot.child("posting");
 
-        DatabaseReference currPosting = postingRoot.child(postnum+"");
-        currPosting.child("comment").get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                if(task.getResult().getChildrenCount() > 1) {
-                    for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                        if (!dataSnapshot.getKey().equals("cnt")) {
-                            Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("writer").getValue(String.class),dataSnapshot.getKey());
-                            Log.d("WeGlonD", dataSnapshot.child("text").getValue(String.class));
-                            Log.d("WeGlonD", dataSnapshot.child("writer").getValue(String.class));
-                            data.add(tmp);
+        //report : Report - comment - Post1 - 9999999999 - 1 - UID : 1 , reason : 아동학대
+        //user : User - Uid - reportcomment - Post1 - 999999999 - 1(key_cnt) : 1(comment's key)
+        ArrayList<Long> bannedComment = new ArrayList<>();
+        ArrayList<String> bannedUser = new ArrayList<>();
+        String userUID = null;
+        if(mAuth.getCurrentUser()!=null) {
+            userUID = mAuth.getCurrentUser().getUid();
+            String finalUserUID = userUID;
+            userRoot.child(userUID).child("reportcomment").child("Post"+category).child(postnum+"").get().addOnCompleteListener(task2 -> {
+                if (task2.isSuccessful()) {
+                    for (DataSnapshot dataSnapshot : task2.getResult().getChildren()) {
+                        if (!(dataSnapshot.getKey().equals("cnt"))) {
+                            Long bannedNumber = dataSnapshot.getValue(Long.class);
+                            Log.d("WeGlonD", "Banned Post : " + bannedNumber);
+                            bannedComment.add(bannedNumber);
                         }
                     }
-                    acts.ifSuccess(task);
+                    userRoot.child(finalUserUID).child("reportuser").get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            for (DataSnapshot dataSnapshot : task1.getResult().getChildren()) {
+                                if (!(dataSnapshot.getKey().equals("cnt"))) {
+                                    String bannedUserId = dataSnapshot.getValue(String.class);
+                                    Log.d("WeGlonD", "Banned User : " + bannedUserId);
+                                    bannedUser.add(bannedUserId);
+                                }
+                            }
+
+                            //여기에 코드 쓰기
+                            DatabaseReference currPosting = postingRoot.child(postnum+"");
+                            currPosting.child("comment").get().addOnCompleteListener(task -> {
+                                if(task.isSuccessful()) {
+                                    if(task.getResult().getChildrenCount() > 1) {
+                                        for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                                            if (!dataSnapshot.getKey().equals("cnt")) {
+                                                if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
+                                                        bannedComment.contains(Long.parseLong(dataSnapshot.getKey())))) {
+                                                    Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class), dataSnapshot.child("writer").getValue(String.class), dataSnapshot.getKey());
+                                                    Log.d("WeGlonD", dataSnapshot.child("text").getValue(String.class));
+                                                    Log.d("WeGlonD", dataSnapshot.child("writer").getValue(String.class));
+                                                    data.add(tmp);
+                                                }
+                                            }
+                                        }
+                                        acts.ifSuccess(task);
+                                    }
+                                    else {
+                                        currPosting.child("comment").child("cnt").setValue(0);
+                                        acts.ifFail(task);
+                                    }
+                                }
+                                else {
+                                    currPosting.child("comment").child("cnt").setValue(0);
+                                    acts.ifFail(task);
+                                }
+                            });
+
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            DatabaseReference currPosting = postingRoot.child(postnum+"");
+            currPosting.child("comment").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    if(task.getResult().getChildrenCount() > 1) {
+                        for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                            if (!dataSnapshot.getKey().equals("cnt")) {
+                                Comment tmp = new Comment(dataSnapshot.child("text").getValue(String.class),dataSnapshot.child("writer").getValue(String.class),dataSnapshot.getKey());
+                                Log.d("WeGlonD", dataSnapshot.child("text").getValue(String.class));
+                                Log.d("WeGlonD", dataSnapshot.child("writer").getValue(String.class));
+                                data.add(tmp);
+                            }
+                        }
+                        acts.ifSuccess(task);
+                    }
+                    else {
+                        currPosting.child("comment").child("cnt").setValue(0);
+                        acts.ifFail(task);
+                    }
                 }
                 else {
                     currPosting.child("comment").child("cnt").setValue(0);
                     acts.ifFail(task);
                 }
-            }
-            else {
-                currPosting.child("comment").child("cnt").setValue(0);
-                acts.ifFail(task);
-            }
-        });
+            });
+        }
     }
 
     public void editComment(Long postnum, String key, String newText, String category){
