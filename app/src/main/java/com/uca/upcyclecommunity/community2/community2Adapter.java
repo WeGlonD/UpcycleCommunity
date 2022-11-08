@@ -111,11 +111,11 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                                     if (task1.isSuccessful()) {
                                         String name = task1.getResult().getValue(String.class);
                                         holder.userName.setText(name);
-                                        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                                        /*if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
                                             if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(value)){
                                                 holder.more.setVisibility(View.VISIBLE);
                                             }
-                                        }
+                                        }*/
                                     } else {
                                         holder.userName.setText("error");
                                     }
@@ -275,7 +275,8 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                             }
                         }
                     });
-                    popupMenu.show();
+                    if(!(Database.getAuth().getCurrentUser()!=null && Database.getAuth().getCurrentUser().getUid().equals(writerUID)))
+                        popupMenu.show();
                 }
             });
 
