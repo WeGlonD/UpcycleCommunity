@@ -283,10 +283,10 @@ public class Personal_Post extends AppCompatActivity {
                 Post personal_p = postArray.get(0);
                 String Ttitle = personal_p.getTitle();
                 //Toast.makeText(context, String.valueOf(postn), Toast.LENGTH_SHORT).show();
-                if (Database.getAuth().getCurrentUser() != null)
+                /*if (Database.getAuth().getCurrentUser() != null)
                     findViewById(R.id.personal_post_report_imageView).setVisibility(View.VISIBLE);
                 else
-                    findViewById(R.id.personal_post_report_imageView).setVisibility(View.GONE);
+                    findViewById(R.id.personal_post_report_imageView).setVisibility(View.GONE);*/
 
                 titleview.setText(Ttitle);
                 tag_detail.setText(personal_p.getTags());
