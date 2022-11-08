@@ -1,12 +1,16 @@
 package com.uca.upcyclecommunity.community2.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,9 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.uca.upcyclecommunity.R;
 import com.uca.upcyclecommunity.ReportReason;
+import com.uca.upcyclecommunity.community1.CommentView;
 import com.uca.upcyclecommunity.database.Database;
 
 import java.util.ArrayList;
@@ -169,6 +175,38 @@ public class Comments_RecyclerViewAdapter extends RecyclerView.Adapter<Comments_
                 });
                 popupMenu.show();
             });
+
+            itemView.setOnLongClickListener(view -> {
+                if(FirebaseAuth.getInstance().getCurrentUser() == null)
+                    return false;
+                if(!writerUid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    return false;
+
+                DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Database db = new Database();
+                        int pos = getAdapterPosition();
+                        db.deleteComment(Long.valueOf(stringOfPostNumber), listData.get(pos)+"", CATEGORY);
+                        listData.remove(pos);
+                        notifyItemRemoved(pos);
+                    }
+                };
+                DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                };
+                new AlertDialog.Builder(context)
+                        .setTitle("댓글 작업 선택")
+                        .setPositiveButton("댓글 삭제", deleteListener)
+                        .setNegativeButton("취소", cancelListener)
+                        .show();
+
+                return true;
+            });
+
 
         }
     }
