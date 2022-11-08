@@ -683,7 +683,7 @@ public class Database {
                                             if(!(bannedUser.contains(dataSnapshot.child("writer").getValue(String.class)) ||
                                                     bannedPost.contains(Long.parseLong(dataSnapshot.getKey())))) {
                                                 Long postNumber = Long.parseLong(dataSnapshot.getKey());
-                                                Log.d("WeGlonD", postNumber + "");
+                                                Log.d("WeGlonD", "readpostfirst list data " + postNumber + "");
                                                 returnList.add(postNumber);
                                                 acts.ifSuccess(res);
                                             }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -204,6 +205,7 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
         public TextView timeStamp_tv;
         public TextView likeCnt_tv;
         public Button like_btn;
+        public ConstraintLayout profile_layout;
         public ImageView more;
 
         public String writerUID;
@@ -232,7 +234,8 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
             tags_tv = view.findViewById(R.id.community2_item_tags_textView);
             timeStamp_tv = view.findViewById(R.id.community2_item_timeStamp_textView);
             more = view.findViewById(R.id.more);
-            more.setOnClickListener(new View.OnClickListener() {
+            profile_layout = view.findViewById(R.id.community2_item_metaData_constraintLayout);
+            profile_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     PopupMenu popupMenu = new PopupMenu(mContext, view);
@@ -240,46 +243,35 @@ public class community2Adapter extends RecyclerView.Adapter<community2Adapter.My
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            String nowUser = Database.getAuth().getCurrentUser().getUid();
-                            switch (item.getItemId()){
-                                case R.id.reportpost:
-                                    Toast.makeText(mContext,"Report Post clicked!",Toast.LENGTH_SHORT).show();
-                                    Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").get().addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Long reportpostcnt = task.getResult().getValue(Long.class);
-                                            if (reportpostcnt == null)
-                                                reportpostcnt = 0l;
-                                            reportpostcnt++;
-                                            Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").setValue(reportpostcnt);
-                                            Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child(reportpostcnt + "").setValue(postnum);
-                                        }
-                                    });
-                                    Intent it = new Intent(mContext,ReportReason.class);
-                                    it.putExtra("type","POST");
-                                    it.putExtra("reportpost",postnum+"");
-                                    it.putExtra("category",CATEGORY);
-                                    mContext.startActivity(it);
-                                    return true;
-                                case R.id.reportuser:
-                                    Toast.makeText(mContext, "Report clicked!", Toast.LENGTH_SHORT).show();
-                                    Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").get().addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Long reportusercnt = task.getResult().getValue(Long.class);
-                                            if (reportusercnt == null)
-                                                reportusercnt = 0l;
-                                            reportusercnt++;
-                                            Database.getUserRoot().child(nowUser).child("reportuser").child("cnt").setValue(reportusercnt);
-                                            Database.getUserRoot().child(nowUser).child("reportuser").child(reportusercnt + "").setValue(writerUID);
-                                        }
-                                    });
-                                    Intent it2 = new Intent(mContext, ReportReason.class);
-                                    it2.putExtra("type","USER");
-                                    it2.putExtra("reportuser",writerUID);
-                                    it2.putExtra("category",CATEGORY);
-                                    mContext.startActivity(it2);
-                                    return true;
-                                default:
-                                    return false;
+                            FirebaseUser User = Database.getAuth().getCurrentUser();
+                            if(User != null) {
+                                String nowUser = User.getUid();
+                                switch (item.getItemId()) {
+                                    case R.id.reportpost:
+                                        Toast.makeText(mContext, "Report Post clicked!", Toast.LENGTH_SHORT).show();
+                                        Intent it = new Intent(mContext, ReportReason.class);
+                                        it.putExtra("type", "POST");
+                                        it.putExtra("reportpost", postnum + "");
+                                        it.putExtra("category", CATEGORY);
+                                        it.putExtra("NowUser", nowUser);
+                                        mContext.startActivity(it);
+                                        return true;
+                                    case R.id.reportuser:
+                                        Toast.makeText(mContext, "Report clicked!", Toast.LENGTH_SHORT).show();
+                                        Intent it2 = new Intent(mContext, ReportReason.class);
+                                        it2.putExtra("type", "USER");
+                                        it2.putExtra("reportuser", writerUID);
+                                        it2.putExtra("category", CATEGORY);
+                                        it2.putExtra("NowUser", nowUser);
+                                        mContext.startActivity(it2);
+                                        return true;
+                                    default:
+                                        return false;
+                                }
+                            }
+                            else{
+                                Toast.makeText(mContext, "로그인 이후 신고할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                                return true;
                             }
                         }
                     });
