@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.google.firebase.auth.FirebaseUser;
 import com.uca.upcyclecommunity.R;
 import com.uca.upcyclecommunity.ReportReason;
 import com.uca.upcyclecommunity.database.Database;
@@ -140,21 +141,30 @@ public class Comments_RecyclerViewAdapter extends RecyclerView.Adapter<Comments_
                 popupMenu.setOnMenuItemClickListener(item -> {
                     Long commentNum = listData.get(getAdapterPosition());
                     Intent it = new Intent(context, ReportReason.class);
-                    switch (item.getItemId()){
-                        case R.id.reportpost:
-                            it.putExtra("type","COMMENT");
-                            it.putExtra("reportpost",stringOfPostNumber);
-                            it.putExtra("reportCommentNum", commentNum);
-                            it.putExtra("category",CATEGORY);
-                            context.startActivity(it);
-                            return true;
-                        case R.id.reportuser:
-                            it.putExtra("type", "USER");
-                            it.putExtra("reportuser", writerUid);
-                            context.startActivity(it);
-                            return true;
-                        default:
-                            return false;
+                    FirebaseUser User = Database.getAuth().getCurrentUser();
+                    if(User!=null) {
+                        switch (item.getItemId()) {
+                            case R.id.reportpost:
+                                it.putExtra("type", "COMMENT");
+                                it.putExtra("reportpost", stringOfPostNumber);
+                                it.putExtra("reportCommentNum", commentNum + "");
+                                it.putExtra("category", CATEGORY);
+                                it.putExtra("NowUser", User.getUid());
+                                context.startActivity(it);
+                                return true;
+                            case R.id.reportuser:
+                                it.putExtra("type", "USER");
+                                it.putExtra("reportuser", writerUid);
+                                it.putExtra("NowUser", User.getUid());
+                                context.startActivity(it);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                    else{
+                        Toast.makeText(context, "로그인 이후 신고할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                        return true;
                     }
                 });
                 popupMenu.show();

@@ -18,6 +18,7 @@ import com.bumptech.glide.RequestManager;
 import com.uca.upcyclecommunity.R;
 import com.uca.upcyclecommunity.community2.adapter.Comments_RecyclerViewAdapter;
 import com.uca.upcyclecommunity.database.Acts;
+import com.uca.upcyclecommunity.database.Comment;
 import com.uca.upcyclecommunity.database.Database;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +37,7 @@ public class CommentsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Comments_RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Long> listData;
+    private ArrayList<Comment> commentArrayList;
 
     private ImageView my_profile_iv;
     private EditText comment_et;
@@ -112,22 +114,38 @@ public class CommentsActivity extends AppCompatActivity {
             my_profile_iv.setImageResource(R.drawable.ic_baseline_person_24);
         }
 
-        Database.getDBRoot().child("Post2").child("posting").
-                child(postNumber).child("comment").
-                get().addOnCompleteListener(task -> {
+//        Database.getDBRoot().child("Post2").child("posting").
+//                child(postNumber).child("comment").
+//                get().addOnCompleteListener(task -> {
+//
+//                    if (task.isSuccessful()){
+//                        for (DataSnapshot dataSnapshot : task.getResult().getChildren()){
+//                            if (!(dataSnapshot.getKey().equals("cnt"))){
+//                                listData.add(Long.valueOf(dataSnapshot.getKey()));
+//                                recyclerViewAdapter.notifyItemInserted(listData.size()-1);
+//                            }
+//                        }
+//                    }
+//                    else{
+//                        Toast.makeText(mContext, "loading comments error!", Toast.LENGTH_LONG).show();
+//                    }
+//
+//                });
 
-                    if (task.isSuccessful()){
-                        for (DataSnapshot dataSnapshot : task.getResult().getChildren()){
-                            if (!(dataSnapshot.getKey().equals("cnt"))){
-                                listData.add(Long.valueOf(dataSnapshot.getKey()));
-                                recyclerViewAdapter.notifyItemInserted(listData.size()-1);
-                            }
-                        }
-                    }
-                    else{
-                        Toast.makeText(mContext, "loading comments error!", Toast.LENGTH_LONG).show();
-                    }
+        commentArrayList = new ArrayList<>();
+        db.readComment(commentArrayList, Long.valueOf(postNumber), CATEGORY, new Acts() {
+            @Override
+            public void ifSuccess(Object task) {
+                for(Comment comment : commentArrayList){
+                    listData.add(Long.valueOf(comment.getKey()));
+                }
+                recyclerViewAdapter.notifyDataSetChanged();
+            }
 
-                });
+            @Override
+            public void ifFail(Object task) {
+                Toast.makeText(mContext, "loading comments error!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
