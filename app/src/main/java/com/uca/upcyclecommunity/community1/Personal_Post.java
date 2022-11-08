@@ -70,27 +70,27 @@ public class Personal_Post extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_personal_post,menu);
+        getMenuInflater().inflate(R.menu.menu_personal_post, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Database.getDBRoot().child("Post"+CATEGORY).child("posting").child(postn+"").child("writer").get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+        Database.getDBRoot().child("Post" + CATEGORY).child("posting").child(postn + "").child("writer").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 String writerUid = task.getResult().getValue(String.class);
-                if(Database.getAuth().getCurrentUser()==null){
+                if (Database.getAuth().getCurrentUser() == null) {
                     Toast.makeText(getApplicationContext(), "로그인 후 게시물을 수정/삭제할 수 있습니다!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
-                }else {
+                } else {
                     Log.d("WeGlonD", "get : " + Database.getAuth().getCurrentUser().getUid());
                     Log.d("WeGlonD", "post writer : " + writerUid);
                     if (writerUid.equals(Database.getAuth().getCurrentUser().getUid())) {
                         switch (item.getItemId()) {
                             case R.id.menu_deltePost:
                                 writePostDeleting.show();
-                                db.deletePost(postn, writerUid, CATEGORY, recruitPostnum+"", new Acts() {
+                                db.deletePost(postn, writerUid, CATEGORY, recruitPostnum + "", new Acts() {
                                     @Override
                                     public void ifSuccess(Object task) {
                                         writePostDeleting.dismiss();
@@ -107,8 +107,8 @@ public class Personal_Post extends AppCompatActivity {
                                 //수정 코드
                                 Intent it = new Intent(this, WritePostActivity.class);
                                 it.putExtra("postn", postn + "");
-                                if(CATEGORY.equals("3"))
-                                    it.putExtra("recruitPostnum", recruitPostnum+"");
+                                if (CATEGORY.equals("3"))
+                                    it.putExtra("recruitPostnum", recruitPostnum + "");
                                 startActivity(it);
                                 finish();
                                 break;
@@ -150,39 +150,38 @@ public class Personal_Post extends AppCompatActivity {
         recruitRecycler = findViewById(R.id.recruitPost);
         recruitRecycler.setLayoutManager(new LinearLayoutManager(context));
         Report = findViewById(R.id.personal_post_report_imageView);
-        if(getIntent().getStringExtra("category").equals("3")) {
+        if (getIntent().getStringExtra("category").equals("3")) {
             CATEGORY = "3";
             ArrayList<Long> arr = new ArrayList<>();
-            Database.getDBRoot().child("Post3").child("posting").child(postn+"").child("recruitFrom").get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
+            Database.getDBRoot().child("Post3").child("posting").child(postn + "").child("recruitFrom").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
                     recruitPostnum = task.getResult().getValue(Long.class);
-                    Database.getDBRoot().child("Post2").child("posting").child(recruitPostnum+"").get().addOnCompleteListener(task1 -> {
-                       if (task1.isSuccessful()){
-                           if (task1.getResult().getChildrenCount() == 0){
-                               TextView tv = new TextView(context);
-                               tv.setText("삭제된 게시물입니다.");
-                               tv.setTextSize(30);
-                               tv.setTextColor(getResources().getColor(R.color.black));
-                               LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                               tv.setGravity(Gravity.CENTER);
-                               tv.setLayoutParams(lp);
-                               ((LinearLayout)findViewById(R.id.recruit_linearlayout)).addView(tv);
-                           }
-                           else{
-                               arr.add(recruitPostnum);
-                               community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
-                                   @Override
-                                   public void mclickListener_Dialog(String postNumber) {}
-                               });
-                               recruitRecycler.setAdapter(adapter);
-                           }
-                       }
+                    Database.getDBRoot().child("Post2").child("posting").child(recruitPostnum + "").get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            if (task1.getResult().getChildrenCount() == 0) {
+                                TextView tv = new TextView(context);
+                                tv.setText("삭제된 게시물입니다.");
+                                tv.setTextSize(30);
+                                tv.setTextColor(getResources().getColor(R.color.black));
+                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                tv.setGravity(Gravity.CENTER);
+                                tv.setLayoutParams(lp);
+                                ((LinearLayout) findViewById(R.id.recruit_linearlayout)).addView(tv);
+                            } else {
+                                arr.add(recruitPostnum);
+                                community2Adapter adapter = new community2Adapter(arr, context, new community2Adapter.clickListener() {
+                                    @Override
+                                    public void mclickListener_Dialog(String postNumber) {
+                                    }
+                                });
+                                recruitRecycler.setAdapter(adapter);
+                            }
+                        }
                     });
 
                 }
             });
-        }
-        else{
+        } else {
             CATEGORY = "1";
         }
 
@@ -197,23 +196,23 @@ public class Personal_Post extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         String nowUser = Database.getAuth().getCurrentUser().getUid();
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             case R.id.reportpost:
-                                Toast.makeText(context,"Report Post clicked!",Toast.LENGTH_SHORT).show();
-                                Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").get().addOnCompleteListener(task -> {
+                                Toast.makeText(context, "Report Post clicked!", Toast.LENGTH_SHORT).show();
+                                Database.getUserRoot().child(nowUser).child("reportpost" + CATEGORY).child("cnt").get().addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         Long reportpostcnt = task.getResult().getValue(Long.class);
                                         if (reportpostcnt == null)
                                             reportpostcnt = 0l;
                                         reportpostcnt++;
-                                        Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child("cnt").setValue(reportpostcnt);
-                                        Database.getUserRoot().child(nowUser).child("reportpost"+CATEGORY).child(reportpostcnt + "").setValue(postn);
+                                        Database.getUserRoot().child(nowUser).child("reportpost" + CATEGORY).child("cnt").setValue(reportpostcnt);
+                                        Database.getUserRoot().child(nowUser).child("reportpost" + CATEGORY).child(reportpostcnt + "").setValue(postn);
                                     }
                                 });
-                                Intent it = new Intent(context,ReportReason.class);
-                                it.putExtra("type","POST");
-                                it.putExtra("reportpost",postn+"");
-                                it.putExtra("category",CATEGORY);
+                                Intent it = new Intent(context, ReportReason.class);
+                                it.putExtra("type", "POST");
+                                it.putExtra("reportpost", postn + "");
+                                it.putExtra("category", CATEGORY);
                                 context.startActivity(it);
                                 return true;
                             case R.id.reportuser:
@@ -229,9 +228,9 @@ public class Personal_Post extends AppCompatActivity {
                                     }
                                 });
                                 Intent it2 = new Intent(context, ReportReason.class);
-                                it2.putExtra("type","USER");
-                                it2.putExtra("reportuser",postArray.get(0).getUser_id());
-                                it2.putExtra("category",CATEGORY);
+                                it2.putExtra("type", "USER");
+                                it2.putExtra("reportuser", postArray.get(0).getUser_id());
+                                it2.putExtra("category", CATEGORY);
                                 context.startActivity(it2);
                                 return true;
                             default:
@@ -245,19 +244,23 @@ public class Personal_Post extends AppCompatActivity {
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (FirebaseAuth.getInstance().getCurrentUser() == null){
+                if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                     Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     ArrayList<String> keylist = new ArrayList<>();
                     db.writeCommentPersonal(postn, et_comment.getText().toString(), CATEGORY, keylist, new Acts() {
                         @Override
                         public void ifSuccess(Object task) {
-                            Comment cmt = new Comment(et_comment.getText().toString(),Database.getAuth().getCurrentUser().getUid(),keylist.get(0));
-                            CommentView newCommentContainer = new CommentView(context,cmt, Glide.with(getApplicationContext()));
+                            Comment cmt = new Comment(et_comment.getText().toString(), Database.getAuth().getCurrentUser().getUid(), keylist.get(0));
+                            CommentView newCommentContainer = new CommentView(context, cmt, Glide.with(getApplicationContext()));
                             newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                             newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
-
+                            newCommentContainer.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    commentClickAction(view);
+                                }
+                            });
                             newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View view) {
@@ -270,7 +273,8 @@ public class Personal_Post extends AppCompatActivity {
                         }
 
                         @Override
-                        public void ifFail(Object task) {}
+                        public void ifFail(Object task) {
+                        }
                     });
                 }
             }
@@ -281,12 +285,11 @@ public class Personal_Post extends AppCompatActivity {
         db.readComment(commentDatas, postn, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
-                for(Comment cmt : commentDatas){
-                    CommentView newCommentContainer = new CommentView(context,cmt,Glide.with(getApplicationContext()));
+                for (Comment cmt : commentDatas) {
+                    CommentView newCommentContainer = new CommentView(context, cmt, Glide.with(getApplicationContext()));
                     //tagkey1 : key / tagkey2 : userUid
                     newCommentContainer.setTag(R.string.tagKey1, cmt.getKey());
                     newCommentContainer.setTag(R.string.tagKey2, cmt.getWriterUid());
-
                     newCommentContainer.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
@@ -308,11 +311,11 @@ public class Personal_Post extends AppCompatActivity {
         db.readOnePost(postArray, postn, CATEGORY, new Acts() {
             @Override
             public void ifSuccess(Object task) {
-                Log.d("Minseok",CATEGORY+"");
+                Log.d("Minseok", CATEGORY + "");
                 Post personal_p = postArray.get(0);
                 String Ttitle = personal_p.getTitle();
                 //Toast.makeText(context, String.valueOf(postn), Toast.LENGTH_SHORT).show();
-                if(Database.getAuth().getCurrentUser()!=null)
+                if (Database.getAuth().getCurrentUser() != null)
                     findViewById(R.id.personal_post_report_imageView).setVisibility(View.VISIBLE);
                 else
                     findViewById(R.id.personal_post_report_imageView).setVisibility(View.GONE);
@@ -324,7 +327,7 @@ public class Personal_Post extends AppCompatActivity {
                 //user
                 Database.getUserRoot().child(User_Id).child("name").get().addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {
-                        try{
+                        try {
                             String Name = task1.getResult().getValue(String.class);
                             Database.getUserProfileImageRoot().child(User_Id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -342,8 +345,8 @@ public class Personal_Post extends AppCompatActivity {
                                             TextView tv = new TextView(Personal_Post.this);
                                             tv.setTextSize(22);
                                             tv.setLayoutParams(layparms);
-                                            tv.setText(contents.get(i).trim()+"\n");
-                                            Log.d("albumResult",contents.get(i).trim()+"");
+                                            tv.setText(contents.get(i).trim() + "\n");
+                                            Log.d("albumResult", contents.get(i).trim() + "");
                                             parent.addView(tv);
                                         } else {
                                             ImageView iv = new ImageView(Personal_Post.this);
@@ -354,8 +357,7 @@ public class Personal_Post extends AppCompatActivity {
                                     }
                                 }
                             });
-                        }
-                        catch (Exception e){
+                        } catch (Exception e) {
                             Toast.makeText(context, "삭제되거나 존재하지 않습니다!", Toast.LENGTH_SHORT).show();
                             finish();
                         }
@@ -364,34 +366,86 @@ public class Personal_Post extends AppCompatActivity {
                     }
                 });
             }
+
             @Override
             public void ifFail(Object task) {
 
             }
         });
     }
-    public void commentLongClickAction(View view){
+
+    public void commentClickAction(View view) {
+        DialogInterface.OnClickListener reportuserListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseUser currUser = Database.getAuth().getCurrentUser();
+                if (currUser == null) {
+                    Toast.makeText(context, "로그인 후 유저신고가 가능합니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                } else if (currUser.getUid().equals((String) view.getTag(R.string.tagKey2))) {
+                    Toast.makeText(context, "자신의 계정은 신고할 수 없습니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                } else {
+                    dialog.dismiss();
+                    String nowUser1 = Database.getAuth().getCurrentUser().getUid();
+                    Intent it = new Intent(context,ReportReason.class);
+                    it.putExtra("type","USER");
+                    it.putExtra("reportuser",(String) view.getTag(R.string.tagKey2));
+                    it.putExtra("category",CATEGORY);
+                    it.putExtra("NowUser",nowUser1);
+                    startActivity(it);
+                }
+            }
+        };
+        DialogInterface.OnClickListener reportpostListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseUser currUser = Database.getAuth().getCurrentUser();
+                if (currUser == null) {
+                    Toast.makeText(context, "로그인 후 게시물 신고가 가능합니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                } else if (currUser.getUid().equals((String) view.getTag(R.string.tagKey2))) {
+                    Toast.makeText(context, "자신의 게시물은 신고할 수 없습니다.", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                } else {
+                    dialog.dismiss();
+                    Intent it = new Intent(context,ReportReason.class);
+                    it.putExtra("type","COMMENT");
+                    it.putExtra("reportpost",postn+"");
+                    it.putExtra("reportCommentNum",(String) view.getTag(R.string.tagKey1));
+                    String nowUser1 = Database.getAuth().getCurrentUser().getUid();
+                    it.putExtra("NowUser",nowUser1);
+                    startActivity(it);
+                }
+            }
+        };
+        new AlertDialog.Builder(context)
+                .setTitle("신고")
+                .setPositiveButton("계정 신고", reportuserListener)
+                .setNeutralButton("게시물 신고", reportpostListener)
+                .show();
+    }
+
+    public void commentLongClickAction(View view) {
         DialogInterface.OnClickListener editListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 FirebaseUser currUser = Database.getAuth().getCurrentUser();
-                if(currUser==null){
+                if (currUser == null) {
                     Toast.makeText(context, "로그인 후 댓글수정이 가능합니다.", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
-                }
-                else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
+                } else if (!currUser.getUid().equals((String) view.getTag(R.string.tagKey2))) {
                     Toast.makeText(context, "자신의 댓글만 수정 할 수 있습니다.", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
-                }
-                else{
+                } else {
                     dialog.dismiss();
                     EditText et_editComment = new EditText(context);
                     DialogInterface.OnClickListener editCommentListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String editStr = et_editComment.getText().toString();
-                            db.editComment(postn,(String)view.getTag(R.string.tagKey1),editStr,CATEGORY);
-                            ((CommentView)view).text.setText(editStr);
+                            db.editComment(postn, (String) view.getTag(R.string.tagKey1), editStr, CATEGORY);
+                            ((CommentView) view).text.setText(editStr);
                             dialogInterface.dismiss();
                         }
                     };
@@ -414,17 +468,15 @@ public class Personal_Post extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 FirebaseUser currUser = Database.getAuth().getCurrentUser();
-                if(currUser==null){
+                if (currUser == null) {
                     Toast.makeText(context, "로그인 후 댓글삭제가 가능합니다.", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
-                }
-                else if(!currUser.getUid().equals((String)view.getTag(R.string.tagKey2))){
+                } else if (!currUser.getUid().equals((String) view.getTag(R.string.tagKey2))) {
                     Toast.makeText(context, "자신의 댓글만 삭제 할 수 있습니다.", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
-                }
-                else{
-                    db.deleteComment(postn, (String)view.getTag(R.string.tagKey1), CATEGORY);
-                    ((LinearLayout)((CommentView)view).getParent()).removeView(view);
+                } else {
+                    db.deleteComment(postn, (String) view.getTag(R.string.tagKey1), CATEGORY);
+                    ((LinearLayout) ((CommentView) view).getParent()).removeView(view);
                 }
             }
         };
@@ -442,3 +494,4 @@ public class Personal_Post extends AppCompatActivity {
                 .show();
     }
 }
+

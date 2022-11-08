@@ -25,6 +25,7 @@ public class ReportReason extends AppCompatActivity {
     private String reportreason;
     private EditText et_reason;
     private String nowUser;
+    private String CommentN;
     public ReportingDialog reportingDialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +43,10 @@ public class ReportReason extends AppCompatActivity {
         }
         else if(Type.equals("USER")){
             detail = it.getStringExtra("reportuser");
+        }
+        else if(Type.equals("COMMENT")){
+            detail = it.getStringExtra("reportpost");
+            CommentN = it.getStringExtra("reportCommentNum");
         }
 
         reportingDialog = new ReportingDialog(this);
@@ -136,9 +141,36 @@ public class ReportReason extends AppCompatActivity {
                             });
                         }
                     });
-
                 }
+                else if(Type.equals("COMMENT")){
+                    Database.getUserRoot().child(nowUser).child("reportcomment").child("Post"+category).child(detail).child("cnt").get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Long reportpostcnt = task.getResult().getValue(Long.class);
+                            if (reportpostcnt == null)
+                                reportpostcnt = 0l;
+                            reportpostcnt++;
+                            Database.getUserRoot().child(nowUser).child("reportcomment").child("Post"+category).child(detail).child("cnt").setValue(reportpostcnt);
+                            Database.getUserRoot().child(nowUser).child("reportcomment").child("Post"+category).child(detail).child(reportpostcnt + "").setValue(Long.parseLong(CommentN));
 
+                            Database.getDBRoot().child("Report").child("comment").child("Post"+category).child(detail).child("cnt").get().addOnCompleteListener(task1->{
+                                if(task1.isSuccessful()) {
+                                    Long reportpostcnt1 = task1.getResult().getValue(Long.class);
+                                    if (reportpostcnt1 == null)
+                                        reportpostcnt1 = 0l;
+                                    reportpostcnt1++;
+                                    Database.getDBRoot().child("Report").child("comment").child("Post"+category).child(detail).child("cnt").setValue(reportpostcnt1);
+                                    Database.getDBRoot().child("Report").child("comment").child("Post"+category).child(detail).child(reportpostcnt1+"").child(Userid).setValue(CommentN);
+                                    Database.getDBRoot().child("Report").child("Post"+category).child(reportpostcnt1 + "").child("reason").setValue(reportreason);
+
+                                    reportingDialog.dismiss();
+                                    if(Personal_Post.CurInst!=null)
+                                        Personal_Post.CurInst.finish();
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     }
